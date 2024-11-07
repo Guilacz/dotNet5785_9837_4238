@@ -72,4 +72,68 @@ public static class Initialization
     }
 
 
+    private static void createCall()
+    {
+
+        string[] CallsAdress =
+            {
+               "רחוב יפו 123, ירושלים",
+               "רחוב המלך דוד 45, ירושלים",
+               "רחוב הנביאים 67, ירושלים",
+               "שדרות הרצל 89, ירושלים",
+               "רחוב עזה 101, ירושלים",
+               "רחוב עמק רפאים 12, ירושלים",
+               "רחוב דרך חברון 34, ירושלים"
+            };
+        string[] CallsDetails =
+    {
+               "רחוב יפו 123, ירושלים",
+               "רחוב המלך דוד 45, ירושלים",
+               "רחוב הנביאים 67, ירושלים",
+               "שדרות הרצל 89, ירושלים",
+               "רחוב עזה 101, ירושלים",
+               "רחוב עמק רפאים 12, ירושלים",
+               "רחוב דרך חברון 34, ירושלים"
+            };
+
+        Random random = new Random();
+
+
+        foreach (var name in CallsAdress)
+        {
+            int i = 0;
+            int id;
+            string phone;
+            string prefix;
+            int middlePart;
+            double distance;
+            string password = "";
+            do
+                id = s_rand.Next(000000001, 329999999);
+            while (s_dalVolunteer!.Read(id) != null);
+
+
+            prefix = "05" + random.Next(2, 9);
+            middlePart = random.Next(1000000, 10000000);
+            phone = $"{prefix}-{middlePart}";
+
+            distance = random.Next(0, 40000);
+
+
+            for (int j = 0; j < 7; j++)
+            {
+                int digit = random.Next(0, 10);
+                password += digit.ToString();
+            }
+
+            Volunteer v = new Volunteer(id, volunteersNames[i], phone, volunteersMails[i], Role.Volunteer, 0, password, volunteersAdress[i]);
+            //DateTime start = new DateTime(1995, 1, 1);
+            //DateTime bdt = start.AddDays(s_rand.Next((s_dalConfig.Clock - start).Days));
+
+            s_dalVolunteer.Create(v);
+            i++;
+        }
+    }
+
+
 }
