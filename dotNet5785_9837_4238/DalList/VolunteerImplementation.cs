@@ -1,0 +1,83 @@
+﻿namespace Dal;
+using DalApi;
+using DO;
+using System.Collections.Generic;
+
+public class VolunteerImplementation : IVolunteer
+{
+    /// <summary>
+    /// function create new item :
+    /// checks if the item already exists in the list, if not, create it
+    /// </summary>
+ 
+    public void Create(Volunteer item)
+    {
+        if (Read(item.VolunteerId)!=null)
+            throw new ArgumentException($"A volunteer with ID {item.VolunteerId} already exists.");
+
+        else
+            DataSource.Volunteers.Add(item);
+    }
+
+
+    /// <summary>
+    /// delete function : delete if the item is in the list
+    /// </summary>
+
+    public void Delete(int id)
+    {
+        Volunteer? volunteerToDelete = Read(id);
+
+        if (volunteerToDelete == null)
+            throw new ArgumentException($"A volunteer with ID {id} does not exist.");
+        
+        DataSource.Volunteers.Remove(volunteerToDelete);
+    }
+
+    /// <summary>
+    /// function deleteAll: clears all the list
+    /// </summary>
+    public void DeleteAll()
+    {
+        DataSource.Volunteers.Clear();
+    }
+
+
+    /// <summary>
+    /// function read: checks and return the wanted element from the list
+    /// </summary>
+   
+    public Volunteer? Read(int id)
+    {
+        return DataSource.Volunteers.Find(Vol=> Vol.VolunteerId == id ); 
+    }
+
+
+    /// <summary>
+    /// function readall: returns the list
+    /// </summary>
+    public List<Volunteer> ReadAll()
+    {
+        return new List<Volunteer>(DataSource.Volunteers);
+    }
+
+
+    /// <summary>
+    /// update function : checks if the element exists, delete it, create it with new details
+    /// </summary>
+    
+    public void Update(Volunteer item)
+    {
+        Volunteer? volunteerToUpdate = Read(item.VolunteerId);
+
+        if (volunteerToUpdate == null)
+            throw new ArgumentException($"A volunteer with ID {item.VolunteerId} does not exist.");
+    
+        else
+        {
+            Delete(item.VolunteerId);
+            Create(item);
+        }
+                
+    }
+}
