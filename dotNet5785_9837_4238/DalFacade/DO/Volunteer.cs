@@ -26,10 +26,11 @@ public record Volunteer
 
     string? Password = null,
     string? Adress = null,
+    double? Distance = null,
     double? Latitude = null,
     double? Longitude = null,
-    bool IsActive = false,
-    double? Distance = null
+    bool IsActive = true
+    
     
 )
 {
