@@ -2,7 +2,7 @@
 {
     using Dal;
     using DalApi;
-    
+    using DO;
 
     public static class Program
     {
@@ -252,25 +252,62 @@
         }
 
 
-        // Add a new student (example of Create operation)
-        private static void AddStudent()
-        {
-            Console.Write("Enter student name: ");
-            string name = Console.ReadLine();
+        // Add a new call 
+        private static void AddCall()
+        { 
+            //id
+            Console.Write("Enter CallId: ");
+            int id = int.Parse(Console.ReadLine());
+            //lesson
+            Console.Write("What type of lesson do you want, and what level ?"); 
+            Console.WriteLine("1.Math_Primary");
+            Console.WriteLine("2.Math_Middle");
+            Console.WriteLine("3.Math_High");
+            Console.WriteLine("3.English_Primary");
+            Console.WriteLine("3.English_Middle");
+            Console.WriteLine("3.English_High");
+            Console.WriteLine("3.Grammary_Primary");
+            Console.WriteLine("3.Grammary_Middle");
+            Console.WriteLine("3.Grammary_High");
+            CallType lesson = (CallType)int.Parse(Console.ReadLine());
+            //adress
+            Console.WriteLine("Enter an address"); 
+            string address = Console.ReadLine();
+            //latitude
+            Console.WriteLine("Enter the latitude");
+            double l1 = int.Parse(Console.ReadLine());
+            //longitude
+            Console.WriteLine("Enter the longitude");
+            double l2 = int.Parse(Console.ReadLine());
+            //opentime
+            Console.WriteLine("Enter the time you want to start :");
+            int hour = int.Parse(Console.ReadLine());
+            int minute = int.Parse(Console.ReadLine());
+            int seconde = int.Parse(Console.ReadLine());
+            DateTime specificDate = new DateTime(hour, minute, seconde);
+            //details
+            Console.WriteLine("Enter details if needed");
+            string details = (Console.ReadLine());
+            //maxtime
+            Console.WriteLine("Enter the latest time you want to start");
+            int hour2 = int.Parse(Console.ReadLine());
+            int minute2 = int.Parse(Console.ReadLine());
+            int seconde2 = int.Parse(Console.ReadLine());
+            DateTime specificDate2 = new DateTime(hour, minute, seconde);
 
-            Student student = new Student { Name = name };
-            s_dalStudent?.Create(student);
+            Call c = new Call {CallId = id, CallType = lesson, Adress = address!,Latitude = l1, Longitude = l2, OpenTime = specificDate, Details = details, MaxTime = specificDate2 };
+            s_dalCall?.Create(c);
             Console.WriteLine("Student added.");
         }
 
-        // Display a student by ID (example of Read operation)
-        private static void DisplayStudent()
+        // Display a call by ID 
+        private static void DisplayCall()
         {
-            Console.Write("Enter student ID: ");
+            Console.Write("Enter call ID: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var student = s_dalStudent?.Read(id);
-                Console.WriteLine(student != null ? student.ToString() : "Student not found.");
+                var Call = s_dalCall?.Read(id);
+                Console.WriteLine(Call != null ? Call.ToString() : "call not found.");
             }
             else
             {
@@ -278,10 +315,10 @@
             }
         }
 
-        // Display all students (example of ReadAll operation)
-        private static void DisplayAllStudents()
+        // Display all calls
+        private static void DisplayAllCalls()
         {
-            foreach (var student in s_dalStudent?.ReadAll() ?? Array.Empty<Student>())
+            foreach (var student in s_dalCall?.ReadAll() ?? Array.Empty<Student>())
             {
                 Console.WriteLine(student);
             }
@@ -290,11 +327,11 @@
         // Update a student's details (example of Update operation)
         private static void UpdateStudent()
         {
-            Console.Write("Enter student ID to update: ");
+            Console.Write("Enter call ID to update: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var student = s_dalStudent?.Read(id);
-                if (student == null)
+                var call = s_dalCall?.Read(id);
+                if (call == null)
                 {
                     Console.WriteLine("Student not found.");
                     return;
@@ -317,14 +354,116 @@
             }
         }
 
-        // Delete a student by ID (example of Delete operation)
-        private static void DeleteStudent()
+        // Delete a call by ID 
+        private static void DeleteCall()
         {
-            Console.Write("Enter student ID to delete: ");
+            Console.Write("Enter call ID to delete: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                s_dalStudent?.Delete(id);
-                Console.WriteLine("Student deleted.");
+                s_dalCall?.Delete(id);
+                Console.WriteLine("Call deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+            }
+        }
+
+        // Add a new assignment
+        private static void AddAssignment()
+        {
+            //id
+            Console.Write("Enter Id: ");
+            int id = int.Parse(Console.ReadLine());
+            //callId
+            Console.Write("Enter CallId: ");
+            int callid = int.Parse(Console.ReadLine());
+            //VolunteerId
+            Console.Write("Enter VolunteerId: ");
+            int volunteerid = int.Parse(Console.ReadLine());
+          
+            //opentime
+            Console.WriteLine("Enter the time you want to start :");
+            int hour = int.Parse(Console.ReadLine());
+            int minute = int.Parse(Console.ReadLine());
+            int seconde = int.Parse(Console.ReadLine());
+            DateTime specificDate = new DateTime(hour, minute, seconde);
+            //type of end
+            Console.WriteLine("Enter the type of end");
+            TypeOfEnd end = (TypeOfEnd)int.Parse(Console.ReadLine());
+            //maxtime
+            Console.WriteLine("Enter the latest time you want to start");
+            int hour2 = int.Parse(Console.ReadLine());
+            int minute2 = int.Parse(Console.ReadLine());
+            int seconde2 = int.Parse(Console.ReadLine());
+            DateTime specificDate2 = new DateTime(hour, minute, seconde);
+
+            Assignment a = new Assignment { Id = id, CallId = callid, VolunteerId = volunteerid!, StartTime = specificDate, TypeOfEnd = end, FinishTime = specificDate2 };
+            Console.WriteLine("Student added.");
+        }
+
+        // Display an assignment by ID 
+        private static void DisplayAssignment()
+        {
+            Console.Write("Enter assignment ID: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                var Assign = s_dalAssignment?.Read(id);
+                Console.WriteLine(Assign != null ? Assign.ToString() : "Assignment not found.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+            }
+        }
+
+        // Display all assignments
+        private static void DisplayAllAssignments()
+        {
+            foreach (var assign in s_dalAssignments?.ReadAll() ?? Array.Empty<Student>())
+            {
+                Console.WriteLine(student);
+            }
+        }
+
+        // Update a student's details 
+        private static void UpdateStudent()
+        {
+            Console.Write("Enter call ID to update: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                var call = s_dalCall?.Read(id);
+                if (call == null)
+                {
+                    Console.WriteLine("Student not found.");
+                    return;
+                }
+
+                Console.WriteLine("Current details: " + student);
+                Console.Write("Enter new name (leave blank to keep current): ");
+                string newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    student.Name = newName;
+                }
+
+                s_dalStudent?.Update(student);
+                Console.WriteLine("Student updated.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+            }
+        }
+
+        // Delete a call by ID 
+        private static void DeleteAssignment()
+        {
+            Console.Write("Enter assignment ID to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                s_dalAssignment?.Delete(id);
+                Console.WriteLine("Assignment deleted.");
             }
             else
             {
