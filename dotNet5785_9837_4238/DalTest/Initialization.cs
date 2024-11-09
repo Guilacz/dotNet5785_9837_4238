@@ -34,27 +34,20 @@ public static class Initialization
 
         Random random = new Random();
 
+        int id = 100000000;
+        string phone;
+        string prefix;
+        int middlePart;
+        double distance;
+        string password = "";
 
-        foreach (var name in volunteersNames)
+        for (int k = 0; k < 7; k++)
         {
-            int i = 0;
-            int id;
-            string phone;
-            string prefix;
-            int middlePart;
-            double distance;
-            string password = "";
-            do
-                id = s_rand.Next(000000001, 329999999);
-            while (s_dalVolunteer!.Read(id) != null);
-
-
             prefix = "05" + random.Next(2, 9);
             middlePart = random.Next(1000000, 10000000);
             phone = $"{prefix}-{middlePart}";
 
             distance = random.Next(0, 40000);
-            
 
             for (int j = 0; j < 7; j++)
             {
@@ -62,78 +55,82 @@ public static class Initialization
                 password += digit.ToString();
             }
 
-            Volunteer v = new Volunteer(id, volunteersNames[i], phone, volunteersMails[i], Role.Volunteer, 0, password, volunteersAdress[i]);
-            //DateTime start = new DateTime(1995, 1, 1);
-            //DateTime bdt = start.AddDays(s_rand.Next((s_dalConfig.Clock - start).Days));
+            Volunteer v = new Volunteer(id, volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k]);
 
-            s_dalVolunteer.Create(v);
-            i++;
+            s_dalVolunteer!.Create(v);
+            id++;
+
         }
+
     }
 
 
-    private static void createCall()
+    private static void createCalls()
     {
 
-        string[] CallsAdress =
+        string[] CallsAddress =
             {
-               "רחוב יפו 123, ירושלים",
-               "רחוב המלך דוד 45, ירושלים",
-               "רחוב הנביאים 67, ירושלים",
-               "שדרות הרצל 89, ירושלים",
-               "רחוב עזה 101, ירושלים",
-               "רחוב עמק רפאים 12, ירושלים",
-               "רחוב דרך חברון 34, ירושלים"
-            };
-        string[] CallsDetails =
-    {
-               "רחוב יפו 123, ירושלים",
-               "רחוב המלך דוד 45, ירושלים",
-               "רחוב הנביאים 67, ירושלים",
-               "שדרות הרצל 89, ירושלים",
-               "רחוב עזה 101, ירושלים",
-               "רחוב עמק רפאים 12, ירושלים",
-               "רחוב דרך חברון 34, ירושלים"
+                "רחוב הנביאים 43, ירושלים",
+                "רחוב שלומציון המלכה 18, ירושלים",
+                "רחוב קרן היסוד 34, ירושלים",
+                "רחוב דרך בית לחם 74, ירושלים",
+                "רחוב הנשיא 5, ירושלים",
+                "רחוב בצלאל 7, ירושלים",
+                "רחוב הלני המלכה 16, ירושלים"
             };
 
-        Random random = new Random();
 
-
-        foreach (var name in CallsAdress)
+        for (int j = 0; j < 7; j++)
         {
-            int i = 0;
-            int id;
-            string phone;
-            string prefix;
-            int middlePart;
-            double distance;
-            string password = "";
-            do
-                id = s_rand.Next(000000001, 329999999);
-            while (s_dalVolunteer!.Read(id) != null);
-
-
-            prefix = "05" + random.Next(2, 9);
-            middlePart = random.Next(1000000, 10000000);
-            phone = $"{prefix}-{middlePart}";
-
-            distance = random.Next(0, 40000);
-
-
-            for (int j = 0; j < 7; j++)
-            {
-                int digit = random.Next(0, 10);
-                password += digit.ToString();
-            }
-
-            Volunteer v = new Volunteer(id, volunteersNames[i], phone, volunteersMails[i], Role.Volunteer, 0, password, volunteersAdress[i]);
-            //DateTime start = new DateTime(1995, 1, 1);
-            //DateTime bdt = start.AddDays(s_rand.Next((s_dalConfig.Clock - start).Days));
-
-            s_dalVolunteer.Create(v);
-            i++;
+            Call c = new Call(j + 1, 0, CallsAddress[j], 0, 0, s_dalConfig!.Clock); // we didnt put the 2 last variables because they can be null
+            s_dalCall!.Create(c);
         }
     }
 
+
+    private static void createAssignments()
+    {
+        //we need to write only VolunteerId because the others, we create them with numbers 
+        int VolunteerId = 100000000;
+        
+        for (int i = 0; i < 7; i++)
+        {
+            Assignment a = new Assignment(i+1, i+1, VolunteerId +i , s_dalConfig!.Clock);
+            s_dalAssignment!.Create(a);
+        }
+       
+    }
+    
+
+    public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) //stage 1
+    {
+        //check if they are null
+        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalCall = dalCall ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+
+       
+        //reset everything
+        Console.WriteLine("Reset Configuration values and List values...");
+        s_dalConfig.Reset(); //stage 1
+        s_dalVolunteer.DeleteAll(); //stage 1
+        s_dalCall.DeleteAll();
+        s_dalAssignment.DeleteAll();
+
+
+        //create news
+        Console.WriteLine("Initializing Volunteers list ...");
+        createVolunteers();
+
+        Console.WriteLine("Initializing calls list ...");
+        createCalls();
+
+        Console.WriteLine("Initializing Assignments list ...");
+        createAssignments();
+
+    }
 
 }
+
+

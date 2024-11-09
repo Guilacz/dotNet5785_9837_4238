@@ -14,8 +14,8 @@ public record Assignment
     int Id,
     int CallId,
     int VolunteerId,
-    TypeOfEnd TypeOfEnd,
     DateTime StartTime,
+    TypeOfEnd? TypeOfEnd = null,
     DateTime? FinishTime = null
     
 )

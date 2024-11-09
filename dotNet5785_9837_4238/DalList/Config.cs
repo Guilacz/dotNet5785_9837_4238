@@ -2,12 +2,12 @@
 internal static class Config
 {
     internal const int StartCallId = 1;
-    private static int nextCallId = 2;
+    private static int nextCallId = StartCallId;
     internal static int NextCallId { get => nextCallId++; }
 
 
-    internal const int StartAssignmentId = 1;
-    private static int nextAssignmentId = 2;
+    internal const int StartAssignmentId = 0;
+    private static int nextAssignmentId = StartAssignmentId;
     internal static int NextAssignmentId { get => nextAssignmentId++; }
 
 
