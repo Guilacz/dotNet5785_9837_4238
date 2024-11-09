@@ -2,7 +2,8 @@
 {
     using Dal;
     using DalApi;
-    
+    using DO;
+    using System.Threading.Channels;
 
     public static class Program
     {
@@ -252,25 +253,41 @@
         }
 
 
-        // Add a new student (example of Create operation)
-        private static void AddStudent()
+        // Add a new volunteer
+        private static void AddVolunteer()
         {
-            Console.Write("Enter student name: ");
+            Console.Write("Enter volunteer id: ");
+            int id = int.Parse(Console.ReadLine());
+            Console.Write("Enter volunteer name: ");
             string name = Console.ReadLine();
+            Console.Write("Enter volunteer phone: ");
+            string phone = Console.ReadLine();
+            Console.Write("Enter volunteer email: ");
+            string email = Console.ReadLine();
+            Console.Write("Enter 1 for manager and 2 for volunteer: ");
+            Role role = (Role)int.Parse(Console.ReadLine());
+            Console.Write("Enter 1 forAirDistance, 2 for WalkDistance,and 3 for CarDistance: ");
+            Distance distance = (Distance)int.Parse(Console.ReadLine());
+            Console.Write("Enter volunteer password: ");
+            string password = Console.ReadLine();
+            Console.Write("Enter volunteer address: ");
+            string address = Console.ReadLine();
 
-            Student student = new Student { Name = name };
-            s_dalStudent?.Create(student);
-            Console.WriteLine("Student added.");
+            Volunteer v = new Volunteer { Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, };
+            s_dalVolunteer?.Create(v);
+            Console.WriteLine("Volunteer added.");
+
+
         }
 
-        // Display a student by ID (example of Read operation)
-        private static void DisplayStudent()
+        // Display a volunteer by ID
+        private static void DisplayVolunteer()
         {
-            Console.Write("Enter student ID: ");
+            Console.Write("Enter volunteer ID: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var student = s_dalStudent?.Read(id);
-                Console.WriteLine(student != null ? student.ToString() : "Student not found.");
+                var volunteer = s_dalVolunteer?.Read(id);
+                Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
             }
             else
             {
@@ -278,38 +295,93 @@
             }
         }
 
-        // Display all students (example of ReadAll operation)
-        private static void DisplayAllStudents()
+        // Display all volunteer
+        private static void DisplayAllVolunteer()
         {
-            foreach (var student in s_dalStudent?.ReadAll() ?? Array.Empty<Student>())
+            foreach (var volunteer in s_dalVolunteer?.ReadAll() ?? Array.Empty<Volunteer>())
             {
-                Console.WriteLine(student);
+                Console.WriteLine(volunteer);
             }
         }
 
-        // Update a student's details (example of Update operation)
-        private static void UpdateStudent()
+        // Update a volunteer's details
+        private static void UpdateVolunteer()
         {
-            Console.Write("Enter student ID to update: ");
+            Console.Write("Enter volunteer ID to update: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var student = s_dalStudent?.Read(id);
-                if (student == null)
+                var volunteer = s_dalVolunteer?.Read(id);
+                //s_dalVolunteer?.Delete(id);
+                if (volunteer == null)
                 {
-                    Console.WriteLine("Student not found.");
+                    Console.WriteLine("Volunteer not found.");
                     return;
                 }
 
-                Console.WriteLine("Current details: " + student);
+                Console.WriteLine("Current details: " + volunteer);
+
                 Console.Write("Enter new name (leave blank to keep current): ");
                 string newName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newName))
                 {
-                    student.Name = newName;
+                    volunteer.Name = newName;
                 }
 
-                s_dalStudent?.Update(student);
-                Console.WriteLine("Student updated.");
+                Console.Write("Enter new phone (leave blank to keep current): ");
+                string newPhone = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newPhone))
+                {
+                    volunteer.Phone = newPhone;
+                }
+
+                Console.Write("Enter new email (leave blank to keep current): ");
+                string newEmail = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newEmail))
+                {
+                    volunteer.Email = newEmail;
+                }
+
+                Console.Write("Enter new role (1 for Manager, 2 for Volunteer, leave blank to keep current): ");
+                if (int.TryParse(Console.ReadLine(), out int roleInput) && Enum.IsDefined(typeof(Role), roleInput))
+                {
+                    volunteer.RoleType = (Role)roleInput;
+                }
+
+                Console.Write("Enter new distance type (1 for AirDistance, 2 for WalkDistance, 3 for CarDistance, leave blank to keep current): ");
+                if (int.TryParse(Console.ReadLine(), out int distanceInput) && Enum.IsDefined(typeof(Distance), distanceInput))
+                {
+                    volunteer.DistanceType = (Distance)distanceInput;
+                }
+
+                Console.Write("Enter new password (leave blank to keep current): ");
+                string newPassword = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    volunteer.Password = newPassword;
+                }
+
+                Console.Write("Enter new address (leave blank to keep current): ");
+                string newAddress = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newAddress))
+                {
+                    volunteer.Address = newAddress;
+                }
+
+                Console.Write("Enter new distance (leave blank to keep current): ");
+                if (double.TryParse(Console.ReadLine(), out double newDistance))
+                {
+                    volunteer.Distance = newDistance;
+                }
+
+                try
+                {
+                    s_dalVolunteer?.Update(volunteer);
+                    Console.WriteLine("Volunteer updated.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error updating volunteer: " + ex.Message);
+                }
             }
             else
             {
@@ -317,22 +389,22 @@
             }
         }
 
-        // Delete a student by ID (example of Delete operation)
-        private static void DeleteStudent()
+
+
+        // Delete a volunteer by ID (example of Delete operation)
+        private static void DeleteVolunteer()
         {
-            Console.Write("Enter student ID to delete: ");
+            Console.Write("Enter volunteer ID to delete: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                s_dalStudent?.Delete(id);
-                Console.WriteLine("Student deleted.");
+                s_dalVolunteer?.Delete(id);
+                Console.WriteLine("Volunteer deleted.");
             }
             else
             {
                 Console.WriteLine("Invalid ID format.");
             }
         }
-
-
     }
 }
 
