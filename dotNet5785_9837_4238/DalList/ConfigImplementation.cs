@@ -17,6 +17,11 @@ public class ConfigImplementation : IConfig
         set => Config.RiskRange = value;
     }
 
+    public int nextCallId
+    { get => Config.NextCallId; }
+
+    public int nextAsignmentId => throw new NotImplementedException();
+
     public void Reset()
     {
         Config.Reset();

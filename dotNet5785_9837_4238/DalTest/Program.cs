@@ -296,30 +296,35 @@
         }
 
         // Display all volunteer
-        private static void DisplayAllVolunteer()
+        private static void DisplayAllVolunteers()
         {
-            foreach (var volunteer in s_dalVolunteer?.ReadAll() ?? Array.Empty<Volunteer>())
+            if (s_dalVolunteer != null)
             {
-                Console.WriteLine(volunteer);
+                foreach (var vol in s_dalVolunteer.ReadAll())
+                {
+                    Console.WriteLine(vol);
+                }
             }
         }
-
-        // Update a volunteer's details
         private static void UpdateVolunteer()
         {
             Console.Write("Enter volunteer ID to update: ");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
+                // קריאה ל-Read כדי לקבל את האובייקט
                 var volunteer = s_dalVolunteer?.Read(id);
-                //s_dalVolunteer?.Delete(id);
+
+                // בדיקה אם האובייקט שהוחזר הוא null
                 if (volunteer == null)
                 {
-                    Console.WriteLine("Volunteer not found.");
+                    Console.WriteLine("Volunteer not found. Please check the ID and try again.");
                     return;
                 }
 
+                // אם הגעת לפה, זה אומר שהאובייקט תקין ואינו null
                 Console.WriteLine("Current details: " + volunteer);
 
+                // המשך עם עדכון הפרטים
                 Console.Write("Enter new name (leave blank to keep current): ");
                 string newName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newName))
@@ -388,6 +393,94 @@
                 Console.WriteLine("Invalid ID format.");
             }
         }
+
+
+        // Update a volunteer's details
+        /*private static void UpdateVolunteer()
+        {
+            Volunteer vol;
+            Console.Write("Enter volunteer ID to update: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                //var volunteer = s_dalVolunteer?.Read(id);
+                //s_dalVolunteer?.Delete(id);
+                if (volunteer == null)
+                {
+                    Console.WriteLine("Volunteer not found.");
+                    return;
+                }
+
+                Console.WriteLine("Current details: " + volunteer);
+
+                Console.Write("Enter new name (leave blank to keep current): ");
+                string newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    volunteer.Name = newName;
+                }
+
+                Console.Write("Enter new phone (leave blank to keep current): ");
+                string newPhone = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newPhone))
+                {
+
+                    volunteer.Phone = newPhone;
+                }
+
+                Console.Write("Enter new email (leave blank to keep current): ");
+                string newEmail = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newEmail))
+                {
+                    volunteer.Email = newEmail;
+                }
+
+                Console.Write("Enter new role (1 for Manager, 2 for Volunteer, leave blank to keep current): ");
+                if (int.TryParse(Console.ReadLine(), out int roleInput) && Enum.IsDefined(typeof(Role), roleInput))
+                {
+                    volunteer.RoleType = (Role)roleInput;
+                }
+
+                Console.Write("Enter new distance type (1 for AirDistance, 2 for WalkDistance, 3 for CarDistance, leave blank to keep current): ");
+                if (int.TryParse(Console.ReadLine(), out int distanceInput) && Enum.IsDefined(typeof(Distance), distanceInput))
+                {
+                    volunteer.DistanceType = (Distance)distanceInput;
+                }
+
+                Console.Write("Enter new password (leave blank to keep current): ");
+                string newPassword = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    volunteer.Password = newPassword;
+                }
+
+                Console.Write("Enter new address (leave blank to keep current): ");
+                string newAddress = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newAddress))
+                {
+                    volunteer.Address = newAddress;
+                }
+
+                Console.Write("Enter new distance (leave blank to keep current): ");
+                if (double.TryParse(Console.ReadLine(), out double newDistance))
+                {
+                    volunteer.Distance = newDistance;
+                }
+
+                try
+                {
+                    s_dalVolunteer?.Update(volunteer);
+                    Console.WriteLine("Volunteer updated.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error updating volunteer: " + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+            }
+        }*/
 
 
 
@@ -468,12 +561,14 @@
             }
         }
 
-        // Display all calls
         private static void DisplayAllCalls()
         {
-            foreach (var student in s_dalCall?.ReadAll() ?? Array.Empty<Student>())
+            if (s_dalCall != null)
             {
-                Console.WriteLine(student);
+                foreach (var call in s_dalCall.ReadAll())
+                {
+                    Console.WriteLine(call);
+                }
             }
         }
 
@@ -571,11 +666,14 @@
         }
 
         // Display all assignments
-        private static void DisplayAllAssignments()
+        private static void DisplayAllAssignments() 
         {
-            foreach (var assign in s_dalAssignments?.ReadAll() ?? Array.Empty<Student>())
+            if (s_dalAssignment != null)
             {
-                Console.WriteLine(student);
+                foreach (var asi in s_dalAssignment.ReadAll())
+                {
+                    Console.WriteLine(asi);
+                }
             }
         }
 

@@ -19,8 +19,9 @@ public record Call
     double Latitude,
     double Longitude,
     DateTime OpenTime,
-    string? Details = null,
-    DateTime? MaxTime = null
+    DateTime? MaxTime = null,
+
+    string? Details = null
 )
 
 {
