@@ -4,6 +4,9 @@ using DalApi;
 using DO;
 using System;
 
+/// <summary>
+/// Initialization of the elements
+/// </summary>
 public static class Initialization
 {
     private static IVolunteer? s_dalVolunteer; //stage 1
@@ -13,8 +16,13 @@ public static class Initialization
 
     private static readonly Random s_rand = new();
 
+
+    /// <summary>
+    /// createVolunteers function : 14 volunteers and 1 manager
+    /// </summary>
     private static void createVolunteers()
     {
+        // arrays with  names , mails,  adresses of the volunteers
         string[] volunteersNames = {
     "Efrati Amar",
     "Chani Nadler",
@@ -89,7 +97,8 @@ public static class Initialization
     789012345,
     234098765,
     650123478,
-    345678123
+    345678123,
+    878787878
 };
 
         string phone;
@@ -98,7 +107,8 @@ public static class Initialization
         double distance;
         string password = "";
         
-
+        
+        //creation of a random phone number, password... for a volunteer
         for (int k = 0; k < 15; k++)
         {
             prefix = "05" + random.Next(2, 9);
@@ -117,12 +127,15 @@ public static class Initialization
 
             s_dalVolunteer!.Create(vol);
         }
+
+
         prefix = "05" + random.Next(2, 9);
         middlePart = random.Next(1000000, 10000000);
         phone = $"{prefix}-{middlePart}";
 
         distance = random.Next(0, 40000);
 
+        // creation of a random phone number, password... for the manager
         for (int j = 0; j < 7; j++)
         {
             int digit = random.Next(0, 10);
@@ -133,13 +146,16 @@ public static class Initialization
 
     }
 
-
+    /// <summary>
+    /// createCalls function : create a call with all his elements
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     private static void createCalls()
     {
         Random random = new Random();
 
         int j;
-        int id = s_dalConfig.nextCallId;
+        int id = s_dalConfig!.nextCallId;
 
         string[] CallAddress =
         {
@@ -207,6 +223,8 @@ public static class Initialization
 
         };
 
+
+        //creation of 45 calls
         for (j = 0; j < 45; j++)
         {
             CallType callType = s_rand.Next(1, 9) switch
@@ -223,17 +241,14 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            int minus = s_rand.Next(0, 9);
-
-            DateTime start = new DateTime(s_dalConfig.Clock.Year - minus, minus, minus); //stage 1
-            int range = (s_dalConfig.Clock - start).Days; //stage 1
-            start.AddDays(s_rand.Next(range));
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], start); // we didnt put the 2 last variables because they can be null
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig.Clock);
             s_dalCall!.Create(c);
         }
+
+        //creation of 5 calls already expired
         for (j = 45; j < 50; j++)
         {
-            CallType callType = s_rand.Next(1, 11) switch
+            CallType callType = s_rand.Next(1, 9) switch
             {
                 1 => CallType.Math_Primary,
                 2 => CallType.Math_Middle,
@@ -247,15 +262,18 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); // we didnt put the 2 last variables because they can be null
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); 
             s_dalCall!.Create(c);
         }
     }
 
+    /// <summary>
+    /// create assignment : we had 50 calls , for each type of end, so we create 200 assignments
+    /// </summary>
 
     private static void createAssignments()
     {
-        //we need to write only VolunteerId because the others, we create them with numbers 
+        
         int[] volunteerId = new int[]
 {
     234567890,
@@ -272,12 +290,14 @@ public static class Initialization
     789012345,
     234098765,
     650123478,
-    345678123
+    345678123,
+    878787878
 };
         int i;
-        int callId = s_dalConfig.nextCallId;
+        int callId = s_dalConfig!.nextCallId;
         int assignmentId = s_dalConfig.nextAsignmentId;
-
+        //short explanation : for each type of end we separated in several for , like that each volunteer receives a different num of calls
+        //creation of 50 assignments who are fulfilled
         for (i = 0; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
@@ -299,6 +319,8 @@ public static class Initialization
             s_dalAssignment!.Create(a);
         }
 
+        //creation of 50 assignments who are CancelledAfterTime
+
         for (i = 0; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
@@ -319,6 +341,9 @@ public static class Initialization
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
             s_dalAssignment!.Create(a);
         }
+
+        //creation of 50 assignments who are CancelledByManager
+
         for (i = 0; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
@@ -339,6 +364,10 @@ public static class Initialization
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
             s_dalAssignment!.Create(a);
         }
+
+
+        //creation of 50 assignments who are CancelledByVolunteer
+        
         for (i = 0; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
@@ -362,19 +391,19 @@ public static class Initialization
     }
 
 
-    public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) //stage 1
+    public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) 
     {
         //check if they are null
-        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
-        s_dalCall = dalCall ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
-        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
-        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!"); //stage 1
+        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!");
+        s_dalCall = dalCall ?? throw new NullReferenceException("DAL object can not be null!"); 
+        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DAL object can not be null!"); 
+        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!");
 
 
         //reset everything
         Console.WriteLine("Reset Configuration values and List values...");
-        s_dalConfig.Reset(); //stage 1
-        s_dalVolunteer.DeleteAll(); //stage 1
+        s_dalConfig.Reset(); 
+        s_dalVolunteer.DeleteAll(); 
         s_dalCall.DeleteAll();
         s_dalAssignment.DeleteAll();
 

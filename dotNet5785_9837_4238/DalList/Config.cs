@@ -1,4 +1,7 @@
 ﻿namespace Dal;
+/// <summary>
+/// configuration of the Running identifier (for call and assignment) , clok, riskrange and reset function
+/// </summary>
 internal static class Config
 {
     internal const int StartCallId = 1;
@@ -14,6 +17,10 @@ internal static class Config
     internal static DateTime Clock { get; set; } = DateTime.Now ;
     internal static TimeSpan RiskRange { get; set; } = TimeSpan.Zero;
 
+
+    /// <summary>
+    /// reset puts all the values of the config to "0"
+    /// </summary>
     internal static void Reset()
     {
         nextCallId = StartCallId; 

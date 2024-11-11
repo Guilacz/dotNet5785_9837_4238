@@ -3,6 +3,9 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
+/// <summary>
+///Implement the properties and methods defined in the `ICall` interface to manage configurations related to the "call" entity.
+/// </summary>
 public class CallImplementation : ICall
 {
     /// <summary>
@@ -80,6 +83,12 @@ public class CallImplementation : ICall
         }
 
     }
+
+    /// <summary>
+    /// toString : takes call object as input and creates a textual representation of this object
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     string ICall.ToString(Call item)
     {
         var details = new System.Text.StringBuilder();

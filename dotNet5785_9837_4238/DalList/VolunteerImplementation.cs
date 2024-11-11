@@ -3,6 +3,9 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
+/// <summary>
+///Implement the properties and methods defined in the `IVolunteer` interface to manage configurations related to the "Volunteer" entity.
+/// </summary>
 public class VolunteerImplementation : IVolunteer
 {
     /// <summary>
@@ -81,6 +84,11 @@ public class VolunteerImplementation : IVolunteer
                 
     }
 
+    /// <summary>
+    /// toString : takes volunteer object as input and creates a textual representation of this object
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     string IVolunteer.ToString(Volunteer item)
     {
         var details = new System.Text.StringBuilder();

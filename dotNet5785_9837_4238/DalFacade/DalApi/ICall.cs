@@ -1,5 +1,9 @@
 ﻿namespace DalApi;
 using DO;
+
+/// <summary>
+/// Interface: sort of "contract " that an call entity has to respect
+/// </summary>
 public interface ICall
 {
     void Create(Call item); //Creates new entity object in DAL

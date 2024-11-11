@@ -3,6 +3,10 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
+
+/// <summary>
+///Implement the properties and methods defined in the `IAssignment` interface to manage configurations related to the "Assignment" entity.
+/// </summary>
 public class AssignmentImplementation : IAssignment
 {
     /// <summary>
@@ -82,6 +86,12 @@ public class AssignmentImplementation : IAssignment
 
     }
 
+
+    /// <summary>
+    /// toString : takes Assignment object as input and creates a textual representation of this object
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public string ToString(Assignment item)
     {
 

@@ -1,6 +1,10 @@
 ﻿namespace DalApi;
 
 using DO;
+
+/// <summary>
+/// Interface: sort of "contract " that an volunteer entity has to respect
+/// </summary>
 public interface IVolunteer
 {
     void Create(Volunteer item); //Creates new entity object in DAL

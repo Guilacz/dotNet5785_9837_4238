@@ -5,8 +5,6 @@ using System.Threading.Channels;
 
 namespace DalTest
 {
-
-
     public static class Program
     {
         private static IVolunteer s_dalVolunteer = new VolunteerImplementation(); // stage 1
@@ -14,12 +12,21 @@ namespace DalTest
         private static IAssignment s_dalAssignment = new AssignmentImplementation(); // stage 1
         private static IConfig s_dalConfig = new ConfigImplementation(); // stage 1
 
+        /// <summary>
+        /// Main entry point of the application. Displays the main menu and handles user input.
+        /// </summary>
         public static void Main(string[] args)
         {
             try
             {
                 while (true)
+                {
+                    Console.WriteLine("enter a number");
+                    int num = int.Parse(Console.ReadLine()!);
+                    if (num == 0)
+                        return;
                     ShowMainMenu();
+                }
             }
             catch (Exception)
             {
@@ -27,7 +34,9 @@ namespace DalTest
             }
         }
 
-        // Method to display the main menu options
+        /// <summary>
+        /// Displays the main menu options for navigating to different sub-menus or exiting.
+        /// </summary>
         private static void ShowMainMenu()
         {
             Console.WriteLine("Main Menu:");
@@ -42,10 +51,13 @@ namespace DalTest
             Console.Write("Enter your choice: ");
         }
 
-        // Method to process the user's choice from the main menu
+        /// <summary>
+        /// Method to process the user's choice from the main menu
+        /// </summary>
+        /// <returns></returns>
         private static bool MainMenuChoice()
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine()!;
             switch (input)
             {
                 case "1":
@@ -79,10 +91,13 @@ namespace DalTest
         }
 
 
-        // Helper method to display a CRUD menu for any entity
-        /* the function "ShowInterMenu" receives a name and a process fonction to accomplish.
-        * according to what "ShowInterMenu" receives, it will lead to ProcessVolunteerMenu, ProcessAssignmentMenu or ProcesscallMenu
-        */
+        /// <summary>
+        ///  Helper method to display a CRUD menu for any entity
+        ///the function "ShowInterMenu" receives a name and a process fonction to accomplish.
+        ///according to what "ShowInterMenu" receives, it will lead to ProcessVolunteerMenu, ProcessAssignmentMenu or ProcesscallMenu
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <param name="processEntityMenu"></param>
         private static void ShowInterMenu(string entityName, Action processEntityMenu)
         {
             Console.WriteLine($"{entityName} Menu:");
@@ -97,12 +112,14 @@ namespace DalTest
         }
 
 
-        // Process menu options for Volunteer entity
+        /// <summary>
+        /// // choice 1 :Process menu options for Volunteer entity
+        /// </summary>
         private static void ProcessVolunteerMenu()
         {
             try
             {
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()!;
                 switch (choice)
                 {
                     case "1":
@@ -137,13 +154,14 @@ namespace DalTest
             }
         }
 
-
-        // Process menu options for Call entity
+        /// <summary>
+        /// choice 2 : Process menu options for Call entity
+        /// </summary>
         private static void ProcessCallMenu()
         {
             try
             {
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()!;
                 switch (choice)
                 {
                     case "1":
@@ -178,12 +196,14 @@ namespace DalTest
             }
         }
 
-        // Process menu options for assignment entity
+        /// <summary>
+        /// choice 3 : Process menu options for assignment entity
+        /// </summary>
         private static void ProcessAssignmentMenu()
         {
             try
             {
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()!;
                 switch (choice)
                 {
                     case "1":
@@ -220,7 +240,9 @@ namespace DalTest
         }
 
 
-        //choice 4 : initialization
+        /// <summary>
+        /// choice 3 : Process menu options for assignment entity
+        /// </summary>
         private static void InitializeDatabase()
         {
             Initialization.Do(s_dalVolunteer, s_dalCall, s_dalAssignment, s_dalConfig);
@@ -228,17 +250,23 @@ namespace DalTest
         }
 
 
-        //choice 5 :Method to display all data from the database
+        /// <summary>
+        /// choice 5 :Method to display all data from the database
+        /// </summary>
         private static void DisplayAllData()
         {
             DisplayAllVolunteers();
             DisplayAllCalls();
             DisplayAllAssignments();
         }
-        //choice 6 : Configuration Menu
-        /*
-         * we decided to give the possibility to add to the clock 1 minute 1 hour 1 day 1 week 1 month
-         */
+
+
+
+        /// <summary>
+        ///  //choice 6 : Configuration Menu
+        ///we decided to give the possibility to add to the clock 1 minute 1 hour 1 day 1 week 1 month
+        /// </summary>
+
         private static void ProcessConfigMenu()
         {
             bool exitConfigMenu = false;
@@ -255,10 +283,10 @@ namespace DalTest
                 Console.WriteLine("6. Show current system clock");
                 Console.WriteLine("7. Set a new value for the clock");
                 Console.WriteLine("8. Reset all config values");
-                Console.WriteLine("9. Show all config data");
+                Console.WriteLine("9. exit");
                 Console.Write("Please select an option: ");
 
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()!;
                 switch (choice)
                 {
                     case "1":
@@ -286,7 +314,7 @@ namespace DalTest
                         break;
                     case "7":
                         // Allow user to set a specific new value for the clock
-                        Console.Write("Enter the new value for the clock (YYYY-MM-DD HH:mm:ss): ");
+                        Console.Write("Enter the new value for the date): ");
                         DateTime newTime;
                         while (!DateTime.TryParse(Console.ReadLine(), out newTime))
                         {
@@ -315,7 +343,9 @@ namespace DalTest
             }
         }
 
-        //choice 7 : Method to reset the database and configuration to initial state
+        /// <summary>
+        /// choice 7 : Method to reset the database and configuration to initial state
+        /// </summary>
         private static void ResetDatabaseAndConfig()
         {
             s_dalVolunteer.DeleteAll();
@@ -326,36 +356,49 @@ namespace DalTest
         }
 
 
-        // Add a new volunteer
+
+
+
+        /// NOW ARE GOING TO BE ALL THE FUNCTIONS OF THE CRUD OF VOLUNTEERS, CALL AND ASSIGNMENT
+        /// each time we used TryParse, we did the fullchecking, to ask until we get a correct answer
+
+
+        /// <summary>
+        /// Add a new volunteer
+        /// </summary>
+
         private static void AddVolunteer()
         {
             Console.Write("Enter volunteer id: ");
-            int id = int.Parse(Console.ReadLine());
+            int id = int.Parse(Console.ReadLine()!);
             Console.Write("Enter volunteer name: ");
-            string name = Console.ReadLine();
+            string name = Console.ReadLine()!;
             Console.Write("Enter volunteer phone: ");
-            string phone = Console.ReadLine();
+            string phone = Console.ReadLine()!;
             Console.Write("Enter volunteer email: ");
-            string email = Console.ReadLine();
+            string email = Console.ReadLine()!;
             Console.Write("Enter 1 for manager and 2 for volunteer: ");
-            Role role = (Role)int.Parse(Console.ReadLine());
+            Role role = (Role)int.Parse(Console.ReadLine()!);
             Console.Write("Enter 1 forAirDistance, 2 for WalkDistance,and 3 for CarDistance: ");
-            Distance distance = (Distance)int.Parse(Console.ReadLine());
+            Distance distance = (Distance)int.Parse(Console.ReadLine()!);
             Console.Write("Enter volunteer password: ");
-            string password = Console.ReadLine();
+            string password = Console.ReadLine()!;
             Console.Write("Enter volunteer address: ");
-            string address = Console.ReadLine();
+            string address = Console.ReadLine()!;
             Console.Write("Enter maximum distance: ");
-            double dis = int.Parse(Console.ReadLine());
+            double dis = int.Parse(Console.ReadLine()!);
 
             Volunteer v = new Volunteer { Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
             s_dalVolunteer?.Create(v);
             Console.WriteLine("Volunteer added.");
 
-
         }
 
-        // Display a volunteer by ID
+        /// <summary>
+        ///  Display a volunteer by ID
+        ///  Prompts the user to enter a volunteer ID, validates the input, 
+        /// and displays the corresponding volunteer details if found.
+        /// </summary>
         private static void DisplayVolunteer()
         {
             Console.Write("Enter volunteer ID: ");
@@ -368,7 +411,10 @@ namespace DalTest
             Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
         }
 
-        // Display all volunteer
+
+        /// <summary>
+        ///  Display all volunteer
+        /// </summary>
         private static void DisplayAllVolunteers()
         {
             if (s_dalVolunteer != null)
@@ -379,6 +425,13 @@ namespace DalTest
                 }
             }
         }
+
+
+        /// <summary>
+        ///  update volunteer
+        ///  Prompts the user for an ID, verifies it, and updates the volunteer if found. 
+        /// Displays a message indicating whether the update was successful or if the volunteer was not found.
+        /// </summary>
         private static void UpdateVolunteer()
         {
             int id;
@@ -408,23 +461,27 @@ namespace DalTest
         }
 
 
-        // Delete a volunteer by ID (example of Delete operation)
+        /// <summary>
+        ///  Delete a volunteer by ID
+        ///   Prompts the user for an ID, validates it, and deletes the volunteer if the ID is valid. 
+        /// Displays a confirmation message upon deletion.
+        /// </summary>
         private static void DeleteVolunteer()
         {
             int id;
             Console.Write("Enter volunteer ID to delete: ");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
-            // Suppression du volontaire avec l'ID valide
             s_dalVolunteer?.Delete(id);
             Console.WriteLine("Volunteer deleted.");
         }
-        // Add a new call 
+
+
+        /// <summary>
+        ///  Add a new call 
+        /// </summary>
         private static void AddCall()
         {
             //id
@@ -440,26 +497,26 @@ namespace DalTest
             Console.WriteLine("3.Grammary_Primary");
             Console.WriteLine("3.Grammary_Middle");
             Console.WriteLine("3.Grammary_High");
-            CallType lesson = (CallType)int.Parse(Console.ReadLine());
+            CallType lesson = (CallType)int.Parse(Console.ReadLine()!);
             //adress
             Console.WriteLine("Enter an address");
-            string address = Console.ReadLine();
+            string address = Console.ReadLine()!;
             //latitude
             Console.WriteLine("Enter the latitude");
-            double l1 = int.Parse(Console.ReadLine());
+            double l1 = int.Parse(Console.ReadLine()!);
             //longitude
             Console.WriteLine("Enter the longitude");
-            double l2 = int.Parse(Console.ReadLine());
+            double l2 = int.Parse(Console.ReadLine()!);
             //opentime
             Console.WriteLine("Enter the time you want to start :");
             //details
             Console.WriteLine("Enter details if needed");
-            string details = (Console.ReadLine());
+            string details = (Console.ReadLine()!);
             //maxtime
             Console.WriteLine("Enter the latest time you want to start");
-            int year = int.Parse(Console.ReadLine());
-            int month = int.Parse(Console.ReadLine());
-            int day = int.Parse(Console.ReadLine());
+            int year = int.Parse(Console.ReadLine()!);
+            int month = int.Parse(Console.ReadLine()!);
+            int day = int.Parse(Console.ReadLine()!);
             DateTime specificDate2 = new DateTime(year, month, day);
 
             Call c = new Call { CallId = callId, CallType = lesson, Adress = address!, Latitude = l1, Longitude = l2, OpenTime = s_dalConfig.Clock, Details = details, MaxTime = specificDate2 };
@@ -467,23 +524,26 @@ namespace DalTest
             Console.WriteLine("Call added.");
         }
 
-        // Display a call by ID 
+        /// <summary>
+        ///  Display a call by ID 
+        /// Displays the details of a call by its ID. Prompts the user to enter a valid call ID, then retrieves and displays the call if found, or shows a "Call not found" message.
+        /// </summary>
         private static void DisplayCall()
         {
             int id;
             Console.Write("Enter call ID: ");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
-            // Recherche du call avec l'ID valide
             var call = s_dalCall?.Read(id);
             Console.WriteLine(call != null ? call.ToString() : "Call not found.");
         }
 
+
+        /// <summary>
+        ///  Display all calls
+        /// </summary>
         private static void DisplayAllCalls()
         {
             if (s_dalCall != null)
@@ -495,21 +555,21 @@ namespace DalTest
             }
         }
 
-        // Update a student's details (example of Update operation)
+        /// <summary>
+        /// Update a student's details 
+        /// Updates the details of a call by its ID. Prompts the user for an ID, validates it, and updates the call if found. 
+        /// Displays a message indicating whether the update was successful or if the call was not found.
+        /// </summary>
         private static void UpdateCall()
         {
             int id;
             Console.WriteLine("Enter ID:");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
 
             bool callFound = false;
-
-            // Recherche et mise à jour de l'appel correspondant
             foreach (var item in s_dalCall.ReadAll())
             {
                 if (item.CallId == id)
@@ -520,8 +580,6 @@ namespace DalTest
                     break;
                 }
             }
-
-            // Si aucun appel n'a été trouvé avec l'ID
             if (!callFound)
             {
                 Console.WriteLine("Call not found.");
@@ -529,74 +587,77 @@ namespace DalTest
         }
 
 
-        // Delete a call by ID 
+        /// <summary>
+        /// Delete a call by ID 
+        /// </summary>
         private static void DeleteCall()
         {
             int id;
             Console.Write("Enter call ID to delete: ");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
-            // Suppression du call avec l'ID valide
             s_dalCall?.Delete(id);
             Console.WriteLine("Call deleted.");
         }
 
-        // Add a new assignment
+        
+
+        /// <summary>
+        /// Add a new assignment
+        /// </summary>
         private static void AddAssignment()
         {
             //id
             Console.Write("Enter Id: ");
-            int id = int.Parse(Console.ReadLine());
+            int id = int.Parse(Console.ReadLine()!);
             //callId
             Console.Write("Enter CallId: ");
-            int callid = int.Parse(Console.ReadLine());
+            int callid = int.Parse(Console.ReadLine()!);
             //VolunteerId
             Console.Write("Enter VolunteerId: ");
-            int volunteerid = int.Parse(Console.ReadLine());
+            int volunteerid = int.Parse(Console.ReadLine()!);
 
             //opentime
             Console.WriteLine("Enter the time you want to start :");
-            int year = int.Parse(Console.ReadLine());
-            int month = int.Parse(Console.ReadLine());
-            int day = int.Parse(Console.ReadLine());
+            int year = int.Parse(Console.ReadLine()!);
+            int month = int.Parse(Console.ReadLine()!);
+            int day = int.Parse(Console.ReadLine()!);
             DateTime specificDate = new DateTime(year, month, day);
             //type of end
             Console.WriteLine("Enter the type of end");
-            TypeOfEnd end = (TypeOfEnd)int.Parse(Console.ReadLine());
+            TypeOfEnd end = (TypeOfEnd)int.Parse(Console.ReadLine()!);
             //maxtime
             Console.WriteLine("Enter the latest time you want to start");
-            int year2 = int.Parse(Console.ReadLine());
-            int month2 = int.Parse(Console.ReadLine());
-            int day2 = int.Parse(Console.ReadLine());
+            int year2 = int.Parse(Console.ReadLine()!);
+            int month2 = int.Parse(Console.ReadLine()!);
+            int day2 = int.Parse(Console.ReadLine()!);
             DateTime specificDate2 = new DateTime(year2, month2, day2);
 
             Assignment a = new Assignment { Id = id, CallId = callid, VolunteerId = volunteerid!, StartTime = specificDate, TypeOfEnd = end, FinishTime = specificDate2 };
             Console.WriteLine("Student added.");
         }
 
-        // Display an assignment by ID 
+        /// <summary>
+        /// Display an assignment by ID 
+        /// Prompts the user to enter a valid assignment ID, then retrieves and displays the assignment if found, or shows an "Assignment not found" message.
+        /// </summary>
         private static void DisplayAssignment()
         {
             int id;
             Console.Write("Enter assignment ID: ");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
-            // Recherche et affichage de l'Assignment correspondant
             var assignment = s_dalAssignment?.Read(id);
             Console.WriteLine(assignment != null ? assignment.ToString() : "Assignment not found.");
         }
 
-        // Display all assignments
+        /// <summary>
+        /// Display all assignments
+        /// </summary>
         private static void DisplayAllAssignments()
         {
             if (s_dalAssignment != null)
@@ -608,21 +669,21 @@ namespace DalTest
             }
         }
 
-        // Update a assignment's details 
+        /// <summary>
+        /// Update a assignment's details 
+        /// Prompts the user for an ID, validates it, and updates the assignment if found.
+        /// Displays a message indicating whether the update was successful or if the assignment was not found.
+        /// </summary>
         private static void UpdateAssignment()
         {
             int id;
             Console.WriteLine("Enter ID:");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
 
             bool assignmentFound = false;
-
-            // Recherche et mise à jour de l'Assignment correspondant
             foreach (var item in s_dalAssignment.ReadAll())
             {
                 if (item.Id == id)
@@ -633,8 +694,6 @@ namespace DalTest
                     break;
                 }
             }
-
-            // Si aucune assignation n'a été trouvée avec l'ID
             if (!assignmentFound)
             {
                 Console.WriteLine("Assignment not found.");
@@ -642,19 +701,19 @@ namespace DalTest
         }
 
 
-        // Delete a call by ID 
+        /// <summary>
+        /// Delete a call by ID 
+        /// Prompts the user to enter a valid assignment ID, validates it, and deletes the assignment if the ID is valid. 
+        /// Displays a confirmation message upon deletion.
+        /// </summary>
         private static void DeleteAssignment()
         {
             int id;
             Console.Write("Enter assignment ID to delete: ");
-
-            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
             while (!int.TryParse(Console.ReadLine(), out id))
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
-            // Suppression de l'assignation avec l'ID valide
             s_dalAssignment?.Delete(id);
             Console.WriteLine("Assignment deleted.");
         }

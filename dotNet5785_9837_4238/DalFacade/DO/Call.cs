@@ -1,7 +1,7 @@
 ﻿namespace DO;
 
 /// <summary>
-/// all the details of a call
+/// all the details of a call assignment
 /// </summary>
 /// <param name="CallId">unique id of the call</param>
 /// <param name="CallType">type of the lesson needeed</param>
