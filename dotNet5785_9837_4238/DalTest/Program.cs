@@ -234,9 +234,86 @@ namespace DalTest
             DisplayAllVolunteers();
             DisplayAllCalls();
             DisplayAllAssignments();
-            DisplayConfig();
         }
+        //choice 6 : Configuration Menu
+        /*
+         * we decided to give the possibility to add to the clock 1 minute 1 hour 1 day 1 week 1 month
+         */
+        private static void ProcessConfigMenu()
+        {
+            bool exitConfigMenu = false;
 
+            while (!exitConfigMenu)
+            {
+                Console.Clear();
+                Console.WriteLine("---- Config Menu ----");
+                Console.WriteLine("1. Advance system clock by 1 minute");
+                Console.WriteLine("2. Advance system clock by 1 hour");
+                Console.WriteLine("3. Advance system clock by 1 day");
+                Console.WriteLine("4. Advance system clock by 7 days");
+                Console.WriteLine("5. Advance system clock by 1 month");
+                Console.WriteLine("6. Show current system clock");
+                Console.WriteLine("7. Set a new value for the clock");
+                Console.WriteLine("8. Reset all config values");
+                Console.WriteLine("10. Show all config data");
+                Console.Write("Please select an option: ");
+
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromMinutes(1));
+                        Console.WriteLine("Clock advanced by 1 minute.");
+                        break;
+                    case "2":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromHours(1));
+                        Console.WriteLine("Clock advanced by 1 hour.");
+                        break;
+                    case "3":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(1));
+                        Console.WriteLine("Clock advanced by 1 day.");
+                        break;
+                    case "4":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(7));
+                        Console.WriteLine("Clock advanced by 7 days.");
+                        break;
+                    case "5":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(30));  // Approx. 1 month
+                        Console.WriteLine("Clock advanced by 1 month.");
+                        break;
+                    case "6":
+                        Console.WriteLine("Current system clock: " + s_dalConfig.Clock);
+                        break;
+                    case "7":
+                        // Allow user to set a specific new value for the clock
+                        Console.Write("Enter the new value for the clock (YYYY-MM-DD HH:mm:ss): ");
+                        DateTime newTime;
+                        while (!DateTime.TryParse(Console.ReadLine(), out newTime))
+                        {
+                            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD HH:mm:ss): ");
+                        }
+                        s_dalConfig.Clock = newTime;
+                        Console.WriteLine("Clock updated.");
+                        break;
+                    case "8":
+                        s_dalConfig.Reset();
+                        Console.WriteLine("All config values have been reset.");
+                        break;
+                    case "9":
+                        exitConfigMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please try again.");
+                        break;
+                }
+
+                if (choice != "10")
+                {
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
+        }
 
         //choice 7 : Method to reset the database and configuration to initial state
         private static void ResetDatabaseAndConfig()
@@ -282,15 +359,13 @@ namespace DalTest
         private static void DisplayVolunteer()
         {
             Console.Write("Enter volunteer ID: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+            int id;
+            while (!(int.TryParse(Console.ReadLine(), out id)))
             {
-                var volunteer = s_dalVolunteer?.Read(id);
-                Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID: ");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+            var volunteer = s_dalVolunteer?.Read(id);
+            Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
         }
 
         // Display all volunteer
@@ -306,35 +381,48 @@ namespace DalTest
         }
         private static void UpdateVolunteer()
         {
-            Console.WriteLine("enter id");
-            if (int.TryParse(Console.ReadLine(), out int id))
+            int id;
+            Console.WriteLine("Enter ID:");
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                foreach (var item in s_dalVolunteer.ReadAll())
-                {
-                    if (item.VolunteerId == id)
-                    {
-                        s_dalVolunteer?.Update(item);
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
 
-                        Console.WriteLine("volunteer update");
-                    }
+            bool volunteerFound = false;
+            foreach (var item in s_dalVolunteer.ReadAll())
+            {
+                if (item.VolunteerId == id)
+                {
+                    s_dalVolunteer?.Update(item);
+                    Console.WriteLine("Volunteer updated.");
+                    volunteerFound = true;
+                    break;
                 }
             }
+
+            if (!volunteerFound)
+            {
+                Console.WriteLine("Volunteer not found.");
+            }
+
         }
 
 
         // Delete a volunteer by ID (example of Delete operation)
         private static void DeleteVolunteer()
         {
+            int id;
             Console.Write("Enter volunteer ID to delete: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                s_dalVolunteer?.Delete(id);
-                Console.WriteLine("Volunteer deleted.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+
+            // Suppression du volontaire avec l'ID valide
+            s_dalVolunteer?.Delete(id);
+            Console.WriteLine("Volunteer deleted.");
         }
         // Add a new call 
         private static void AddCall()
@@ -369,10 +457,10 @@ namespace DalTest
             string details = (Console.ReadLine());
             //maxtime
             Console.WriteLine("Enter the latest time you want to start");
-            int hour2 = int.Parse(Console.ReadLine());
-            int minute2 = int.Parse(Console.ReadLine());
-            int seconde2 = int.Parse(Console.ReadLine());
-            DateTime specificDate2 = new DateTime(hour2, minute2, seconde2);
+            int year = int.Parse(Console.ReadLine());
+            int month = int.Parse(Console.ReadLine());
+            int day = int.Parse(Console.ReadLine());
+            DateTime specificDate2 = new DateTime(year, month, day);
 
             Call c = new Call { CallId = callId, CallType = lesson, Adress = address!, Latitude = l1, Longitude = l2, OpenTime = s_dalConfig.Clock, Details = details, MaxTime = specificDate2 };
             s_dalCall?.Create(c);
@@ -382,16 +470,18 @@ namespace DalTest
         // Display a call by ID 
         private static void DisplayCall()
         {
+            int id;
             Console.Write("Enter call ID: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                var Call = s_dalCall?.Read(id);
-                Console.WriteLine(Call != null ? Call.ToString() : "call not found.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+
+            // Recherche du call avec l'ID valide
+            var call = s_dalCall?.Read(id);
+            Console.WriteLine(call != null ? call.ToString() : "Call not found.");
         }
 
         private static void DisplayAllCalls()
@@ -408,18 +498,33 @@ namespace DalTest
         // Update a student's details (example of Update operation)
         private static void UpdateCall()
         {
-            Console.WriteLine("enter id");
-            if (int.TryParse(Console.ReadLine(), out int id))
-            {
-                foreach (var item in s_dalCall.ReadAll())
-                {
-                    if (item.CallId == id)
-                    {
-                        s_dalCall?.Update(item);
+            int id;
+            Console.WriteLine("Enter ID:");
 
-                        Console.WriteLine("call update");
-                    }
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
+
+            bool callFound = false;
+
+            // Recherche et mise à jour de l'appel correspondant
+            foreach (var item in s_dalCall.ReadAll())
+            {
+                if (item.CallId == id)
+                {
+                    s_dalCall?.Update(item);
+                    Console.WriteLine("Call updated.");
+                    callFound = true;
+                    break;
                 }
+            }
+
+            // Si aucun appel n'a été trouvé avec l'ID
+            if (!callFound)
+            {
+                Console.WriteLine("Call not found.");
             }
         }
 
@@ -427,16 +532,18 @@ namespace DalTest
         // Delete a call by ID 
         private static void DeleteCall()
         {
+            int id;
             Console.Write("Enter call ID to delete: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                s_dalCall?.Delete(id);
-                Console.WriteLine("Call deleted.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+
+            // Suppression du call avec l'ID valide
+            s_dalCall?.Delete(id);
+            Console.WriteLine("Call deleted.");
         }
 
         // Add a new assignment
@@ -454,19 +561,19 @@ namespace DalTest
 
             //opentime
             Console.WriteLine("Enter the time you want to start :");
-            int hour = int.Parse(Console.ReadLine());
-            int minute = int.Parse(Console.ReadLine());
-            int seconde = int.Parse(Console.ReadLine());
-            DateTime specificDate = new DateTime(hour, minute, seconde);
+            int year = int.Parse(Console.ReadLine());
+            int month = int.Parse(Console.ReadLine());
+            int day = int.Parse(Console.ReadLine());
+            DateTime specificDate = new DateTime(year, month, day);
             //type of end
             Console.WriteLine("Enter the type of end");
             TypeOfEnd end = (TypeOfEnd)int.Parse(Console.ReadLine());
             //maxtime
             Console.WriteLine("Enter the latest time you want to start");
-            int hour2 = int.Parse(Console.ReadLine());
-            int minute2 = int.Parse(Console.ReadLine());
-            int seconde2 = int.Parse(Console.ReadLine());
-            DateTime specificDate2 = new DateTime(hour, minute, seconde);
+            int year2 = int.Parse(Console.ReadLine());
+            int month2 = int.Parse(Console.ReadLine());
+            int day2 = int.Parse(Console.ReadLine());
+            DateTime specificDate2 = new DateTime(year2, month2, day2);
 
             Assignment a = new Assignment { Id = id, CallId = callid, VolunteerId = volunteerid!, StartTime = specificDate, TypeOfEnd = end, FinishTime = specificDate2 };
             Console.WriteLine("Student added.");
@@ -475,16 +582,18 @@ namespace DalTest
         // Display an assignment by ID 
         private static void DisplayAssignment()
         {
+            int id;
             Console.Write("Enter assignment ID: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                var Assign = s_dalAssignment?.Read(id);
-                Console.WriteLine(Assign != null ? Assign.ToString() : "Assignment not found.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+
+            // Recherche et affichage de l'Assignment correspondant
+            var assignment = s_dalAssignment?.Read(id);
+            Console.WriteLine(assignment != null ? assignment.ToString() : "Assignment not found.");
         }
 
         // Display all assignments
@@ -502,18 +611,33 @@ namespace DalTest
         // Update a assignment's details 
         private static void UpdateAssignment()
         {
-            Console.WriteLine("enter id");
-            if (int.TryParse(Console.ReadLine(), out int id))
-            {
-                foreach (var item in s_dalAssignment.ReadAll())
-                {
-                    if (item.Id == id)
-                    {
-                        s_dalAssignment?.Update(item);
+            int id;
+            Console.WriteLine("Enter ID:");
 
-                        Console.WriteLine("assignment update");
-                    }
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
+
+            bool assignmentFound = false;
+
+            // Recherche et mise à jour de l'Assignment correspondant
+            foreach (var item in s_dalAssignment.ReadAll())
+            {
+                if (item.Id == id)
+                {
+                    s_dalAssignment?.Update(item);
+                    Console.WriteLine("Assignment updated.");
+                    assignmentFound = true;
+                    break;
                 }
+            }
+
+            // Si aucune assignation n'a été trouvée avec l'ID
+            if (!assignmentFound)
+            {
+                Console.WriteLine("Assignment not found.");
             }
         }
 
@@ -521,17 +645,20 @@ namespace DalTest
         // Delete a call by ID 
         private static void DeleteAssignment()
         {
+            int id;
             Console.Write("Enter assignment ID to delete: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            // Demande à l'utilisateur de saisir un ID valide tant que l'entrée n'est pas correcte
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                s_dalAssignment?.Delete(id);
-                Console.WriteLine("Assignment deleted.");
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+
+            // Suppression de l'assignation avec l'ID valide
+            s_dalAssignment?.Delete(id);
+            Console.WriteLine("Assignment deleted.");
         }
+
     }
 }
 

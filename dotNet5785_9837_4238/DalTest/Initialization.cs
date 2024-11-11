@@ -73,7 +73,25 @@ public static class Initialization
 
         Random random = new Random();
 
-        int id = 100000000;
+        int[] id = new int[]
+{
+    234567890,
+    789456123,
+    543216789,
+    678901234,
+    345678901,
+    432109876,
+    567890123,
+    298765432,
+    601234567,
+    712345678,
+    456789012,
+    789012345,
+    234098765,
+    650123478,
+    345678123
+};
+
         string phone;
         string prefix;
         int middlePart;
@@ -95,10 +113,9 @@ public static class Initialization
                 password += digit.ToString();
             }
 
-            Volunteer vol = new Volunteer(id, volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k], distance);
+            Volunteer vol = new Volunteer(id[k], volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k], distance);
 
             s_dalVolunteer!.Create(vol);
-            id++;
         }
         prefix = "05" + random.Next(2, 9);
         middlePart = random.Next(1000000, 10000000);
@@ -111,7 +128,7 @@ public static class Initialization
             int digit = random.Next(0, 10);
             password += digit.ToString();
         }
-        Volunteer v = new Volunteer(id, volunteersNames[15], phone, volunteersMails[15], 0, 0, password, volunteersAdress[15], distance);
+        Volunteer v = new Volunteer(id[15], volunteersNames[15], phone, volunteersMails[15], 0, 0, password, volunteersAdress[15], distance);
 
 
     }
@@ -124,61 +141,60 @@ public static class Initialization
         int j;
         int id = s_dalConfig.nextCallId;
 
-        string[] CallsAddress = new string[]
-
+        string[] CallAddress =
         {
-    "רחוב יפו 10, ירושלים",
-    "רחוב עמק רפאים 20, ירושלים",
-    "רחוב אגריפס 30, ירושלים",
-    "רחוב שמואל הנביא 40, ירושלים",
-    "רחוב הנביאים 50, ירושלים",
-    "רחוב עזה 60, ירושלים",
-    "שדרות הרצל 4, ירושלים",
-    "רחוב מסליאנסקי 40, ירושלים",
-    "רחוב בן יהודה 10, ירושלים",
-    "רחוב דרך חברון 150, ירושלים",
-    "רחוב הלל 5, ירושלים",
-    "רחוב כורזין 6, ירושלים",
-    "רחוב המלך ג'ורג' 35, ירושלים",
-    "רחוב בן צבי 78, ירושלים",
-    "רחוב דבורה הנביאה 4, ירושלים",
-    "רחוב יהודה הנשיא 15, ירושלים",
-    "רחוב עליאש 5, ירושלים",
-    "רחוב ארלוזורוב 15, ירושלים",
-    "רחוב שמאי 13, ירושלים",
-    "רחוב תבור 10, ירושלים",
-    "רחוב אוסישקין 55, ירושלים",
-    "רחוב הלני המלכה 7, ירושלים",
-    "רחוב לינקולן 14, ירושלים",
-    "רחוב זרחי 40, ירושלים",
-    "רחוב מאה שערים 22, ירושלים",
-    "רחוב קינג דייויד 10, ירושלים",
-    "רחוב רות 30, ירושלים",
-    "רחוב בית הדפוס 9, ירושלים",
-    "רחוב דוד ילין 5, ירושלים",
-    "רחוב שמואל הנגיד 8, ירושלים",
-    "רחוב הצנחנים 15, ירושלים",
-    "רחוב בן זאב 7, ירושלים",
-    "רחוב רבי עקיבא 9, ירושלים",
-    "רחוב גרינברג 7, ירושלים",
-    "רחוב הנרייטה סולד 6, ירושלים",
-    "רחוב שמואל הנגיד 5, ירושלים",
-    "רחוב בית וגן 18, ירושלים",
-    "רחוב נווה שאנן 12, ירושלים",
-    "רחוב רחל אמנו 3, ירושלים",
-    "רחוב הלל 15, ירושלים",
-    "רחוב בצלאל 8, ירושלים",
-    "רחוב קרית משה 9, ירושלים",
-    "רחוב פייר קניג 13, ירושלים",
-    "רחוב הרב הרצוג 24, ירושלים",
-    "רחוב עין גדי 5, ירושלים",
-    "רחוב האומן 8, ירושלים",
-    "רחוב אבן שפרוט 5, ירושלים",
-    "רחוב בר אילן 25, ירושלים",
-    "רחוב יצחק קריב 6, ירושלים",
-    "רחוב ויצמן 17, ירושלים",
-    "רחוב שמואל הנגיד 9, ירושלים",
-    "רחוב ריבלין 10, ירושלים"
+    "10 Jaffa Street, Jerusalem",
+    "20 Emek Refaim Street, Jerusalem",
+    "30 Agripas Street, Jerusalem",
+    "40 Shmuel HaNavi Street, Jerusalem",
+    "50 HaNevi'im Street, Jerusalem",
+    "60 Gaza Street, Jerusalem",
+    "4 Herzl Boulevard, Jerusalem",
+    "40 Masliansky Street, Jerusalem",
+    "10 Ben Yehuda Street, Jerusalem",
+    "150 Hebron Road, Jerusalem",
+    "5 Hillel Street, Jerusalem",
+    "6 Korazin Street, Jerusalem",
+    "35 King George Street, Jerusalem",
+    "78 Ben Zvi Street, Jerusalem",
+    "4 Devorah HaNeviah Street, Jerusalem",
+    "15 Yehuda HaNasi Street, Jerusalem",
+    "5 Aliash Street, Jerusalem",
+    "15 Arlozorov Street, Jerusalem",
+    "13 Shamai Street, Jerusalem",
+    "10 Tavor Street, Jerusalem",
+    "55 Ussishkin Street, Jerusalem",
+    "7 Helene HaMalka Street, Jerusalem",
+    "14 Lincoln Street, Jerusalem",
+    "40 Zerach Street, Jerusalem",
+    "22 Mea Shearim Street, Jerusalem",
+    "10 King David Street, Jerusalem",
+    "30 Ruth Street, Jerusalem",
+    "9 Beit HaDfus Street, Jerusalem",
+    "5 David Yellin Street, Jerusalem",
+    "8 Shmuel HaNagid Street, Jerusalem",
+    "15 HaTzanhanim Street, Jerusalem",
+    "9 Rabbi Akiva Street, Jerusalem",
+    "7 Greenberg Street, Jerusalem",
+    "6 Henrietta Szold Street, Jerusalem",
+    "5 Shmuel HaNagid Street, Jerusalem",
+    "18 Beit Vagan Street, Jerusalem",
+    "12 Neve Sha'anan Street, Jerusalem",
+    "3 Rachel Imenu Street, Jerusalem",
+    "15 Hillel Street, Jerusalem",
+    "8 Bezalel Street, Jerusalem",
+    "9 Kiryat Moshe Street, Jerusalem",
+    "13 Pierre Koenig Street, Jerusalem",
+    "24 Rabbi Herzog Street, Jerusalem",
+    "5 Ein Gedi Street, Jerusalem",
+    "8 HaOman Street, Jerusalem",
+    "5 Ibn Shaprut Street, Jerusalem",
+    "25 Bar Ilan Street, Jerusalem",
+    "6 Yitzhak Kariv Street, Jerusalem",
+    "17 Weizmann Street, Jerusalem",
+    "9 Shmuel HaNagid Street, Jerusalem",
+    "7 Ben Ze'ev Street, Jerusalem",
+    "10 Rivlin Street, Jerusalem"
 };
         double[] longi = new double[]
         {
@@ -193,7 +209,7 @@ public static class Initialization
 
         for (j = 0; j < 45; j++)
         {
-            CallType callType = s_rand.Next(1, 11) switch
+            CallType callType = s_rand.Next(1, 9) switch
             {
                 1 => CallType.Math_Primary,
                 2 => CallType.Math_Middle,
@@ -207,7 +223,12 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            Call c = new Call(id, callType, CallsAddress[j], lati[j], longi[j], s_dalConfig!.Clock); // we didnt put the 2 last variables because they can be null
+            int minus = s_rand.Next(0, 9);
+
+            DateTime start = new DateTime(s_dalConfig.Clock.Year - minus, minus, minus); //stage 1
+            int range = (s_dalConfig.Clock - start).Days; //stage 1
+            start.AddDays(s_rand.Next(range));
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], start); // we didnt put the 2 last variables because they can be null
             s_dalCall!.Create(c);
         }
         for (j = 45; j < 50; j++)
@@ -226,7 +247,7 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            Call c = new Call(id, callType, CallsAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); // we didnt put the 2 last variables because they can be null
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); // we didnt put the 2 last variables because they can be null
             s_dalCall!.Create(c);
         }
     }
@@ -235,28 +256,107 @@ public static class Initialization
     private static void createAssignments()
     {
         //we need to write only VolunteerId because the others, we create them with numbers 
-        int VolunteerId = 100000000;
+        int[] volunteerId = new int[]
+{
+    234567890,
+    789456123,
+    543216789,
+    678901234,
+    345678901,
+    432109876,
+    567890123,
+    298765432,
+    601234567,
+    712345678,
+    456789012,
+    789012345,
+    234098765,
+    650123478,
+    345678123
+};
+        int i;
         int callId = s_dalConfig.nextCallId;
         int assignmentId = s_dalConfig.nextAsignmentId;
 
-        for (int i = 0; i < 50; i++)
+        for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
             s_dalAssignment!.Create(a);
         }
-        for (int i = 0; i < 50; i++)
+        for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-15], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
             s_dalAssignment!.Create(a);
         }
-        for (int i = 0; i < 50; i++)
+        for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-29], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
             s_dalAssignment!.Create(a);
         }
-        for (int i = 0; i < 50; i++)
+        for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-40], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
+            s_dalAssignment!.Create(a);
+        }
+
+        for (i = 0; i < 15; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 15; i < 29; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 29; i < 40; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 40; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 0; i < 15; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 15; i < 29; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 29; i < 40; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 40; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 0; i < 15; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 15; i < 29; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 29; i < 40; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dalAssignment!.Create(a);
+        }
+        for (i = 40; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
             s_dalAssignment!.Create(a);
         }
     }
