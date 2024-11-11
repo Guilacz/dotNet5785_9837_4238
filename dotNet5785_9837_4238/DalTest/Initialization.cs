@@ -89,7 +89,8 @@ public static class Initialization
     789012345,
     234098765,
     650123478,
-    345678123
+    345678123,
+    878787878
 };
 
         string phone;
@@ -272,7 +273,8 @@ public static class Initialization
     789012345,
     234098765,
     650123478,
-    345678123
+    345678123,
+    878787878
 };
         int i;
         int callId = s_dalConfig.nextCallId;

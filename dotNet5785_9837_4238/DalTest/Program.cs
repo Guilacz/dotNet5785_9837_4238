@@ -5,8 +5,6 @@ using System.Threading.Channels;
 
 namespace DalTest
 {
-
-
     public static class Program
     {
         private static IVolunteer s_dalVolunteer = new VolunteerImplementation(); // stage 1
@@ -14,9 +12,11 @@ namespace DalTest
         private static IAssignment s_dalAssignment = new AssignmentImplementation(); // stage 1
         private static IConfig s_dalConfig = new ConfigImplementation(); // stage 1
 
+        /// <summary>
+        /// Main entry point of the application. Displays the main menu and handles user input.
+        /// </summary>
         public static void Main(string[] args)
         {
-
             try
             {
                 while (true)
@@ -34,7 +34,9 @@ namespace DalTest
             }
         }
 
-        // Method to display the main menu options
+        /// <summary>
+        /// Displays the main menu options for navigating to different sub-menus or exiting.
+        /// </summary>
         private static void ShowMainMenu()
         {
             Console.WriteLine("Main Menu:");
