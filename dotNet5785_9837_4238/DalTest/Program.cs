@@ -16,10 +16,17 @@ namespace DalTest
 
         public static void Main(string[] args)
         {
+
             try
             {
                 while (true)
+                {
+                    Console.WriteLine("enter a number");
+                    int num = int.Parse(Console.ReadLine());
+                    if (num == 0)
+                        return;
                     ShowMainMenu();
+                }
             }
             catch (Exception)
             {
@@ -255,7 +262,7 @@ namespace DalTest
                 Console.WriteLine("6. Show current system clock");
                 Console.WriteLine("7. Set a new value for the clock");
                 Console.WriteLine("8. Reset all config values");
-                Console.WriteLine("10. Show all config data");
+                Console.WriteLine("9. exit");
                 Console.Write("Please select an option: ");
 
                 string choice = Console.ReadLine();
@@ -286,7 +293,7 @@ namespace DalTest
                         break;
                     case "7":
                         // Allow user to set a specific new value for the clock
-                        Console.Write("Enter the new value for the clock (YYYY-MM-DD HH:mm:ss): ");
+                        Console.Write("Enter the new value for the date): ");
                         DateTime newTime;
                         while (!DateTime.TryParse(Console.ReadLine(), out newTime))
                         {
