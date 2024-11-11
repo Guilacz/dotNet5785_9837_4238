@@ -272,8 +272,10 @@
             string password = Console.ReadLine();
             Console.Write("Enter volunteer address: ");
             string address = Console.ReadLine();
+            Console.Write("Enter maximum distance: ");
+            double dis = int.Parse(Console.ReadLine());
 
-            Volunteer v = new Volunteer { Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, };
+            Volunteer v = new Volunteer { Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
             s_dalVolunteer?.Create(v);
             Console.WriteLine("Volunteer added.");
 
@@ -306,183 +308,23 @@
                 }
             }
         }
-        private static void UpdateVolunteer()
+        private static void UpdateVoluntee()
         {
-            Console.Write("Enter volunteer ID to update: ");
+            Console.WriteLine("enter id");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                // קריאה ל-Read כדי לקבל את האובייקט
-                var volunteer = s_dalVolunteer?.Read(id);
-
-                // בדיקה אם האובייקט שהוחזר הוא null
-                if (volunteer == null)
+                foreach (var item in s_dalVolunteer.ReadAll())
                 {
-                    Console.WriteLine("Volunteer not found. Please check the ID and try again.");
-                    return;
-                }
+                    if (item.VolunteerId == id)
+                    {
+                        s_dalVolunteer?.Update(item);
 
-                // אם הגעת לפה, זה אומר שהאובייקט תקין ואינו null
-                Console.WriteLine("Current details: " + volunteer);
-
-                // המשך עם עדכון הפרטים
-                Console.Write("Enter new name (leave blank to keep current): ");
-                string newName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    volunteer.Name = newName;
+                        Console.WriteLine("מתנדב עודכן");
+                    }
                 }
-
-                Console.Write("Enter new phone (leave blank to keep current): ");
-                string newPhone = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newPhone))
-                {
-                    volunteer.Phone = newPhone;
-                }
-
-                Console.Write("Enter new email (leave blank to keep current): ");
-                string newEmail = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newEmail))
-                {
-                    volunteer.Email = newEmail;
-                }
-
-                Console.Write("Enter new role (1 for Manager, 2 for Volunteer, leave blank to keep current): ");
-                if (int.TryParse(Console.ReadLine(), out int roleInput) && Enum.IsDefined(typeof(Role), roleInput))
-                {
-                    volunteer.RoleType = (Role)roleInput;
-                }
-
-                Console.Write("Enter new distance type (1 for AirDistance, 2 for WalkDistance, 3 for CarDistance, leave blank to keep current): ");
-                if (int.TryParse(Console.ReadLine(), out int distanceInput) && Enum.IsDefined(typeof(Distance), distanceInput))
-                {
-                    volunteer.DistanceType = (Distance)distanceInput;
-                }
-
-                Console.Write("Enter new password (leave blank to keep current): ");
-                string newPassword = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newPassword))
-                {
-                    volunteer.Password = newPassword;
-                }
-
-                Console.Write("Enter new address (leave blank to keep current): ");
-                string newAddress = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newAddress))
-                {
-                    volunteer.Address = newAddress;
-                }
-
-                Console.Write("Enter new distance (leave blank to keep current): ");
-                if (double.TryParse(Console.ReadLine(), out double newDistance))
-                {
-                    volunteer.Distance = newDistance;
-                }
-
-                try
-                {
-                    s_dalVolunteer?.Update(volunteer);
-                    Console.WriteLine("Volunteer updated.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error updating volunteer: " + ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
             }
         }
-
-
-        // Update a volunteer's details
-        /*private static void UpdateVolunteer()
-        {
-            Volunteer vol;
-            Console.Write("Enter volunteer ID to update: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
-            {
-                //var volunteer = s_dalVolunteer?.Read(id);
-                //s_dalVolunteer?.Delete(id);
-                if (volunteer == null)
-                {
-                    Console.WriteLine("Volunteer not found.");
-                    return;
-                }
-
-                Console.WriteLine("Current details: " + volunteer);
-
-                Console.Write("Enter new name (leave blank to keep current): ");
-                string newName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    volunteer.Name = newName;
-                }
-
-                Console.Write("Enter new phone (leave blank to keep current): ");
-                string newPhone = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newPhone))
-                {
-
-                    volunteer.Phone = newPhone;
-                }
-
-                Console.Write("Enter new email (leave blank to keep current): ");
-                string newEmail = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newEmail))
-                {
-                    volunteer.Email = newEmail;
-                }
-
-                Console.Write("Enter new role (1 for Manager, 2 for Volunteer, leave blank to keep current): ");
-                if (int.TryParse(Console.ReadLine(), out int roleInput) && Enum.IsDefined(typeof(Role), roleInput))
-                {
-                    volunteer.RoleType = (Role)roleInput;
-                }
-
-                Console.Write("Enter new distance type (1 for AirDistance, 2 for WalkDistance, 3 for CarDistance, leave blank to keep current): ");
-                if (int.TryParse(Console.ReadLine(), out int distanceInput) && Enum.IsDefined(typeof(Distance), distanceInput))
-                {
-                    volunteer.DistanceType = (Distance)distanceInput;
-                }
-
-                Console.Write("Enter new password (leave blank to keep current): ");
-                string newPassword = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newPassword))
-                {
-                    volunteer.Password = newPassword;
-                }
-
-                Console.Write("Enter new address (leave blank to keep current): ");
-                string newAddress = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newAddress))
-                {
-                    volunteer.Address = newAddress;
-                }
-
-                Console.Write("Enter new distance (leave blank to keep current): ");
-                if (double.TryParse(Console.ReadLine(), out double newDistance))
-                {
-                    volunteer.Distance = newDistance;
-                }
-
-                try
-                {
-                    s_dalVolunteer?.Update(volunteer);
-                    Console.WriteLine("Volunteer updated.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error updating volunteer: " + ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
-        }*/
-
-
+       
 
         // Delete a volunteer by ID (example of Delete operation)
         private static void DeleteVolunteer()
@@ -502,8 +344,7 @@
         private static void AddCall()
         {
             //id
-            Console.Write("Enter CallId: ");
-            int id = int.Parse(Console.ReadLine());
+            int callId = s_dalConfig.nextCallId;
             //lesson
             Console.Write("What type of lesson do you want, and what level ?");
             Console.WriteLine("1.Math_Primary");
@@ -527,10 +368,10 @@
             double l2 = int.Parse(Console.ReadLine());
             //opentime
             Console.WriteLine("Enter the time you want to start :");
-            int hour = int.Parse(Console.ReadLine());
-            int minute = int.Parse(Console.ReadLine());
-            int seconde = int.Parse(Console.ReadLine());
-            DateTime specificDate = new DateTime(hour, minute, seconde);
+            //int hour = int.Parse(Console.ReadLine());
+            //int minute = int.Parse(Console.ReadLine());
+            //int seconde = int.Parse(Console.ReadLine());
+            //DateTime specificDate = new DateTime(hour, minute, seconde);
             //details
             Console.WriteLine("Enter details if needed");
             string details = (Console.ReadLine());
@@ -539,11 +380,11 @@
             int hour2 = int.Parse(Console.ReadLine());
             int minute2 = int.Parse(Console.ReadLine());
             int seconde2 = int.Parse(Console.ReadLine());
-            DateTime specificDate2 = new DateTime(hour, minute, seconde);
+            DateTime specificDate2 = new DateTime(hour2, minute2, seconde2);
 
-            Call c = new Call { CallId = id, CallType = lesson, Adress = address!, Latitude = l1, Longitude = l2, OpenTime = specificDate, Details = details, MaxTime = specificDate2 };
+            Call c = new Call { CallId = callId, CallType = lesson, Adress = address!, Latitude = l1, Longitude = l2, OpenTime = s_dalConfig.Clock, Details = details, MaxTime = specificDate2 };
             s_dalCall?.Create(c);
-            Console.WriteLine("Student added.");
+            Console.WriteLine("Call added.");
         }
 
         // Display a call by ID 
