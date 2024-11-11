@@ -8,4 +8,6 @@ public interface IAssignment
     void Update(Assignment item); //Updates entity object
     void Delete(int id); //Deletes an object by its Id
     void DeleteAll(); //Delete all entity objects
+    string ToString(Assignment a);
+
 }

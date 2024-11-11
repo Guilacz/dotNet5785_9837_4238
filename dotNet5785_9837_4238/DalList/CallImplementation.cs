@@ -80,6 +80,22 @@ public class CallImplementation : ICall
         }
 
     }
+    string ICall.ToString(Call item)
+    {
+        var details = new System.Text.StringBuilder();
+        details.AppendLine("Reading Details:");
+        details.AppendLine($"ID: {item.CallId}");
+        details.AppendLine($"CallType: {item.CallType}");
+
+        details.AppendLine($"Address: {item.Adress}");
+        details.AppendLine($"Latitude: {item.Latitude}");
+        details.AppendLine($"Longitude: {item.Longitude}");
+        details.AppendLine($"Open Time: {item.OpenTime}");
+        details.AppendLine($"Max Time to Finish: {item.MaxTime}");
+        details.AppendLine($"Details: {item.Details}");
+
+        return details.ToString();
+    }
 }
 
 

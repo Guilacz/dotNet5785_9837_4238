@@ -30,8 +30,8 @@ public class AssignmentImplementation : IAssignment
 
         if (AssignmentToDelete == null)
             throw new ArgumentException($"A assignment with ID {id} does not exist.");
- 
-        else 
+
+        else
             DataSource.Assignments.Remove(AssignmentToDelete);
     }
 
@@ -79,6 +79,22 @@ public class AssignmentImplementation : IAssignment
             Delete(item.Id);
             Create(item);
         }
+
+    }
+
+    public string ToString(Assignment item)
+    {
+
+        var details = new System.Text.StringBuilder();
+        details.AppendLine("Assignment Details:");
+        details.AppendLine($"ID: {item.Id}");
+        details.AppendLine($"Call ID: {item.CallId}");
+        details.AppendLine($"Volunteer ID: {item.VolunteerId}");
+        details.AppendLine($"Entry Time: {item.StartTime}");
+        details.AppendLine($"End Time: {item.TypeOfEnd}");
+        details.AppendLine($"Type of End Time: {item.FinishTime}");
+
+        return details.ToString();
 
     }
 }

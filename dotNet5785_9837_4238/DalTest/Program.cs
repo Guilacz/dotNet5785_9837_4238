@@ -1,9 +1,11 @@
-﻿namespace DalTest
+﻿using Dal;
+using DalApi;
+using DO;
+using System.Threading.Channels;
+
+namespace DalTest
 {
-    using Dal;
-    using DalApi;
-    using DO;
-    using System.Threading.Channels;
+
 
     public static class Program
     {
@@ -17,13 +19,10 @@
             try
             {
                 while (true)
-                    ShowMainMenu(); 
-
-
+                    ShowMainMenu();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -43,9 +42,6 @@
             Console.Write("Enter your choice: ");
         }
 
-
-
-        
         // Method to process the user's choice from the main menu
         private static bool MainMenuChoice()
         {
@@ -62,7 +58,7 @@
                     ShowInterMenu("Assignment", ProcessAssignmentMenu);
                     break;
                 case "4":
-                    InitializeDatabase(); 
+                    InitializeDatabase();
                     break;
                 case "5":
                     DisplayAllData();
@@ -116,7 +112,7 @@
                         DisplayVolunteer();
                         break;
                     case "3":
-                        DisplayAllVolunteer();
+                        DisplayAllVolunteers();
                         break;
                     case "4":
                         UpdateVolunteer();
@@ -157,7 +153,7 @@
                         DisplayCall();
                         break;
                     case "3":
-                        DisplayAllCall();
+                        DisplayAllCalls();
                         break;
                     case "4":
                         UpdateCall();
@@ -197,7 +193,7 @@
                         DisplayAssignment();
                         break;
                     case "3":
-                        DisplayAllAssignment();
+                        DisplayAllAssignments();
                         break;
                     case "4":
                         UpdateAssignment();
@@ -308,7 +304,7 @@
                 }
             }
         }
-        private static void UpdateVoluntee()
+        private static void UpdateVolunteer()
         {
             Console.WriteLine("enter id");
             if (int.TryParse(Console.ReadLine(), out int id))
@@ -319,12 +315,12 @@
                     {
                         s_dalVolunteer?.Update(item);
 
-                        Console.WriteLine("מתנדב עודכן");
+                        Console.WriteLine("volunteer update");
                     }
                 }
             }
         }
-       
+
 
         // Delete a volunteer by ID (example of Delete operation)
         private static void DeleteVolunteer()
@@ -368,10 +364,6 @@
             double l2 = int.Parse(Console.ReadLine());
             //opentime
             Console.WriteLine("Enter the time you want to start :");
-            //int hour = int.Parse(Console.ReadLine());
-            //int minute = int.Parse(Console.ReadLine());
-            //int seconde = int.Parse(Console.ReadLine());
-            //DateTime specificDate = new DateTime(hour, minute, seconde);
             //details
             Console.WriteLine("Enter details if needed");
             string details = (Console.ReadLine());
@@ -414,34 +406,23 @@
         }
 
         // Update a student's details (example of Update operation)
-        private static void UpdateStudent()
+        private static void UpdateCall()
         {
-            Console.Write("Enter call ID to update: ");
+            Console.WriteLine("enter id");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var call = s_dalCall?.Read(id);
-                if (call == null)
+                foreach (var item in s_dalCall.ReadAll())
                 {
-                    Console.WriteLine("Student not found.");
-                    return;
-                }
+                    if (item.CallId == id)
+                    {
+                        s_dalCall?.Update(item);
 
-                Console.WriteLine("Current details: " + student);
-                Console.Write("Enter new name (leave blank to keep current): ");
-                string newName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    student.Name = newName;
+                        Console.WriteLine("call update");
+                    }
                 }
-
-                s_dalStudent?.Update(student);
-                Console.WriteLine("Student updated.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
             }
         }
+
 
         // Delete a call by ID 
         private static void DeleteCall()
@@ -507,7 +488,7 @@
         }
 
         // Display all assignments
-        private static void DisplayAllAssignments() 
+        private static void DisplayAllAssignments()
         {
             if (s_dalAssignment != null)
             {
@@ -518,35 +499,24 @@
             }
         }
 
-        // Update a student's details 
-        private static void UpdateStudent()
+        // Update a assignment's details 
+        private static void UpdateAssignment()
         {
-            Console.Write("Enter call ID to update: ");
+            Console.WriteLine("enter id");
             if (int.TryParse(Console.ReadLine(), out int id))
             {
-                var call = s_dalCall?.Read(id);
-                if (call == null)
+                foreach (var item in s_dalAssignment.ReadAll())
                 {
-                    Console.WriteLine("Student not found.");
-                    return;
-                }
+                    if (item.Id == id)
+                    {
+                        s_dalAssignment?.Update(item);
 
-                Console.WriteLine("Current details: " + student);
-                Console.Write("Enter new name (leave blank to keep current): ");
-                string newName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    student.Name = newName;
+                        Console.WriteLine("assignment update");
+                    }
                 }
-
-                s_dalStudent?.Update(student);
-                Console.WriteLine("Student updated.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
             }
         }
+
 
         // Delete a call by ID 
         private static void DeleteAssignment()
@@ -564,5 +534,6 @@
         }
     }
 }
+
 
 

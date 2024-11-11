@@ -23,7 +23,7 @@ public record Assignment
     /// <summary>
     /// default constructor of the assignment
     /// </summary>
-    public Assignment () : this (0,0,0,0,DateTime.Now) { }
+    public Assignment () : this (0,0,0, DateTime.Now, TypeOfEnd:0,DateTime.Now) { }
 }
 
 

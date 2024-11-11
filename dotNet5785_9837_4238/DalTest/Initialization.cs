@@ -79,6 +79,7 @@ public static class Initialization
         int middlePart;
         double distance;
         string password = "";
+        
 
         for (int k = 0; k < 15; k++)
         {
@@ -94,7 +95,7 @@ public static class Initialization
                 password += digit.ToString();
             }
 
-            Volunteer vol = new Volunteer(id, volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k]);
+            Volunteer vol = new Volunteer(id, volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k], distance);
 
             s_dalVolunteer!.Create(vol);
             id++;
@@ -110,7 +111,7 @@ public static class Initialization
             int digit = random.Next(0, 10);
             password += digit.ToString();
         }
-        Volunteer v = new Volunteer(id, volunteersNames[15], phone, volunteersMails[15], 0, 0, password, volunteersAdress[15]);
+        Volunteer v = new Volunteer(id, volunteersNames[15], phone, volunteersMails[15], 0, 0, password, volunteersAdress[15], distance);
 
 
     }
@@ -118,10 +119,14 @@ public static class Initialization
 
     private static void createCalls()
     {
+        Random random = new Random();
+
         int j;
         int id = s_dalConfig.nextCallId;
+
         string[] CallsAddress = new string[]
-{
+
+        {
     "רחוב יפו 10, ירושלים",
     "רחוב עמק רפאים 20, ירושלים",
     "רחוב אגריפס 30, ירושלים",
@@ -186,14 +191,42 @@ public static class Initialization
 
         };
 
-        for (j = 0; j < 35; j++)
+        for (j = 0; j < 45; j++)
         {
-            Call c = new Call(id, 0, CallsAddress[j], longi[j], lati[j], s_dalConfig!.Clock); // we didnt put the 2 last variables because they can be null
+            CallType callType = s_rand.Next(1, 11) switch
+            {
+                1 => CallType.Math_Primary,
+                2 => CallType.Math_Middle,
+                3 => CallType.Math_High,
+                4 => CallType.English_Primary,
+                5 => CallType.English_Middle,
+                6 => CallType.English_High,
+                7 => CallType.Grammary_Primary,
+                8 => CallType.Grammary_Middle,
+                9 => CallType.Grammary_High,
+
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            Call c = new Call(id, callType, CallsAddress[j], lati[j], longi[j], s_dalConfig!.Clock); // we didnt put the 2 last variables because they can be null
             s_dalCall!.Create(c);
         }
-        for (j = 35; j < 50; j++)
+        for (j = 45; j < 50; j++)
         {
-            Call c = new Call(id, 0, CallsAddress[j], longi[j], lati[j], s_dalConfig!.Clock.AddSeconds(-5)); // we didnt put the 2 last variables because they can be null
+            CallType callType = s_rand.Next(1, 11) switch
+            {
+                1 => CallType.Math_Primary,
+                2 => CallType.Math_Middle,
+                3 => CallType.Math_High,
+                4 => CallType.English_Primary,
+                5 => CallType.English_Middle,
+                6 => CallType.English_High,
+                7 => CallType.Grammary_Primary,
+                8 => CallType.Grammary_Middle,
+                9 => CallType.Grammary_High,
+
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            Call c = new Call(id, callType, CallsAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); // we didnt put the 2 last variables because they can be null
             s_dalCall!.Create(c);
         }
     }
@@ -206,9 +239,24 @@ public static class Initialization
         int callId = s_dalConfig.nextCallId;
         int assignmentId = s_dalConfig.nextAsignmentId;
 
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock);
+            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
+            s_dalAssignment!.Create(a);
+        }
+        for (int i = 0; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dalAssignment!.Create(a);
+        }
+        for (int i = 0; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
+            s_dalAssignment!.Create(a);
+        }
+        for (int i = 0; i < 50; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, VolunteerId + i, s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
             s_dalAssignment!.Create(a);
         }
     }

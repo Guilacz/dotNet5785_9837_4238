@@ -80,4 +80,25 @@ public class VolunteerImplementation : IVolunteer
         }
                 
     }
+
+    string IVolunteer.ToString(Volunteer item)
+    {
+        var details = new System.Text.StringBuilder();
+        details.AppendLine("Volunteer Details:");
+        details.AppendLine($"ID: {item.VolunteerId}");
+        details.AppendLine($"Full Name: {item.Name}");
+        details.AppendLine($"Phone: {item.Phone}");
+        details.AppendLine($"Email: {item.Email}");
+        details.AppendLine($"Role: {item.RoleType}");
+        details.AppendLine($"Type of Distance: {item.DistanceType}");
+        details.AppendLine($"Password: {item.Password}");
+        details.AppendLine($"Address: {item.Adress}");
+        details.AppendLine($"Distance: {item.Distance}");
+        details.AppendLine($"Latitude: {item.Latitude}");
+        details.AppendLine($"Longitude: {item.Longitude}");
+        details.AppendLine($"IsActive: {item.IsActive}");
+
+        return details.ToString();
+
+    }
 }

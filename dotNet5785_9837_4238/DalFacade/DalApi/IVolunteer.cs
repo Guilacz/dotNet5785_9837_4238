@@ -9,4 +9,5 @@ public interface IVolunteer
     void Update(Volunteer item); //Updates entity object
     void Delete(int id); //Deletes an object by its Id
     void DeleteAll(); //Delete all entity objects
+    public string ToString (Volunteer v);
 }
