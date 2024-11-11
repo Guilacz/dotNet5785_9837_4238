@@ -234,8 +234,91 @@ namespace DalTest
             DisplayAllVolunteers();
             DisplayAllCalls();
             DisplayAllAssignments();
-            DisplayConfig();
         }
+
+
+        //choice 6 : Configuration Menu
+        /*
+         * we decided to give the possibility to add to the clock 1 minute 1 hour 1 day 1 week 1 month
+         */
+        private static void ProcessConfigMenu()
+        {
+            bool exitConfigMenu = false;
+
+            while (!exitConfigMenu)
+            {
+                Console.Clear();
+                Console.WriteLine("---- Config Menu ----");
+                Console.WriteLine("1. Advance system clock by 1 minute");
+                Console.WriteLine("2. Advance system clock by 1 hour");
+                Console.WriteLine("3. Advance system clock by 1 day");
+                Console.WriteLine("4. Advance system clock by 7 days");
+                Console.WriteLine("5. Advance system clock by 1 month");
+                Console.WriteLine("6. Show current system clock");
+                Console.WriteLine("7. Set a new value for the clock");
+                Console.WriteLine("8. Reset all config values");
+                Console.WriteLine("10. Show all config data");
+                Console.Write("Please select an option: ");
+
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromMinutes(1));
+                        Console.WriteLine("Clock advanced by 1 minute.");
+                        break;
+                    case "2":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromHours(1));
+                        Console.WriteLine("Clock advanced by 1 hour.");
+                        break;
+                    case "3":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(1));
+                        Console.WriteLine("Clock advanced by 1 day.");
+                        break;
+                    case "4":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(7));
+                        Console.WriteLine("Clock advanced by 7 days.");
+                        break;
+                    case "5":
+                        s_dalConfig.Clock = s_dalConfig.Clock.Add(TimeSpan.FromDays(30));  // Approx. 1 month
+                        Console.WriteLine("Clock advanced by 1 month.");
+                        break;
+                    case "6":
+                        Console.WriteLine("Current system clock: " + s_dalConfig.Clock);
+                        break;
+                    case "7":
+                        // Allow user to set a specific new value for the clock
+                        Console.Write("Enter the new value for the clock (YYYY-MM-DD HH:mm:ss): ");
+                        DateTime newTime;
+                        while (!DateTime.TryParse(Console.ReadLine(), out newTime))
+                        {
+                            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD HH:mm:ss): ");
+                        }
+                        s_dalConfig.Clock = newTime;
+                        Console.WriteLine("Clock updated.");
+                        break;
+                    case "8":
+                        s_dalConfig.Reset();
+                        Console.WriteLine("All config values have been reset.");
+                        break;
+                    case "9":
+                        exitConfigMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please try again.");
+                        break;
+                }
+
+                if (choice != "10")
+                {
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
+        }
+
+        
+       
 
 
         //choice 7 : Method to reset the database and configuration to initial state
@@ -282,15 +365,13 @@ namespace DalTest
         private static void DisplayVolunteer()
         {
             Console.Write("Enter volunteer ID: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
-            {
-                var volunteer = s_dalVolunteer?.Read(id);
-                Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid ID format.");
-            }
+            int id; 
+            while(!(int.TryParse(Console.ReadLine(), out id)))
+                {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID: ");
+                }
+            var volunteer = s_dalVolunteer?.Read(id);
+            Console.WriteLine(volunteer != null ? volunteer.ToString() : "Volunteer not found.");
         }
 
         // Display all volunteer
@@ -306,19 +387,30 @@ namespace DalTest
         }
         private static void UpdateVolunteer()
         {
-            Console.WriteLine("enter id");
-            if (int.TryParse(Console.ReadLine(), out int id))
+            int id;
+            Console.WriteLine("Enter ID:");
+            while (!int.TryParse(Console.ReadLine(), out id))
             {
-                foreach (var item in s_dalVolunteer.ReadAll())
-                {
-                    if (item.VolunteerId == id)
-                    {
-                        s_dalVolunteer?.Update(item);
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
 
-                        Console.WriteLine("volunteer update");
-                    }
+            bool volunteerFound = false;
+            foreach (var item in s_dalVolunteer.ReadAll())
+            {
+                if (item.VolunteerId == id)
+                {
+                    s_dalVolunteer?.Update(item);
+                    Console.WriteLine("Volunteer updated.");
+                    volunteerFound = true;
+                    break;
                 }
             }
+
+            if (!volunteerFound)
+            {
+                Console.WriteLine("Volunteer not found.");
+            }
+
         }
 
 
