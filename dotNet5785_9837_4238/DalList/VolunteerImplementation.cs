@@ -12,14 +12,13 @@ public class VolunteerImplementation : IVolunteer
     /// function create new item :
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
- 
+
     public void Create(Volunteer item)
     {
-        if (Read(item.VolunteerId)!=null)
+        if (Read(item.VolunteerId) != null)
             throw new ArgumentException($"A volunteer with ID {item.VolunteerId} already exists.");
 
-        else
-            DataSource.Volunteers.Add(item);
+        DataSource.Volunteers.Add(item);
     }
 
 
@@ -68,20 +67,33 @@ public class VolunteerImplementation : IVolunteer
     /// <summary>
     /// update function : checks if the element exists, delete it, create it with new details
     /// </summary>
-    
+
     public void Update(Volunteer item)
     {
         Volunteer? volunteerToUpdate = Read(item.VolunteerId);
 
         if (volunteerToUpdate == null)
             throw new ArgumentException($"A volunteer with ID {item.VolunteerId} does not exist.");
-    
-        else
+
+        // שימוש ב-with לעדכון הערכים
+        Volunteer updatedVolunteer = volunteerToUpdate with
         {
-            Delete(item.VolunteerId);
-            Create(item);
-        }
-                
+            Name = item.Name,
+            Phone = item.Phone,
+            Email = item.Email,
+            RoleType = item.RoleType,
+            DistanceType = item.DistanceType,
+            Password = item.Password,
+            Adress = item.Adress,
+            Distance = item.Distance,
+            Latitude = item.Latitude,
+            Longitude = item.Longitude,
+            IsActive = item.IsActive
+        };
+
+        // מחליפים את המתנדב הקודם בחדש
+        DataSource.Volunteers.Remove(volunteerToUpdate);
+        DataSource.Volunteers.Add(updatedVolunteer);
     }
 
     /// <summary>

@@ -26,6 +26,8 @@ namespace DalTest
                     if (num == 0)
                         return;
                     ShowMainMenu();
+                    if(!MainMenuChoice())
+                        return;
                 }
             }
             catch (Exception)
@@ -385,10 +387,11 @@ namespace DalTest
             string password = Console.ReadLine()!;
             Console.Write("Enter volunteer address: ");
             string address = Console.ReadLine()!;
+            
             Console.Write("Enter maximum distance: ");
             double dis = int.Parse(Console.ReadLine()!);
 
-            Volunteer v = new Volunteer { Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
+            Volunteer v = new Volunteer (){ Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
             s_dalVolunteer?.Create(v);
             Console.WriteLine("Volunteer added.");
 
@@ -432,7 +435,7 @@ namespace DalTest
         ///  Prompts the user for an ID, verifies it, and updates the volunteer if found. 
         /// Displays a message indicating whether the update was successful or if the volunteer was not found.
         /// </summary>
-        private static void UpdateVolunteer()
+        /*private static void UpdateVolunteer()
         {
             int id;
             Console.WriteLine("Enter ID:");
@@ -440,7 +443,7 @@ namespace DalTest
             {
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
-
+            
             bool volunteerFound = false;
             foreach (var item in s_dalVolunteer.ReadAll())
             {
@@ -457,10 +460,111 @@ namespace DalTest
             {
                 Console.WriteLine("Volunteer not found.");
             }
+        }
+        */
+        /*
+        private static void UpdateVolunteer()
+        {
+            int id;
+            Console.WriteLine("Enter ID:");
+            while (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
 
+            Volunteer? volunteer = s_dalVolunteer.Read(id);
+            if (volunteer == null)
+            {
+                Console.WriteLine("Volunteer not found.");
+                return;
+            }
+
+            // עדכון שם המתנדב
+            Console.WriteLine($"Current name: {volunteer.Name}. Enter new name (or press Enter to keep current):");
+            string newName = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newName)) volunteer.Name = newName;
+
+            // עדכון טלפון
+            Console.WriteLine($"Current phone: {volunteer.Phone}. Enter new phone (or press Enter to keep current):");
+            string newPhone = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newPhone)) volunteer.Phone = newPhone;
+
+            // עדכון אימייל
+            Console.WriteLine($"Current email: {volunteer.Email}. Enter new email (or press Enter to keep current):");
+            string newEmail = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newEmail)) volunteer.Email = newEmail;
+
+            // עדכון סיסמה
+            Console.WriteLine($"Current password: {volunteer.Password}. Enter new password (or press Enter to keep current):");
+            string newPassword = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newPassword)) volunteer.Password = newPassword;
+
+            // עדכון כתובת
+            Console.WriteLine($"Current address: {volunteer.Adress}. Enter new address (or press Enter to keep current):");
+            string newAddress = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newAddress)) volunteer.Adress = newAddress;
+
+            // עדכון מרחק
+            Console.WriteLine($"Current distance: {volunteer.Distance}. Enter new distance (or press Enter to keep current):");
+            string newDistanceInput = Console.ReadLine();
+            if (double.TryParse(newDistanceInput, out double newDistance)) volunteer.Distance = newDistance;
+
+            // קריאה לעדכון במערכת
+            s_dalVolunteer.Update(volunteer);
+            Console.WriteLine("Volunteer details updated.");
         }
 
+        */
+        private static void UpdateVolunteer()
+        {
+            int id;
+            Console.WriteLine("Enter ID:");
+            while (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
+            }
 
+            Volunteer? volunteer = s_dalVolunteer.Read(id);
+            if (volunteer == null)
+            {
+                Console.WriteLine("Volunteer not found.");
+                return;
+            }
+
+            // עדכון שם המתנדב
+            Console.WriteLine($"Current name: {volunteer.Name}. Enter new name (or press Enter to keep current):");
+            string newName = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newName)) volunteer = volunteer with { Name = newName };
+
+            // עדכון טלפון
+            Console.WriteLine($"Current phone: {volunteer.Phone}. Enter new phone (or press Enter to keep current):");
+            string newPhone = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newPhone)) volunteer = volunteer with { Phone = newPhone };
+
+            // עדכון אימייל
+            Console.WriteLine($"Current email: {volunteer.Email}. Enter new email (or press Enter to keep current):");
+            string newEmail = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newEmail)) volunteer = volunteer with { Email = newEmail };
+
+            // עדכון סיסמה
+            Console.WriteLine($"Current password: {volunteer.Password}. Enter new password (or press Enter to keep current):");
+            string newPassword = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newPassword)) volunteer = volunteer with { Password = newPassword };
+
+            // עדכון כתובת
+            Console.WriteLine($"Current address: {volunteer.Adress}. Enter new address (or press Enter to keep current):");
+            string newAddress = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newAddress)) volunteer = volunteer with { Adress = newAddress };
+
+            // עדכון מרחק
+            Console.WriteLine($"Current distance: {volunteer.Distance}. Enter new distance (or press Enter to keep current):");
+            string newDistanceInput = Console.ReadLine()!;
+            if (double.TryParse(newDistanceInput, out double newDistance)) volunteer = volunteer with { Distance = newDistance };
+
+            // קריאה לעדכון במערכת
+            s_dalVolunteer.Update(volunteer);
+            Console.WriteLine("Volunteer details updated.");
+        }
         /// <summary>
         ///  Delete a volunteer by ID
         ///   Prompts the user for an ID, validates it, and deletes the volunteer if the ID is valid. 
