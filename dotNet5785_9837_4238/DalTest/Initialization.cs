@@ -390,7 +390,17 @@ public static class Initialization
         }
     }
 
-
+    /// <summary>
+    /// /// <summary>
+    /// Initializes the data source by verifying non-null DAL instances, 
+    /// resetting configuration values, clearing all data lists, 
+    /// and populating them with initial data.
+    /// <param name="dalVolunteer"></param>
+    /// <param name="dalCall"></param>
+    /// <param name="dalAssignment"></param>
+    /// <param name="dalConfig"></param>
+    /// <exception cref="NullReferenceException"></exception>
+    ///  </summary>
     public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) 
     {
         //check if they are null
