@@ -1,4 +1,6 @@
-﻿namespace DO;
+﻿using System.Runtime.CompilerServices;
+
+namespace DO;
 
 /// <summary>
 /// Volunter Entity reprensents a volunteer with all his props
@@ -30,15 +32,16 @@ public record Volunteer
     double? Latitude = null,
     double? Longitude = null,
     bool IsActive = true
-    
-    
 )
+
+
 {
     /// <summary>
     /// Default constructor for chapter 3 stage 1
     /// </summary>
-    public Volunteer() : this(0,"","","",0,0) { } 
+    public Volunteer() : this(0, "", "", "", 0, 0) { } 
 }
+
 
 
 

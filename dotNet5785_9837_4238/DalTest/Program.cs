@@ -19,15 +19,19 @@ namespace DalTest
         {
             try
             {
+                ShowMainMenu();
                 while (true)
                 {
-                    Console.WriteLine("enter a number");
+                    Console.WriteLine("Enter a number:");
                     int num = int.Parse(Console.ReadLine()!);
+
                     if (num == 0)
                         return;
-                    ShowMainMenu();
-                    if(!MainMenuChoice())
+
+                    if (!MainMenuChoice())
                         return;
+
+                    ShowMainMenu();
                 }
             }
             catch (Exception)
@@ -50,7 +54,7 @@ namespace DalTest
             Console.WriteLine("6. Configuration Menu");
             Console.WriteLine("7. Reset Database and Configuration");
             Console.WriteLine("0. Exit");
-            Console.Write("Enter your choice: ");
+           // Console.Write("Enter your choice: ");
         }
 
         /// <summary>
@@ -391,7 +395,7 @@ namespace DalTest
             Console.Write("Enter maximum distance: ");
             double dis = int.Parse(Console.ReadLine()!);
 
-            Volunteer v = new Volunteer (){ Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
+            Volunteer v = new Volunteer (){VolunteerId = id,  Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
             s_dalVolunteer?.Create(v);
             Console.WriteLine("Volunteer added.");
 
@@ -435,86 +439,7 @@ namespace DalTest
         ///  Prompts the user for an ID, verifies it, and updates the volunteer if found. 
         /// Displays a message indicating whether the update was successful or if the volunteer was not found.
         /// </summary>
-        /*private static void UpdateVolunteer()
-        {
-            int id;
-            Console.WriteLine("Enter ID:");
-            while (!int.TryParse(Console.ReadLine(), out id))
-            {
-                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
-            }
-            
-            bool volunteerFound = false;
-            foreach (var item in s_dalVolunteer.ReadAll())
-            {
-                if (item.VolunteerId == id)
-                {
-                    s_dalVolunteer?.Update(item);
-                    Console.WriteLine("Volunteer updated.");
-                    volunteerFound = true;
-                    break;
-                }
-            }
 
-            if (!volunteerFound)
-            {
-                Console.WriteLine("Volunteer not found.");
-            }
-        }
-        */
-        /*
-        private static void UpdateVolunteer()
-        {
-            int id;
-            Console.WriteLine("Enter ID:");
-            while (!int.TryParse(Console.ReadLine(), out id))
-            {
-                Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
-            }
-
-            Volunteer? volunteer = s_dalVolunteer.Read(id);
-            if (volunteer == null)
-            {
-                Console.WriteLine("Volunteer not found.");
-                return;
-            }
-
-            // עדכון שם המתנדב
-            Console.WriteLine($"Current name: {volunteer.Name}. Enter new name (or press Enter to keep current):");
-            string newName = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newName)) volunteer.Name = newName;
-
-            // עדכון טלפון
-            Console.WriteLine($"Current phone: {volunteer.Phone}. Enter new phone (or press Enter to keep current):");
-            string newPhone = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newPhone)) volunteer.Phone = newPhone;
-
-            // עדכון אימייל
-            Console.WriteLine($"Current email: {volunteer.Email}. Enter new email (or press Enter to keep current):");
-            string newEmail = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newEmail)) volunteer.Email = newEmail;
-
-            // עדכון סיסמה
-            Console.WriteLine($"Current password: {volunteer.Password}. Enter new password (or press Enter to keep current):");
-            string newPassword = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newPassword)) volunteer.Password = newPassword;
-
-            // עדכון כתובת
-            Console.WriteLine($"Current address: {volunteer.Adress}. Enter new address (or press Enter to keep current):");
-            string newAddress = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newAddress)) volunteer.Adress = newAddress;
-
-            // עדכון מרחק
-            Console.WriteLine($"Current distance: {volunteer.Distance}. Enter new distance (or press Enter to keep current):");
-            string newDistanceInput = Console.ReadLine();
-            if (double.TryParse(newDistanceInput, out double newDistance)) volunteer.Distance = newDistance;
-
-            // קריאה לעדכון במערכת
-            s_dalVolunteer.Update(volunteer);
-            Console.WriteLine("Volunteer details updated.");
-        }
-
-        */
         private static void UpdateVolunteer()
         {
             int id;
@@ -664,6 +589,7 @@ namespace DalTest
         /// Updates the details of a call by its ID. Prompts the user for an ID, validates it, and updates the call if found. 
         /// Displays a message indicating whether the update was successful or if the call was not found.
         /// </summary>
+       
         private static void UpdateCall()
         {
             int id;
@@ -673,21 +599,53 @@ namespace DalTest
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
 
-            bool callFound = false;
-            foreach (var item in s_dalCall.ReadAll())
-            {
-                if (item.CallId == id)
-                {
-                    s_dalCall?.Update(item);
-                    Console.WriteLine("Call updated.");
-                    callFound = true;
-                    break;
-                }
-            }
-            if (!callFound)
+            Call? call = s_dalCall.Read(id);
+            if (call == null)
             {
                 Console.WriteLine("Call not found.");
+                return;
             }
+
+            // עדכון סוג הקריאה
+            Console.WriteLine($"Current call type: {call.CallType}. Enter new call type (or press Enter to keep current):");
+            if (Enum.TryParse<CallType>(Console.ReadLine(), out CallType newCallType))
+            {
+                call = call with { CallType = newCallType };
+            }
+
+            // עדכון כתובת
+            Console.WriteLine($"Current address: {call.Adress}. Enter new address (or press Enter to keep current):");
+            string newAddress = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newAddress)) call = call with { Adress = newAddress };
+
+            // עדכון קו רוחב
+            Console.WriteLine($"Current latitude: {call.Latitude}. Enter new latitude (or press Enter to keep current):");
+            string newLatitudeInput = Console.ReadLine()!;
+            if (double.TryParse(newLatitudeInput, out double newLatitude)) call = call with { Latitude = newLatitude };
+
+            // עדכון קו אורך
+            Console.WriteLine($"Current longitude: {call.Longitude}. Enter new longitude (or press Enter to keep current):");
+            string newLongitudeInput = Console.ReadLine()!;
+            if (double.TryParse(newLongitudeInput, out double newLongitude)) call = call with { Longitude = newLongitude };
+
+            // עדכון זמן פתיחת הקריאה
+            Console.WriteLine($"Current open time: {call.OpenTime}. Enter new open time (format: yyyy-MM-dd HH:mm:ss or press Enter to keep current):");
+            string newOpenTimeInput = Console.ReadLine()!;
+            if (DateTime.TryParse(newOpenTimeInput, out DateTime newOpenTime)) call = call with { OpenTime = newOpenTime };
+
+            // עדכון זמן סיום מקסימלי
+            Console.WriteLine($"Current max time: {call.MaxTime}. Enter new max time (format: yyyy-MM-dd HH:mm:ss or press Enter to keep current):");
+            string newMaxTimeInput = Console.ReadLine()!;
+            if (DateTime.TryParse(newMaxTimeInput, out DateTime newMaxTime)) call = call with { MaxTime = newMaxTime };
+
+            // עדכון פרטים נוספים
+            Console.WriteLine($"Current details: {call.Details}. Enter new details (or press Enter to keep current):");
+            string newDetails = Console.ReadLine()!;
+            if (!string.IsNullOrEmpty(newDetails)) call = call with { Details = newDetails };
+
+            // קריאה לעדכון במערכת
+            s_dalCall.Update(call);
+            Console.WriteLine("Call details updated.");
         }
 
 
@@ -778,6 +736,17 @@ namespace DalTest
         /// Prompts the user for an ID, validates it, and updates the assignment if found.
         /// Displays a message indicating whether the update was successful or if the assignment was not found.
         /// </summary>
+        /// 
+
+
+        /// <summary>
+        /// Delete a call by ID 
+        /// Prompts the user to enter a valid assignment ID, validates it, and deletes the assignment if the ID is valid. 
+        /// Displays a confirmation message upon deletion.
+        /// </summary>
+        /// 
+
+
         private static void UpdateAssignment()
         {
             int id;
@@ -787,29 +756,45 @@ namespace DalTest
                 Console.WriteLine("Invalid ID format. Please enter a valid integer ID:");
             }
 
-            bool assignmentFound = false;
-            foreach (var item in s_dalAssignment.ReadAll())
-            {
-                if (item.Id == id)
-                {
-                    s_dalAssignment?.Update(item);
-                    Console.WriteLine("Assignment updated.");
-                    assignmentFound = true;
-                    break;
-                }
-            }
-            if (!assignmentFound)
+            Assignment? assignment = s_dalAssignment.Read(id);
+            if (assignment == null)
             {
                 Console.WriteLine("Assignment not found.");
+                return;
             }
+
+            // עדכון מזהה הקריאה
+            Console.WriteLine($"Current Call ID: {assignment.CallId}. Enter new Call ID (or press Enter to keep current):");
+            string newCallIdInput = Console.ReadLine()!;
+            if (int.TryParse(newCallIdInput, out int newCallId)) assignment = assignment with { CallId = newCallId };
+
+            // עדכון מזהה המתנדב
+            Console.WriteLine($"Current Volunteer ID: {assignment.VolunteerId}. Enter new Volunteer ID (or press Enter to keep current):");
+            string newVolunteerIdInput = Console.ReadLine()!;
+            if (int.TryParse(newVolunteerIdInput, out int newVolunteerId)) assignment = assignment with { VolunteerId = newVolunteerId };
+
+            // עדכון זמן התחלה
+            Console.WriteLine($"Current Start Time: {assignment.StartTime}. Enter new Start Time (format: yyyy-MM-dd HH:mm:ss or press Enter to keep current):");
+            string newStartTimeInput = Console.ReadLine()!;
+            if (DateTime.TryParse(newStartTimeInput, out DateTime newStartTime)) assignment = assignment with { StartTime = newStartTime };
+
+            // עדכון סוג הסיום
+            Console.WriteLine($"Current Type of End: {assignment.TypeOfEnd}. Enter new Type of End (or press Enter to keep current):");
+            if (Enum.TryParse<TypeOfEnd>(Console.ReadLine(), out TypeOfEnd newTypeOfEnd))
+            {
+                assignment = assignment with { TypeOfEnd = newTypeOfEnd };
+            }
+
+            // עדכון זמן סיום
+            Console.WriteLine($"Current Finish Time: {assignment.FinishTime}. Enter new Finish Time (format: yyyy-MM-dd HH:mm:ss or press Enter to keep current):");
+            string newFinishTimeInput = Console.ReadLine()!;
+            if (DateTime.TryParse(newFinishTimeInput, out DateTime newFinishTime)) assignment = assignment with { FinishTime = newFinishTime };
+
+            // קריאה לעדכון במערכת
+            s_dalAssignment.Update(assignment);
+            Console.WriteLine("Assignment details updated.");
         }
 
-
-        /// <summary>
-        /// Delete a call by ID 
-        /// Prompts the user to enter a valid assignment ID, validates it, and deletes the assignment if the ID is valid. 
-        /// Displays a confirmation message upon deletion.
-        /// </summary>
         private static void DeleteAssignment()
         {
             int id;
