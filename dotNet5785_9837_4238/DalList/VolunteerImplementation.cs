@@ -2,11 +2,12 @@
 using DalApi;
 using DO;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 ///Implement the properties and methods defined in the `IVolunteer` interface to manage configurations related to the "Volunteer" entity.
 /// </summary>
-public class VolunteerImplementation : IVolunteer
+internal class VolunteerImplementation : IVolunteer
 {
     /// <summary>
     /// function create new item :
@@ -46,30 +47,42 @@ public class VolunteerImplementation : IVolunteer
 
 
     /// <summary>
-    /// function read: checks and return the wanted element from the list
+    /// function read: checks and return the wanted element
     /// </summary>
-   
-    public Volunteer? Read(int id)
-    {
-        if (DataSource.Volunteers==null)
-        {
-            return null;
-        }
-        else
-        {
-            return DataSource.Volunteers.Find(Vol => Vol.VolunteerId == id);
-        }
 
-       
+    public Volunteer? Read(int volunteerId)
+    {
+        return DataSource.Volunteers.FirstOrDefault(volunteer => volunteer.VolunteerId == volunteerId);
+    }
+
+    /// <summary>
+    /// new function Read which goes according to a delegate function
+    /// </summary>
+ 
+    /// <exception cref="NotImplementedException"></exception>
+    public Volunteer? Read(Func<Volunteer, bool>? filter)
+    {
+        
+        return DataSource.Volunteers?.FirstOrDefault(filter);
+
     }
 
 
+
+
     /// <summary>
-    /// function readall: returns the list
+    /// function readall: returns the items
     /// </summary>
-    public List<Volunteer> ReadAll()
+    public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
     {
-        return new List<Volunteer>(DataSource.Volunteers);
+        if (filter != null)
+        {
+            return from item in DataSource.Volunteers
+                   where filter(item)
+                   select item;
+        }
+        return from item in DataSource.Volunteers
+               select item;
     }
 
 

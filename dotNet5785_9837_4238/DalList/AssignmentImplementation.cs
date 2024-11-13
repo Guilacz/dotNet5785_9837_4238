@@ -7,21 +7,13 @@ using System.Collections.Generic;
 /// <summary>
 ///Implement the properties and methods defined in the `IAssignment` interface to manage configurations related to the "Assignment" entity.
 /// </summary>
-public class AssignmentImplementation : IAssignment
+internal class AssignmentImplementation : IAssignment
 {
     /// <summary>
     /// function create new item :
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
 
-    /*public void Create(Assignment item)
-    {
-        if (Read(item.Id) != null)
-            throw new ArgumentException($"A call with ID {item.CallId} already exists.");
-
-        else
-            DataSource.Assignments.Add(item);
-    }*/
     public void Create(Assignment item)
     {
         int currentId = Config.NextAssignmentId; // Get the next unique Id for the Assignment
@@ -55,21 +47,40 @@ public class AssignmentImplementation : IAssignment
 
 
     /// <summary>
-    /// function read: checks and return the wanted element from the list
+    /// function read: checks and return the wanted element
     /// </summary>
 
-    public Assignment? Read(int id)
+    public Assignment? Read(int Id)
     {
-        return DataSource.Assignments.Find(Assign => Assign.Id == id);
+        return DataSource.Assignments.FirstOrDefault(assignment => assignment.Id == Id);
+    }
+
+    /// <summary>
+    /// new function Read which goes according to a delegate function
+    /// </summary>
+
+    /// <exception cref="NotImplementedException"></exception>
+    public Assignment? Read(Func<Assignment, bool>? filter)
+    {
+        return DataSource.Assignments?.FirstOrDefault(filter);
     }
 
 
+
+
     /// <summary>
-    /// function readall: returns the list
+    /// function readall: returns the items
     /// </summary>
-    public List<Assignment> ReadAll()
+    public IEnumerable<Assignment> ReadAll(Func <Assignment, bool>? filter = null)
     {
-        return new List<Assignment>(DataSource.Assignments);
+        if (filter!= null)
+        {
+            return from item in DataSource.Assignments
+                   where filter(item)
+                   select item;
+        }
+        return from item in DataSource.Assignments
+               select item;
     }
 
 

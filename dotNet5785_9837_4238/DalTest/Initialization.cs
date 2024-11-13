@@ -9,11 +9,11 @@ using System;
 /// </summary>
 public static class Initialization
 {
-    private static IVolunteer? s_dalVolunteer; //stage 1
-    private static ICall? s_dalCall; //stage 1
-    private static IAssignment? s_dalAssignment; //stage 1
-    private static IConfig? s_dalConfig; //stage 1
+    private static IDal? s_dal;
 
+    
+    
+    
     private static readonly Random s_rand = new();
 
 
@@ -125,7 +125,7 @@ public static class Initialization
 
             Volunteer vol = new Volunteer(id[k], volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k], distance);
 
-            s_dalVolunteer!.Create(vol);
+            s_dal!.Volunteer.Create(vol);
         }
 
 
@@ -155,7 +155,7 @@ public static class Initialization
         Random random = new Random();
 
         int j;
-        int id = s_dalConfig!.nextCallId;
+        int id = s_dal!.Config.nextCallId;
 
         string[] CallAddress =
         {
@@ -241,8 +241,8 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig.Clock);
-            s_dalCall!.Create(c);
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
+            s_dal!.Call.Create(c);
         }
 
         //creation of 5 calls already expired
@@ -262,8 +262,8 @@ public static class Initialization
 
                 _ => throw new ArgumentOutOfRangeException()
             };
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dalConfig!.Clock.AddSeconds(-5)); 
-            s_dalCall!.Create(c);
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5)); 
+            s_dal!.Call.Create(c);
         }
     }
 
@@ -294,75 +294,75 @@ public static class Initialization
     878787878
 };
         int i;
-        int callId = s_dalConfig!.nextCallId;
-        int assignmentId = s_dalConfig.nextAsignmentId;
+        int callId = s_dal!.Config.nextCallId;
+        int assignmentId = s_dal.Config.nextAsignmentId;
         //short explanation : for each type of end we separated in several for , like that each volunteer receives a different num of calls
         //creation of 50 assignments who are fulfilled
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-15], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-15], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-29], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-29], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-40], s_dalConfig!.Clock, TypeOfEnd.Fulfilled);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-40], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            s_dal!.Assignment.Create(a);
         }
 
         //creation of 50 assignments who are CancelledAfterTime
 
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledAfterTime);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            s_dal!.Assignment.Create(a);
         }
 
         //creation of 50 assignments who are CancelledByManager
 
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledByManager);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            s_dal!.Assignment.Create(a);
         }
 
 
@@ -370,23 +370,23 @@ public static class Initialization
         
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dalConfig!.Clock, TypeOfEnd.CancelledByVolunteer);
-            s_dalAssignment!.Create(a);
+            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
         }
     }
 
@@ -401,21 +401,16 @@ public static class Initialization
     /// <param name="dalConfig"></param>
     /// <exception cref="NullReferenceException"></exception>
     ///  </summary>
-    public static void Do(IVolunteer? dalVolunteer, ICall? dalCall, IAssignment? dalAssignment, IConfig? dalConfig) 
+    public static void Do(IDal dal) 
     {
         //check if they are null
-        s_dalVolunteer = dalVolunteer ?? throw new NullReferenceException("DAL object can not be null!");
-        s_dalCall = dalCall ?? throw new NullReferenceException("DAL object can not be null!"); 
-        s_dalAssignment = dalAssignment ?? throw new NullReferenceException("DAL object can not be null!"); 
-        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!");
+        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!");
 
 
         //reset everything
         Console.WriteLine("Reset Configuration values and List values...");
-        s_dalConfig.Reset(); 
-        s_dalVolunteer.DeleteAll(); 
-        s_dalCall.DeleteAll();
-        s_dalAssignment.DeleteAll();
+        s_dal.resetDB();
+       
 
 
         //create news

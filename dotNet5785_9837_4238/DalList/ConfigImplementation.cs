@@ -6,7 +6,7 @@ namespace Dal;
 ///Implement the properties and methods defined in the `IConfig` interface to manage configurations related to the "Configuration" entity.
 /// </summary>
 /// 
-public class ConfigImplementation : IConfig
+internal class ConfigImplementation : IConfig
 {
     /// <summary>
     /// Gets or sets the current clock time for the configuration.

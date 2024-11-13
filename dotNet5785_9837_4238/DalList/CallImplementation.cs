@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// <summary>
 ///Implement the properties and methods defined in the `ICall` interface to manage configurations related to the "call" entity.
 /// </summary>
-public class CallImplementation : ICall
+internal class CallImplementation : ICall
 {
     /// <summary>
     /// function create new item :
@@ -21,12 +21,7 @@ public class CallImplementation : ICall
         DataSource.Calls.Add(currentItem);//Added the new item to the database
                                           //return currentId;
     }
-    /*public void Create(Call item)
-    {
-        int temp = Config.NextCallId;
-        Call copyItem = item with { CallId = temp };
-        DataSource.Calls.Add(copyItem);
-    }*/
+  
 
 
     /// <summary>
@@ -52,51 +47,42 @@ public class CallImplementation : ICall
     }
 
 
+
     /// <summary>
-    /// function read: checks and return the wanted element from the list
+    /// function read: checks and return the wanted element
     /// </summary>
 
-    /*public Call? Read(int id)
+    public Call? Read(int callId)
     {
-        if (DataSource.Calls == null)
-        {
-            return null;
-        }
-        else
-        {
-            return DataSource.Calls.Find(Cal => Cal.CallId == id);
-        }
-        
-    }*/
-    public Call? Read(int id)
+        return DataSource.Calls.FirstOrDefault(call => call.CallId == callId);
+    }
+
+
+
+    /// <summary>
+    /// new function Read which goes according to a delegate function
+    /// </summary>
+
+    /// <exception cref="NotImplementedException"></exception>
+    public Call? Read(Func<Call, bool>? filter)
     {
-        if (DataSource.Calls == null)
-        {
-            Console.WriteLine("DataSource.Calls is null");
-            return null;
-        }
-        else
-        {
-            var call = DataSource.Calls.Find(Cal => Cal.CallId == id);
-            if (call == null)
-            {
-                Console.WriteLine($"Call with ID {id} not found.");
-            }
-            else
-            {
-                Console.WriteLine($"Call with ID {id} found.");
-            }
-            return call;
-        }
+        return DataSource.Calls?.FirstOrDefault(filter);
     }
 
 
     /// <summary>
-    /// function readall: returns the list
+    /// function readall: returns the items
     /// </summary>
-    public List<Call> ReadAll()
+    public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
-        return new List<Call>(DataSource.Calls);
+        if (filter != null)
+        {
+            return from item in DataSource.Calls
+                   where filter(item)
+                   select item;
+        }
+        return from item in DataSource.Calls
+               select item;
     }
 
 
