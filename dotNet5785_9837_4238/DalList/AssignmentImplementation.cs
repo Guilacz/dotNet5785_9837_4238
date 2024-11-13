@@ -14,13 +14,19 @@ public class AssignmentImplementation : IAssignment
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
 
-    public void Create(Assignment item)
+    /*public void Create(Assignment item)
     {
         if (Read(item.Id) != null)
-            throw new ArgumentException($"A assignment with ID {item.Id} already exists.");
+            throw new ArgumentException($"A call with ID {item.CallId} already exists.");
 
         else
             DataSource.Assignments.Add(item);
+    }*/
+    public void Create(Assignment item)
+    {
+        int currentId = Config.NextAssignmentId; // Get the next unique Id for the Assignment
+        Assignment currentItem = new Assignment(currentId, item.CallId, item.VolunteerId, item.StartTime, item.TypeOfEnd, item.FinishTime);
+        DataSource.Assignments.Add(currentItem); // Add the new Assignment to the data source
     }
 
 

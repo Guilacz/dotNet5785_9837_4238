@@ -51,7 +51,16 @@ public class VolunteerImplementation : IVolunteer
    
     public Volunteer? Read(int id)
     {
-        return DataSource.Volunteers.Find(Vol=> Vol.VolunteerId == id ); 
+        if (DataSource.Volunteers==null)
+        {
+            return null;
+        }
+        else
+        {
+            return DataSource.Volunteers.Find(Vol => Vol.VolunteerId == id);
+        }
+
+       
     }
 
 

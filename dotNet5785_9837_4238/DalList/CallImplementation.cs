@@ -13,14 +13,20 @@ public class CallImplementation : ICall
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
 
-    public void Create(Call item)
-    {
-        if (Read(item.CallId) != null)
-            throw new ArgumentException($"A call with ID {item.CallId} already exists.");
+    public void Create(Call item)//The new ID of the new object added to the list should be returned as a return value.
 
-        else
-            DataSource.Calls.Add(item);
+    {
+        int currentId = Config.NextCallId;//Type a new running number type for the next call
+        Call currentItem = new Call(currentId, item.CallType, item.Adress, item.Latitude, item.Longitude, item.OpenTime, item.MaxTime, item.Details);
+        DataSource.Calls.Add(currentItem);//Added the new item to the database
+                                          //return currentId;
     }
+    /*public void Create(Call item)
+    {
+        int temp = Config.NextCallId;
+        Call copyItem = item with { CallId = temp };
+        DataSource.Calls.Add(copyItem);
+    }*/
 
 
     /// <summary>
@@ -50,9 +56,38 @@ public class CallImplementation : ICall
     /// function read: checks and return the wanted element from the list
     /// </summary>
 
+    /*public Call? Read(int id)
+    {
+        if (DataSource.Calls == null)
+        {
+            return null;
+        }
+        else
+        {
+            return DataSource.Calls.Find(Cal => Cal.CallId == id);
+        }
+        
+    }*/
     public Call? Read(int id)
     {
-        return DataSource.Calls.Find(Cal => Cal.CallId == id);
+        if (DataSource.Calls == null)
+        {
+            Console.WriteLine("DataSource.Calls is null");
+            return null;
+        }
+        else
+        {
+            var call = DataSource.Calls.Find(Cal => Cal.CallId == id);
+            if (call == null)
+            {
+                Console.WriteLine($"Call with ID {id} not found.");
+            }
+            else
+            {
+                Console.WriteLine($"Call with ID {id} found.");
+            }
+            return call;
+        }
     }
 
 

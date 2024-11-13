@@ -22,9 +22,8 @@ namespace DalTest
                 ShowMainMenu();
                 while (true)
                 {
-                    Console.WriteLine("Enter a number:");
-                    int num = int.Parse(Console.ReadLine()!);
-
+                    //int num = int.Parse(Console.ReadLine()!);
+                    int num = 1;
                     if (num == 0)
                         return;
 
@@ -520,12 +519,12 @@ namespace DalTest
             Console.WriteLine("1.Math_Primary");
             Console.WriteLine("2.Math_Middle");
             Console.WriteLine("3.Math_High");
-            Console.WriteLine("3.English_Primary");
-            Console.WriteLine("3.English_Middle");
-            Console.WriteLine("3.English_High");
-            Console.WriteLine("3.Grammary_Primary");
-            Console.WriteLine("3.Grammary_Middle");
-            Console.WriteLine("3.Grammary_High");
+            Console.WriteLine("4.English_Primary");
+            Console.WriteLine("5.English_Middle");
+            Console.WriteLine("6.English_High");
+            Console.WriteLine("7.Grammary_Primary");
+            Console.WriteLine("8.Grammary_Middle");
+            Console.WriteLine("9.Grammary_High");
             CallType lesson = (CallType)int.Parse(Console.ReadLine()!);
             //adress
             Console.WriteLine("Enter an address");
@@ -739,12 +738,7 @@ namespace DalTest
         /// 
 
 
-        /// <summary>
-        /// Delete a call by ID 
-        /// Prompts the user to enter a valid assignment ID, validates it, and deletes the assignment if the ID is valid. 
-        /// Displays a confirmation message upon deletion.
-        /// </summary>
-        /// 
+
 
 
         private static void UpdateAssignment()
@@ -795,6 +789,12 @@ namespace DalTest
             Console.WriteLine("Assignment details updated.");
         }
 
+        /// <summary>
+        /// Delete a call by ID 
+        /// Prompts the user to enter a valid assignment ID, validates it, and deletes the assignment if the ID is valid. 
+        /// Displays a confirmation message upon deletion.
+        /// </summary>
+        
         private static void DeleteAssignment()
         {
             int id;
@@ -809,6 +809,3 @@ namespace DalTest
 
     }
 }
-
-
-

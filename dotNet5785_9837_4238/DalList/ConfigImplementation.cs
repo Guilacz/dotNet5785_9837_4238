@@ -39,7 +39,7 @@ public class ConfigImplementation : IConfig
     /// Gets the next available Assignment ID.
     /// This property currently throws a NotImplementedException as it is not implemented yet.
     /// </summary>
-    public int nextAsignmentId => throw new NotImplementedException();
+    public int nextAsignmentId { get=> Config.NextAssignmentId; }
 
     /// <summary>
     /// Resets the configuration settings.
