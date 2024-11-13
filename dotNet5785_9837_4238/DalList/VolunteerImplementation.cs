@@ -17,7 +17,7 @@ internal class VolunteerImplementation : IVolunteer
     public void Create(Volunteer item)
     {
         if (Read(item.VolunteerId) != null)
-            throw new ArgumentException($"A volunteer with ID {item.VolunteerId} already exists.");
+            throw new DalAlreadyExistException($"A volunteer with ID {item.VolunteerId} already exists.");
 
         DataSource.Volunteers.Add(item);
     }
@@ -32,7 +32,7 @@ internal class VolunteerImplementation : IVolunteer
         Volunteer? volunteerToDelete = Read(id);
 
         if (volunteerToDelete == null)
-            throw new ArgumentException($"A volunteer with ID {id} does not exist.");
+            throw new DalDeletionImpossible($"A volunteer with ID {id} does not exist.");
         
         DataSource.Volunteers.Remove(volunteerToDelete);
     }
@@ -95,7 +95,7 @@ internal class VolunteerImplementation : IVolunteer
         Volunteer? volunteerToUpdate = Read(item.VolunteerId);
 
         if (volunteerToUpdate == null)
-            throw new ArgumentException($"A volunteer with ID {item.VolunteerId} does not exist.");
+            throw new DalDoesNotExistException($"A volunteer with ID {item.VolunteerId} does not exist.");
 
         // שימוש ב-with לעדכון הערכים
         Volunteer updatedVolunteer = volunteerToUpdate with

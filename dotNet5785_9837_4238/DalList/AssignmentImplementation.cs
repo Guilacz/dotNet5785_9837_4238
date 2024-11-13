@@ -31,7 +31,7 @@ internal class AssignmentImplementation : IAssignment
         Assignment? AssignmentToDelete = Read(id);
 
         if (AssignmentToDelete == null)
-            throw new ArgumentException($"A assignment with ID {id} does not exist.");
+            throw new DalDeletionImpossible($"A assignment with ID {id} does not exist.");
 
         else
             DataSource.Assignments.Remove(AssignmentToDelete);
@@ -93,7 +93,7 @@ internal class AssignmentImplementation : IAssignment
         Assignment? AssignmentToUpdate = Read(item.Id);
 
         if (AssignmentToUpdate == null)
-            throw new ArgumentException($"A assignment with ID {item.Id} does not exist.");
+            throw new DalDoesNotExistException($"A assignment with ID {item.Id} does not exist.");
 
         else
         {

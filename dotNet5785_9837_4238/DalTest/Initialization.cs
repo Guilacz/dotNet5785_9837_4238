@@ -239,7 +239,7 @@ public static class Initialization
                 8 => CallType.Grammary_Middle,
                 9 => CallType.Grammary_High,
 
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new DalInvalidValueException("Invalid value in call")
             };
             Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
             s_dal!.Call.Create(c);
@@ -260,7 +260,7 @@ public static class Initialization
                 8 => CallType.Grammary_Middle,
                 9 => CallType.Grammary_High,
 
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new DalInvalidValueException("Invalid value in call")
             };
             Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5)); 
             s_dal!.Call.Create(c);
@@ -404,7 +404,7 @@ public static class Initialization
     public static void Do(IDal dal) 
     {
         //check if they are null
-        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!");
+        s_dal = dal ?? throw new DalArgumentNullException("DAL object can not be null!");
 
 
         //reset everything

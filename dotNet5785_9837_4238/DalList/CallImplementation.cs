@@ -19,7 +19,8 @@ internal class CallImplementation : ICall
         int currentId = Config.NextCallId;//Type a new running number type for the next call
         Call currentItem = new Call(currentId, item.CallType, item.Adress, item.Latitude, item.Longitude, item.OpenTime, item.MaxTime, item.Details);
         DataSource.Calls.Add(currentItem);//Added the new item to the database
-                                          //return currentId;
+        //return currentId;
+
     }
   
 
@@ -33,7 +34,7 @@ internal class CallImplementation : ICall
         Call? CallToDelete = Read(id);
 
         if (CallToDelete == null)
-            throw new ArgumentException($"A call with ID {id} does not exist.");
+            throw new DalDeletionImpossible($"A call with ID {id} does not exist.");
   
         DataSource.Calls.Remove(CallToDelete);
     }
@@ -95,7 +96,7 @@ internal class CallImplementation : ICall
         Call? CallToUpdate = Read(item.CallId);
 
         if (CallToUpdate == null)
-            throw new ArgumentException($"A call with ID {item.CallId} does not exist.");
+            throw new DalDoesNotExistException($"A call with ID {item.CallId} does not exist.");
         
         else
         {
