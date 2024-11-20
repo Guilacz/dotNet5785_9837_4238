@@ -32,3 +32,14 @@ public class DalArgumentNullException : Exception
 {
     public DalArgumentNullException(string? message) : base(message) { }
 }
+
+
+
+/// <summary>
+/// new exception from xml tools
+/// </summary>
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException(string? message) : base(message) { }
+}
+

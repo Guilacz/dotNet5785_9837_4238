@@ -14,6 +14,7 @@ internal class VolunteerImplementation : IVolunteer
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
 
+
     public void Create(Volunteer item)
     {
         if (Read(item.VolunteerId) != null)
@@ -36,6 +37,8 @@ internal class VolunteerImplementation : IVolunteer
         
         DataSource.Volunteers.Remove(volunteerToDelete);
     }
+
+  
 
     /// <summary>
     /// function deleteAll: clears all the list
@@ -66,8 +69,6 @@ internal class VolunteerImplementation : IVolunteer
         return DataSource.Volunteers?.FirstOrDefault(filter);
 
     }
-
-
 
 
     /// <summary>

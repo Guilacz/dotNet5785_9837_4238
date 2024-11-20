@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<NextCallId>1</NextCallId>
+	<NextAssignmentId>0</NextAssignmentId>
+	<Clock>DateTime.Now</Clock>
+	<RiskRange>TimeSpan.Zero</RiskRange>
+</config>
