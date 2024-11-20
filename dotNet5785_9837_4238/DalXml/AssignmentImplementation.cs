@@ -3,46 +3,115 @@ using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 internal class AssignmentImplementation : IAssignment
 {
+    private const string AssignmentsXmlFile = Config.s_assignments_xml;
+
+    private XElement createAssignmentElement(Assignment assignment)
+    {
+        return new XElement("Assignment",
+            new XElement("Id", assignment.Id),
+            new XElement("CallId", assignment.CallId),
+            new XElement("VolunteerId", assignment.VolunteerId),
+            new XElement("StartTime", assignment.StartTime.ToString("o")), 
+            new XElement("TypeOfEnd", assignment.TypeOfEnd?.ToString()),
+            new XElement("FinishTime", assignment.FinishTime?.ToString("o"))
+        );
+    }
+
+    static Assignment getAssignment(XElement a)
+    {
+        return new DO.Assignment()
+        {
+            Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
+            CallId = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
+            VolunteerId = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
+            StartTime = a.ToDateTimeNullable("StartTime") ?? throw new FormatException("can't convert StartTime"),
+            TypeOfEnd = a.ToEnumNullable<TypeOfEnd>("TypeOfEnd"),
+            FinishTime = a.ToDateTimeNullable("FinishTime")
+        };
+    }
     public void Create(Assignment item)
     {
-        throw new NotImplementedException();
+        XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
+
+        if (assignmentRootElem.Elements()
+            .Any(assign => (int?)assign.Element("Id") == item.Id))
+            throw new DalAlreadyExistException($"Assignment with ID={item.Id} already exists");
+
+        XElement newAssignment = createAssignmentElement(item);
+        assignmentRootElem.Add(newAssignment);
+
+        XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
+
+        XElement? assignmentToDelete = assignmentRootElem.Elements()
+            .FirstOrDefault(assign => (int?)assign.Element("Id") == id);
+
+        if (assignmentToDelete == null)
+            throw new DalDoesNotExistException($"Assignment with ID={id} does not exist");
+
+        assignmentToDelete.Remove();
+        XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
 
     public void DeleteAll()
     {
-        throw new NotImplementedException();
+        XElement assignmentRootElem = new XElement("Assignments"); 
+        XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
+
 
     public Assignment? Read(int id)
     {
-        throw new NotImplementedException();
+        XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().FirstOrDefault(assign =>(int?)assign.Element("Id") == id);
+        return assignmentElem is null ? null : getAssignment(assignmentElem);
     }
+    
 
     public Assignment? Read(Func<Assignment, bool>? filter)
     {
-        throw new NotImplementedException();
+        return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign =>
+        getAssignment(assign)).FirstOrDefault(filter);
     }
 
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
-        throw new NotImplementedException();
+
+            if (filter == null)
+            {
+                return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign => getAssignment(assign));
+            }
+            else
+            {
+                return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign => getAssignment(assign)).Where(filter);
+            }
     }
 
     public string ToString(Assignment a)
     {
-        throw new NotImplementedException();
+        return $"Assignment Details:\n" +
+          $"ID: {a.Id}\n" +
+          $"Call ID: {a.CallId}\n" +
+          $"Volunteer ID: {a.VolunteerId}\n" +
+          $"Start Time: {a.StartTime}\n" +
+          $"Type Of End: {a.TypeOfEnd}\n" +
+          $"Finish Time: {a.FinishTime?.ToString() ?? "Not Finished"}";
     }
 
     public void Update(Assignment item)
     {
-        throw new NotImplementedException();
+        XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+        (assignmentRootElem.Elements().FirstOrDefault(assign => (int?)assign.Element("Id") == item.Id)
+        ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
+        .Remove();
+        assignmentRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
+        XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
     }
 }

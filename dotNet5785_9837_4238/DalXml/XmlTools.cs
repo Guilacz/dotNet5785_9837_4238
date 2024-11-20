@@ -113,6 +113,26 @@ static class XMLTools
         root.Element(elemName)?.SetValue((elemVal).ToString());
         XMLTools.SaveListToXMLElement(root, xmlFileName);
     }
+    //////////////////////////////////////////
+    public static TimeSpan GetConfigRiskRange(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        TimeSpan dt = root.ToTimeSpanNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        return dt;
+    }
+    public static void SetConfigIntTimeSpan(string xmlFileName, string elemName, int elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue((elemVal).ToString());
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    public static void SetConfigTimeSpan(string xmlFileName, string elemName, TimeSpan elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue((elemVal).ToString());
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    ///////////////////////////////////////////////////
     #endregion
 
 
@@ -127,4 +147,9 @@ static class XMLTools
         int.TryParse((string?)element.Element(name), out var result) ? (int?)result : null;
     #endregion
 
+
+    //////////////////////
+    public static TimeSpan? ToTimeSpanNullable(this XElement element, string name) =>
+        TimeSpan.TryParse((string?)element.Element(name), out var result) ? (TimeSpan?)result : null;
+    //////////////////////
 }

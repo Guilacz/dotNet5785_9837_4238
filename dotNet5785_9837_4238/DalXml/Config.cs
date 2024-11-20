@@ -33,8 +33,8 @@ static internal class Config
 
     internal static TimeSpan RiskRange
     {
-        get => XMLTools.GetConfigDateVal(s_data_config_xml, "RiskRange");
-        set => XMLTools.SetConfigDateVal(s_data_config_xml, "RiskRange", value);
+        get => XMLTools.GetConfigRiskRange(s_data_config_xml, "RiskRange");
+        set => XMLTools.SetConfigTimeSpan(s_data_config_xml, "RiskRange", value);
     }
 
 
