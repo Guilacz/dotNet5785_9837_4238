@@ -24,7 +24,18 @@ public record Assignment
     /// default constructor of the assignment
     /// </summary>
     public Assignment () : this (0,0,0, DateTime.Now, TypeOfEnd:0,DateTime.Now) { }
-   
+
+    public Assignment WithId(int id) => new Assignment
+    {
+        Id = id,
+        CallId = this.CallId,
+        VolunteerId = this.VolunteerId,
+        StartTime = this.StartTime,
+        TypeOfEnd = this.TypeOfEnd,
+        FinishTime = this.FinishTime
+    };
+
+
 }
 
 

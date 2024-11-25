@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
-	<NextCallId>1</NextCallId>
-	<NextAssignmentId>0</NextAssignmentId>
-	<Clock>DateTime.Now</Clock>
-	<RiskRange>TimeSpan.Zero</RiskRange>
+  <NextCallId>42</NextCallId>
+  <NextAssignmentId>0</NextAssignmentId>
+  <Clock>24/11/2024 18:29:45</Clock>
+  <RiskRange>00:00:00</RiskRange>
 </config>

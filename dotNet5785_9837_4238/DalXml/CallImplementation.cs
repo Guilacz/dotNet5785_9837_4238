@@ -20,18 +20,9 @@ internal class CallImplementation : ICall
         if (calls.Any(call => call.CallId == item.CallId))
             throw new DalAlreadyExistException($"A call with ID {item.CallId} already exists.");
 
-        var newCall = new Call
-        {
-            CallId = Config.NextCallId, 
-            CallType = item.CallType,
-            Adress = item.Adress,
-            Latitude = item.Latitude,
-            Longitude = item.Longitude,
-            OpenTime = item.OpenTime,
-            MaxTime = item.MaxTime,
-            Details = item.Details
-        };
-        calls.Add(newCall);
+        item = item with { CallId = Config.NextCallId };
+     
+        calls.Add(item);
         XMLTools.SaveListToXMLSerializer(calls, Config.s_calls_xml);
     }
 

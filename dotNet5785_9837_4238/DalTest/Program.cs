@@ -1,10 +1,9 @@
-﻿using DalApi;
+﻿namespace DalTest;
+using DalApi;
 using DO;
 using Dal;
-
 using System.Threading.Channels;
 
-namespace DalTest;
 
 internal class Program
 {

@@ -33,8 +33,27 @@ internal class AssignmentImplementation : IAssignment
             FinishTime = a.ToDateTimeNullable("FinishTime")
         };
     }
+    /*  public void Create(Assignment item)
+      {
+          XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
+
+          if (assignmentRootElem.Elements()
+              .Any(assign => (int?)assign.Element("Id") == item.Id))
+              throw new DalAlreadyExistException($"Assignment with ID={item.Id} already exists");
+
+          XElement newAssignment = createAssignmentElement(item);
+          assignmentRootElem.Add(newAssignment);
+
+          XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
+      }
+
+      */
     public void Create(Assignment item)
     {
+        // אם ID הוא 0, נדרש לקבל מזהה חדש מ-Config
+        if (item.Id == 0)
+            item = item.WithId(Config.NextAssignmentId);
+
         XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
 
         if (assignmentRootElem.Elements()
@@ -46,6 +65,7 @@ internal class AssignmentImplementation : IAssignment
 
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
+
 
     public void Delete(int id)
     {
