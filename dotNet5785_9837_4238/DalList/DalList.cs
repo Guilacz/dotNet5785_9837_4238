@@ -1,8 +1,14 @@
 ﻿namespace Dal;
 using DalApi;
 
-sealed public class DalList : IDal
+
+sealed internal class DalList : IDal
 {
+    /// <summary>
+    /// DalList is type Singleton
+    /// </summary>
+    public static IDal Instance { get; } = new DalList();
+    private DalList() { }
     public IVolunteer Volunteer { get; } = new VolunteerImplementation();
 
     public ICall Call { get; } = new CallImplementation();

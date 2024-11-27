@@ -9,7 +9,8 @@ internal class Program
 {
 
     //static readonly IDal s_dal = new DalList();//stage2
-    static readonly IDal s_dal = new DalXml();
+    //static readonly IDal s_dal = new DalXml();//stage 3
+    static readonly IDal s_dal = Factory.Get; //stage 4
 
     /// <summary>
     /// Main entry point of the application. Displays the main menu and handles user input.
@@ -18,8 +19,7 @@ internal class Program
     {
         try
         {
-            //Initialization.Do(s_dal);
-            
+
             ShowMainMenu();
             while (true)
             {
@@ -251,7 +251,7 @@ internal class Program
     /// </summary>
     private static void InitializeDatabase()
     {
-        Initialization.Do(s_dal);
+        Initialization.Do();
         //Initialization.Do(s_dal.Volunteer, s_dal.Call, s_dal.Assignment, s_dal.Config);
         Console.WriteLine("Database initialized.");
     }

@@ -10,12 +10,7 @@ using System;
 public static class Initialization
 {
     private static IDal? s_dal;
-
-    
-    
-    
     private static readonly Random s_rand = new();
-
 
     /// <summary>
     /// createVolunteers function : 14 volunteers and 1 manager
@@ -403,11 +398,11 @@ public static class Initialization
     /// <param name="dalConfig"></param>
     /// <exception cref="NullReferenceException"></exception>
     ///  </summary>
-    public static void Do(IDal dal) 
+    public static void Do() 
     {
-        //check if they are null
-        s_dal = dal ?? throw new DalArgumentNullException("DAL object can not be null!");
-
+        
+        //s_dal = dal ?? throw new DalArgumentNullException("DAL object can not be null!");//stage 2
+        s_dal = DalApi.Factory.Get; //stage 4
 
         //reset everything
         Console.WriteLine("Reset Configuration values and List values...");
