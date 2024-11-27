@@ -265,7 +265,7 @@ public static class Initialization
             Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5)); 
             s_dal!.Call.Create(c);
         }
-        Console.WriteLine( "ddd\n");
+        
 
     }
 

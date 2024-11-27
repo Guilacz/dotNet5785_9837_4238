@@ -18,7 +18,7 @@ internal class Program
     {
         try
         {
-            Initialization.Do(s_dal);
+            //Initialization.Do(s_dal);
             
             ShowMainMenu();
             while (true)
@@ -247,10 +247,11 @@ internal class Program
 
 
     /// <summary>
-    /// choice 3 : Process menu options for assignment entity
+    /// choice 4 : Process menu options for assignment entity
     /// </summary>
     private static void InitializeDatabase()
     {
+        Initialization.Do(s_dal);
         //Initialization.Do(s_dal.Volunteer, s_dal.Call, s_dal.Assignment, s_dal.Config);
         Console.WriteLine("Database initialized.");
     }
