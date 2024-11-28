@@ -13,7 +13,7 @@ namespace BO;
 /// <param name="sumOfCallExpired">Total number of calls that expired while assigned to the volunteer.</param>
 /// <param name="CallId">Identifier of the current call assigned to the volunteer, if any.</param>
 
-internal class VolunteerInList
+public class VolunteerInList
 {
     public int VolunteerId { get; init; }
     public string Name { get; set; }

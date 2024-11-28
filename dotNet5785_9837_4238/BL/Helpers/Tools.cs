@@ -28,8 +28,26 @@ internal static class Tools
         return sb.ToString();
     }
 
+    /// <summary>
+    /// function to check if a value is int
+    /// </summary>
+    public static bool CheckInt(object value)
+    {
+        return value is int;
+    }
 
 
-       
+    /// <summary>
+    /// function to check if a value is double
+    /// </summary>
+    public static bool CheckDouble(object value)
+    {
+        return value is double;
+    }
+
+
+    //check address
+
+
 
 }

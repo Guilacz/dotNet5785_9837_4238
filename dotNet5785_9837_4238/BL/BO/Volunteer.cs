@@ -22,7 +22,7 @@ namespace BO;
 /// <param name="sumOfCallExpired">Total number of calls that expired while assigned to the volunteer.</param>
 /// <param name="callInCaring">The current call in progress being handled by the volunteer, if any.</param>
 
-internal class Volunteer
+public class Volunteer
 {
     public int VolunteerId { get; init; }
     public string Name { get; set; }

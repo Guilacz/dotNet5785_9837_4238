@@ -83,3 +83,12 @@ public enum DistanceType
     WalkDistance,
     CarDistance
 }
+
+public enum TimeUnit
+{
+    minute,
+    hour,
+    day,
+    month,
+    year
+}
