@@ -61,3 +61,25 @@ public enum CallInProgressStatus
     InCare,
     InCareAtRisk
 }
+
+
+
+
+/// <summary>
+/// enum of the roles , from Volunteer
+/// </summary>
+public enum Role
+{
+    Manager,
+    Volunteer
+}
+
+/// <summary>
+/// enum of the types of distance , from Volunteer
+/// </summary>
+public enum DistanceType
+{
+    AirDistance,
+    WalkDistance,
+    CarDistance
+}
