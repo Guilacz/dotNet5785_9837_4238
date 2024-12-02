@@ -142,7 +142,6 @@ internal class VolunteerManager
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
-
     }
     public static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
     {

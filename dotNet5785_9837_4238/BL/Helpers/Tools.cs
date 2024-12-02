@@ -1,4 +1,5 @@
 ﻿using BO;
+using DalApi;
 using System.Net;
 using System.Text;
 
@@ -128,4 +129,15 @@ internal static class Tools
 
         return isLatitudeMatch && isLongitudeMatch;
     }
+
+
+
+    public static TimeSpan RiskTime(IConfig config)
+    {
+        if (config == null)
+            return TimeSpan.Zero;
+
+        return config.RiskRange;
+    }
+
 }
