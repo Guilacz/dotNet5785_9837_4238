@@ -29,8 +29,8 @@ public class Volunteer
     public string Phone { get; set; }
     public string Email { get; set; }
 
-    Role RoleType;
-    DistanceType DistanceType;
+    public Role RoleType { get; init; }
+    public DistanceType DistanceType { get; set; }
 
     public string? Password { get; set; }
     public string? Adress { get; set; }
@@ -39,10 +39,10 @@ public class Volunteer
     public double? Longitude { get; set; }
     public bool IsActive { get; set; }
 
-    public int sumOfCaredCall { get; set; }
-    public int sumOfCancelledCall { get; set; }
+    public int SumOfCaredCall { get; set; }
+    public int SumOfCancelledCall { get; set; }
 
-    public int sumOfCallExpired { get; set ; }
+    public int SumOfCallExpired { get; set ; }
     public BO.CallInProgress? callInCaring { get; set; }
 
     /// <summary>

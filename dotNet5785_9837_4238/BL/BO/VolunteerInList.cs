@@ -16,21 +16,18 @@ namespace BO;
 public class VolunteerInList
 {
     public int VolunteerId { get; init; }
+
     public string Name { get; set; }
+
     public bool IsActive { get; set; }
 
-    public int sumOfCaredCall { get; set; }
-    public int sumOfCancelledCall { get; set; }
+    public int SumOfCaredCall { get; set; }
 
-    public int sumOfCallExpired { get; set; }
+    public int SumOfCancelledCall { get; set; }
+
+    public int SumOfCallExpired { get; set; }
 
     public int? CallId { get; init; }
 
-    /// <summary>
-    /// toString function 
-    /// </summary>
-    /// <returns></returns>
     public override string ToString() => this.ToStringProperty();
-
-
 }

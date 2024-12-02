@@ -89,7 +89,7 @@ internal class CallImplementation : ICall
         details.AppendLine("Call Details:");
         details.AppendLine($"ID: {item.CallId}");
         details.AppendLine($"CallType: {item.CallType}");
-        details.AppendLine($"Address: {item.Adress}");
+        details.AppendLine($"Address: {item.Address}");
         details.AppendLine($"Latitude: {item.Latitude}");
         details.AppendLine($"Longitude: {item.Longitude}");
         details.AppendLine($"Open Time: {item.OpenTime}");

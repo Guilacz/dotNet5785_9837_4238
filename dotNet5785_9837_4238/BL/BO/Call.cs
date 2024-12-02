@@ -1,6 +1,6 @@
-﻿using Helpers;
+﻿namespace BO;
+using Helpers;
 
-namespace BO;
 
 
 /// <summary>
@@ -8,7 +8,7 @@ namespace BO;
 /// </summary>
 /// <param name="CallId">Unique identifier of the call.</param>
 /// <param name="CallType">Type of the call.</param>
-/// <param name="Adress">Address associated with the call.</param>
+/// <param name="Address">Address associated with the call.</param>
 /// <param name="Latitude">Latitude coordinate of the call's location.</param>
 /// <param name="Longitude">Longitude coordinate of the call's location.</param>
 /// <param name="OpenTime">The time when the call was initiated.</param>
@@ -20,22 +20,24 @@ namespace BO;
 public class Call
 {
     public int CallId { get; init; }
-    public CallType CallType;
-    public string? Adress { get; set; }
-    public double? Latitude { get; set; } 
-    public double? Longitude { get; set; }
-    DateTime OpenTime { get; init; }
+
+    public CallType CallType { get; init; }
+
+    public string? Address { get; set; }
+
+    public double Latitude { get; set; } 
+
+    public double Longitude { get; set; }
+
+    public DateTime OpenTime { get; init; }
+
     public DateTime? MaxTime { get; set; } 
 
-    public CallStatus CallStatus;
+    public CallStatus CallStatus { get; set; }
 
     public string? Details { get; set; }
 
     public List<BO.CallAssignInList>? callAssignInLists { get; set; }
 
-    /// <summary>
-    /// toString function 
-    /// </summary>
-    /// <returns></returns>
     public override string ToString() => this.ToStringProperty();
 }

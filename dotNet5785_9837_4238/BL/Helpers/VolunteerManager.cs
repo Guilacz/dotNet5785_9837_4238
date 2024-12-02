@@ -1,11 +1,70 @@
-﻿using DalApi;
+﻿namespace Helpers;
+using BO;
+using DalApi;
+using System;
 
-namespace Helpers;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using DO;
+using System.Net;
 
 internal class VolunteerManager
 {
     private static IDal s_dal = Factory.Get; //stage 4
-                                             //internal static
+                                             
+    internal static bool CheckVolunteer(BO.Volunteer vol)
+    {
+        if(!CheckMail(vol.Email))
+            return false;
+        if(!IsValidID(vol.VolunteerId))
+            return false;
+        if(!CheckPhone(vol.Phone)) 
+            return false;
+       //if (await AreAddressDetailsMatching(vol.Address, vol.Latitude ?? 0, vol.Longitude ?? 0))
+
+
+        //////////
+        ///לבדוק תקינות כתובת לפי הפונקציה, ותקינות סיסמה.
+        //////////
+        return true;
+
+    }
+    
+    internal static async Task<bool> ValidateVolunteerAddressAsync(Volunteer vol)
+    {
+        // שימוש בערך ברירת מחדל אם Latitude או Longitude הם null
+        double latitude = vol.Latitude ?? 0;
+        double longitude = vol.Longitude ?? 0;
+
+        return await AreAddressDetailsMatching(vol.Adress, latitude, longitude);
+    }
+
+    internal static async Task<bool> AreAddressDetailsMatching(string address, double latitude, double longitude)
+    {
+        // שלב 1: אימות הכתובת
+        string geocodingUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(address)}";
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync(geocodingUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                // שלב 2: קבלת קו אורך וקו רוחב מהשירות
+                var json = await JsonSerializer.DeserializeAsync<JsonObject>(await response.Content.ReadAsStreamAsync());
+                double serviceLatitude = json["results"]?[0]?["geometry"]?["location"]?["lat"]?.GetValue<double>() ?? 0;
+                double serviceLongitude = json["results"]?[0]?["geometry"]?["location"]?["lng"]?.GetValue<double>() ?? 0;
+
+                // שלב 3: השוואה בין הערכים
+                return Math.Abs(latitude - serviceLatitude) < 0.00001 && Math.Abs(longitude - serviceLongitude) < 0.00001;
+            }
+        }
+
+        return false;
+    }
+
+
+    
 
     /// <summary>
     /// check validity of the mail
@@ -101,6 +160,39 @@ internal class VolunteerManager
 
         return false;
     }
+    public static DO.Volunteer DOManeger(BO.Volunteer vol)
+    {
+        int Id = vol.VolunteerId;
+        string FullName = vol.Name;
+        string Phone = vol.Phone;
+        string Email = vol.Email;
+        DO.Role Role = (DO.Role)vol.RoleType;
+        DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
+        bool Active = vol.IsActive;
+        string? Password = vol.Password;
+        string? Address = vol.Adress;
+        double? Distance = vol.Distance;
+        double? Latitude = vol.Latitude;
+        double? Longitude = vol.Longitude;
+        return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
 
+    }
+    public static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
+    {
+        int Id = vol.VolunteerId;
+        string FullName = vol.Name;
+        string Phone = vol.Phone;
+        string Email = vol.Email;
+        DO.Role Role = (DO.Role)vol1.RoleType;
+        DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
+        bool Active = vol1.IsActive;
+        string? Password = vol.Password;
+        string? Adress = vol.Adress;
+        double? MaxDistance = vol.Distance;
+        double? Latitude = vol.Latitude;
+        double? Longitude = vol.Longitude;
+        return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
+
+    }
 
 }

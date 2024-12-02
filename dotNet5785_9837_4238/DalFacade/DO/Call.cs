@@ -15,7 +15,7 @@ public record Call
 (
     int CallId,
     CallType CallType,
-    string Adress,
+    string Address,
     double Latitude,
     double Longitude,
     DateTime OpenTime,

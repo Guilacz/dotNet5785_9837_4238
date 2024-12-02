@@ -549,7 +549,7 @@ internal class Program
         int day = int.Parse(Console.ReadLine()!);
         DateTime specificDate2 = new DateTime(year, month, day);
 
-        Call c = new Call { CallId = callId, CallType = lesson, Adress = address!, Latitude = l1, Longitude = l2, OpenTime = s_dal.Config.Clock, Details = details, MaxTime = specificDate2 };
+        Call c = new Call { CallId = callId, CallType = lesson, Address = address!, Latitude = l1, Longitude = l2, OpenTime = s_dal.Config.Clock, Details = details, MaxTime = specificDate2 };
         s_dal.Call?.Create(c);
         Console.WriteLine("Call added.");
     }
@@ -615,9 +615,9 @@ internal class Program
         }
 
         // עדכון כתובת
-        Console.WriteLine($"Current address: {call.Adress}. Enter new address (or press Enter to keep current):");
+        Console.WriteLine($"Current address: {call.Address}. Enter new address (or press Enter to keep current):");
         string newAddress = Console.ReadLine()!;
-        if (!string.IsNullOrEmpty(newAddress)) call = call with { Adress = newAddress };
+        if (!string.IsNullOrEmpty(newAddress)) call = call with { Address = newAddress };
 
         // עדכון קו רוחב
         Console.WriteLine($"Current latitude: {call.Latitude}. Enter new latitude (or press Enter to keep current):");

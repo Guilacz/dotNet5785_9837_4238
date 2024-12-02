@@ -17,7 +17,7 @@ internal class CallImplementation : ICall
 
     {
         int currentId = Config.NextCallId;//Type a new running number type for the next call
-        Call currentItem = new Call(currentId, item.CallType, item.Adress, item.Latitude, item.Longitude, item.OpenTime, item.MaxTime, item.Details);
+        Call currentItem = new Call(currentId, item.CallType, item.Address, item.Latitude, item.Longitude, item.OpenTime, item.MaxTime, item.Details);
         DataSource.Calls.Add(currentItem);//Added the new item to the database
         //return currentId;
 
@@ -118,7 +118,7 @@ internal class CallImplementation : ICall
         details.AppendLine($"ID: {item.CallId}");
         details.AppendLine($"CallType: {item.CallType}");
 
-        details.AppendLine($"Address: {item.Adress}");
+        details.AppendLine($"Address: {item.Address}");
         details.AppendLine($"Latitude: {item.Latitude}");
         details.AppendLine($"Longitude: {item.Longitude}");
         details.AppendLine($"Open Time: {item.OpenTime}");

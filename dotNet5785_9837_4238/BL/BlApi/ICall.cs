@@ -1,35 +1,47 @@
-﻿using BO;
+﻿namespace BlApi;
 
-namespace BlApi;
+using BO;
+
 
 public interface ICall
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     int[] SumOfCalls();
 
-    IEnumerable<BO.CallInList> GetListOfCalls(CallType? filterType=null, object?filterValue=null , CallType? sortType = null);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="filterType"></param>
+    /// <param name="filterValue"></param>
+    /// <param name="sortType"></param>
+    /// <returns></returns>
+    IEnumerable<CallInList> GetListOfCalls(CallType? filterType = null, object? filterValue = null, CallType? sortType = null);
 
-    IEnumerable<BO.Call> GetCallDetails(int callId);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="callId"></param>
+    /// <returns></returns>
+    Call GetCallDetails(int callId);
 
-    void Update( BO.Call c);
+    void Update(Call c);
 
     void Delete(int callId);
 
-    void Create (BO.Call c);
+    void Create(Call c);
 
-    BO.ClosedCallInList GetListOfClosedCall(int volId, BO.CallType? type = null);
+    ClosedCallInList GetListOfClosedCall(int volId, CallType? type = null);
 
-    BO.OpenCallInList GetListOfOpenCall(int volId, BO.CallType? type = null, BO.OpenCallInList? openCall = null);
+    OpenCallInList GetListOfOpenCall(int volId, CallType? type = null, OpenCallInList? openCall = null);
 
-    void UpdateCallFinished (int volId, int callId);
+    void UpdateCallFinished(int volId, int callId);
 
-    void UpdateCallCancelled(int id, int callId);
+    void UpdateCallCancelled(int id, int assiId);
 
-    void choiceOfCallToCare(int volId, int callId);
+    void ChoiceOfCallToCare(int volId, int callId);
 
-    //other function 
-    BO.Call? Read(int callId);
-
-
-
-
+    Call? Read(int callId);
 }

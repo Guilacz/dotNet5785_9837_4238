@@ -4,9 +4,9 @@ public interface IVolunteer
 {
     BO.Role EnterSystem(string name, int password);
 
-    IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive =null, BO.VolunteerInList? vol = null);
+    public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null);
 
-    IEnumerable<BO.Volunteer> GetVolunteerDetails(int volId);
+    BO.Volunteer GetVolunteerDetails(int volId);
 
     void Update(int volId, BO.Volunteer vol);
 
@@ -15,7 +15,7 @@ public interface IVolunteer
     void Create(BO.Volunteer vol);
 
     //other function 
-    BO.Volunteer? Read (int volId);
+    BO.Volunteer? Read(int volId);
 
 
 }

@@ -92,3 +92,16 @@ public enum TimeUnit
     month,
     year
 }
+
+public enum VolunteerSortField
+{
+    VolunteerId,
+    Name,
+    IsActive,
+    SumOfCaredCall,
+    SumOfCancelledCall,
+    SumOfCallExpired,
+    CallId,
+    RoleType,
+    DistanceType
+}
