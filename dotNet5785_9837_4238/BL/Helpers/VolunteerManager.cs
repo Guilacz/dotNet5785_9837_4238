@@ -22,7 +22,7 @@ internal class VolunteerManager
             return false;
         if(!CheckPhone(vol.Phone)) 
             return false;
-        if (!Tools.CheckAddress(vol))
+        if (!Tools.CheckAddressVolunteer(vol))
         {
             return false;
         }
