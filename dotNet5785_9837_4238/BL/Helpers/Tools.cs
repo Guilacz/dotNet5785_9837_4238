@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using BO;
+using System.Net;
+using System.Text;
 
 namespace Helpers;
 /// <summary>
@@ -47,6 +49,75 @@ internal static class Tools
 
 
     //check address
+
+    public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    {
+        return GetCoordinatesFromAddress(address);
+    }
+
+    public static (double Latitude, double Longitude) GetCoordinatesFromAddress(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+        }
+
+        const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7"; // החליפי במפתח ה-API שלך
+        const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+
+        string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+
+        using (var client = new HttpClient())
+        {
+            HttpResponseMessage response = client.GetAsync(requestUrl).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error fetching geolocation data: {response.ReasonPhrase}");
+            }
+
+            string responseContent = response.Content.ReadAsStringAsync().Result;
+
+            var locations = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+            if (locations == null || locations.Count == 0)
+            {
+                throw new Exception("No geolocation data found for the provided address.");
+            }
+
+            var firstResult = locations.First();
+            return (Latitude: double.Parse(firstResult.Lat), Longitude: double.Parse(firstResult.Lon));
+        }
+    }
+
+    private class LocationIqResponse
+    {
+        public string Lat { get; set; }
+        public string Lon { get; set; }
+    }
+    public static bool CheckAddress(Volunteer vol)
+    {
+        // אם ה-Latitude וה-Longitude אינם null, אפשר להמשיך
+        if (vol.Latitude == null || vol.Longitude == null)
+        {
+            throw new Exception("Latitude or Longitude is null.");
+        }
+
+        // קריאה לפונקציה שמחזירה את קווי הרוחב והאורך עבור הכתובת
+        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(vol.Adress);
+
+        // הגדרת סובלנות לבדוק אם הקואורדינטות תואמות
+        const double tolerance = 0.0001;
+
+        // בדיקה אם הקואורדינטות תואמות בקווים רוחב ואורך
+        bool isLatitudeMatch = Math.Abs(vol.Latitude.Value - expectedLatitude) < tolerance;
+        bool isLongitudeMatch = Math.Abs(vol.Longitude.Value - expectedLongitude) < tolerance;
+
+        return isLatitudeMatch && isLongitudeMatch;
+    }
+
+
+
+
 
 
 
