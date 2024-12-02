@@ -1,8 +1,10 @@
 ﻿namespace BlImplementation;
+using Dal;
 using BlApi;
 using BO;
 using Helpers;
 using System;
+
 
 internal class AdminImplementation : IAdmin
 {
@@ -14,13 +16,15 @@ internal class AdminImplementation : IAdmin
 
     public DateTime GetClock()
     {
-        throw new NotImplementedException();
+        return ClockManager.Now; 
     }
 
     public int GetMaxRange()
     {
-        throw new NotImplementedException();
+
+        return Config.RiskRange; 
     }
+
 
     public void InitializeDB()
     {
