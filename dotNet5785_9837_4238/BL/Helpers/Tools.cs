@@ -1,4 +1,5 @@
 ﻿using BO;
+using DalApi;
 using System.Net;
 using System.Text;
 
@@ -94,7 +95,7 @@ internal static class Tools
         public string Lat { get; set; }
         public string Lon { get; set; }
     }
-    public static bool CheckAddress(Volunteer vol)
+    public static bool CheckAddressVolunteer(Volunteer vol)
     {
         // אם ה-Latitude וה-Longitude אינם null, אפשר להמשיך
         if (vol.Latitude == null || vol.Longitude == null)
@@ -114,11 +115,29 @@ internal static class Tools
 
         return isLatitudeMatch && isLongitudeMatch;
     }
+    public static bool CheckAddressCall(Call c)
+    {
+        // לא צריך לבדוק אם הם null כי הם לא nullable
+        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
+
+        // הגדרת סובלנות לבדוק אם הקואורדינטות תואמות
+        const double tolerance = 0.0001;
+
+        // בדיקה אם הקואורדינטות תואמות בקווים רוחב ואורך
+        bool isLatitudeMatch = Math.Abs(c.Latitude - expectedLatitude) < tolerance;
+        bool isLongitudeMatch = Math.Abs(c.Longitude - expectedLongitude) < tolerance;
+
+        return isLatitudeMatch && isLongitudeMatch;
+    }
 
 
 
+    public static TimeSpan RiskTime(IConfig config)
+    {
+        if (config == null)
+            return TimeSpan.Zero;
 
-
-
+        return config.RiskRange;
+    }
 
 }

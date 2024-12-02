@@ -4,6 +4,7 @@ using BlApi;
 using BO;
 using Helpers;
 using System;
+using DalApi;
 
 
 internal class AdminImplementation : IAdmin
@@ -16,13 +17,13 @@ internal class AdminImplementation : IAdmin
 
     public DateTime GetClock()
     {
-        return ClockManager.Now; 
+        return ClockManager.Now;
     }
 
-    public int GetMaxRange()
+    public TimeSpan GetMaxRange()
     {
 
-        return Config.RiskRange; 
+        var riskRange = 
     }
 
 
@@ -36,8 +37,9 @@ internal class AdminImplementation : IAdmin
         throw new NotImplementedException();
     }
 
-    public void SetMaxRange(int maxRange)
+    public void SetMaxRange(TimeSpan maxRange)
     {
-        throw new NotImplementedException();
+        IConfig config = new DalApi.IConfig { RiskRange = maxRange };
+        Tools.RiskTime(config);
     }
 }

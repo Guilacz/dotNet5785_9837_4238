@@ -24,7 +24,7 @@ public class CallInList
 
     public CallType CallType;
 
-    DateTime OpenTime { get; init; }
+    public DateTime OpenTime { get; init; }
 
     public TimeSpan? TimeToEnd { get; set; }
 
@@ -32,7 +32,7 @@ public class CallInList
 
     public TimeSpan? TimeToCare { get; set; }
 
-    CallInListStatus CallInListStatus;
+    public CallInListStatus CallInListStatus;
 
     public int numberOfAssignment { get; set; }
 

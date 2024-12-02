@@ -22,7 +22,7 @@ internal class VolunteerManager
             return false;
         if(!CheckPhone(vol.Phone)) 
             return false;
-        if (!Tools.CheckAddress(vol))
+        if (!Tools.CheckAddressVolunteer(vol))
         {
             return false;
         }
@@ -142,7 +142,6 @@ internal class VolunteerManager
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
-
     }
     public static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
     {
