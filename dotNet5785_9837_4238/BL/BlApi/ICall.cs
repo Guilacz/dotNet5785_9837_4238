@@ -18,7 +18,7 @@ public interface ICall
     /// <param name="filterValue"></param>
     /// <param name="sortType"></param>
     /// <returns></returns>
-    IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallType? sortType = null);
+    IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null);
 
     /// <summary>
     /// 
@@ -33,9 +33,9 @@ public interface ICall
 
     void Create(Call c);
 
-    IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.TypeOfEnd? end = null);
+    IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? end = null);
 
-    IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInList? openCall = null);
+    IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null);
 
     void UpdateCallFinished(int volId, int callId);
 

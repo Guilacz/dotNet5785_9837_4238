@@ -163,7 +163,76 @@ internal static class Tools
     {
         return degrees * (Math.PI / 180);
     }
+    public static double CalculateDistanceBetweenCoordinates(
+    double latitude1,
+    double longitude1,
+    double latitude2,
+    double longitude2)
+    {
+        const double EarthRadiusKm = 6371.0;
 
+        double latitude1Rad = DegreesToRadians(latitude1);
+        double longitude1Rad = DegreesToRadians(longitude1);
+        double latitude2Rad = DegreesToRadians(latitude2);
+        double longitude2Rad = DegreesToRadians(longitude2);
+
+        double deltaLatitude = latitude2Rad - latitude1Rad;
+        double deltaLongitude = longitude2Rad - longitude1Rad;
+
+        double a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
+                   Math.Cos(latitude1Rad) * Math.Cos(latitude2Rad) *
+                   Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
+
+        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+        return EarthRadiusKm * c;
+    }
+    public static double CalculateAirDistance(string volunteerAddress, string callAddress)
+    {
+        if (string.IsNullOrWhiteSpace(volunteerAddress) || string.IsNullOrWhiteSpace(callAddress))
+        {
+            throw new ArgumentException("Addresses cannot be null or empty.");
+        }
+
+        // קבלת קואורדינטות של כל כתובת
+        var (volunteerLatitude, volunteerLongitude) = Tools.GetAddressCoordinates(volunteerAddress);
+        var (callLatitude, callLongitude) = Tools.GetAddressCoordinates(callAddress);
+
+        // חישוב המרחק האווירי בין הקואורדינטות
+        return Tools.CalculateDistanceBetweenCoordinates(
+            volunteerLatitude, volunteerLongitude,
+            callLatitude, callLongitude);
+    }
+
+    /*public static double CalculateDistanceByVolunteerId(int volunteerId, string callAddress, IDal dal)
+    {
+        // שליפת המתנדב מה-DAL
+        var volunteer = dal.GetVolunteerById(volunteerId);
+        if (volunteer == null)
+        {
+            throw new Exception($"Volunteer with ID {volunteerId} not found.");
+        }
+
+        // בדיקה אם למתנדב יש קואורדינטות תקינות
+        if (volunteer.Latitude == null || volunteer.Longitude == null)
+        {
+            throw new Exception("Volunteer coordinates (Latitude/Longitude) are null.");
+        }
+
+        // קבלת הקואורדינטות של הכתובת
+        var (callLatitude, callLongitude) = GetAddressCoordinates(callAddress);
+
+        // חישוב המרחק באמצעות נוסחת Haversine
+        double distance = CalculateDistanceBetweenCoordinates(
+            volunteer.Latitude.Value,
+            volunteer.Longitude.Value,
+            callLatitude,
+            callLongitude
+        );
+
+        return distance;
+    }
+    */
 
 
     public static TimeSpan RiskTime(IConfig config)

@@ -137,7 +137,7 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlAlreadyExistException(ex.Message);
         }
     }
-    /*
+    
     public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null)
     {
         try
@@ -169,8 +169,7 @@ internal class VolunteerImplementation : IVolunteer
                 BO.VolunteerSortField.SumOfCancelledCall => volunteerInLists.OrderBy(v => v.SumOfCancelledCall),
                 BO.VolunteerSortField.SumOfCallExpired => volunteerInLists.OrderBy(v => v.SumOfCallExpired),
                 BO.VolunteerSortField.CallId => volunteerInLists.OrderBy(v => v.CallId),
-                BO.VolunteerSortField.RoleType => volunteerInLists.OrderBy(v => v.RoleType),
-                BO.VolunteerSortField.DistanceType => volunteerInLists.OrderBy(v => v.DistanceType),
+                BO.VolunteerSortField.CallType => volunteerInLists.OrderBy(v => v.CallType),
                 _ => volunteerInLists.OrderBy(v => v.VolunteerId)
             };
 
@@ -180,8 +179,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw new Exception("An error occurred while getting the volunteer list.", ex);
         }
-    }*/
-    public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.CallType? sortType = null)
+    }
+    /*public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.CallType? sortType = null)
     {
         try
         {
@@ -226,7 +225,7 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw;
         }
-    }
+    }*/
 
     public BO.Volunteer? Read(int volId)
     {
