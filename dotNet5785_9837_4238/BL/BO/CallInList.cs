@@ -34,7 +34,7 @@ public class CallInList
 
     public CallInListStatus CallInListStatus;
 
-    public int numberOfAssignment { get; set; }
+    public int NumberOfAssignment { get; set; }
 
 
     public override string ToString() => this.ToStringProperty();

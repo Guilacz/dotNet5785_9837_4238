@@ -129,6 +129,40 @@ internal static class Tools
 
         return isLatitudeMatch && isLongitudeMatch;
     }
+    public static double CalculateDistanceBetweenAddresses(string address1, string address2)
+    {
+        // קבלת קווי הרוחב והאורך עבור שתי הכתובות
+        var (latitude1, longitude1) = GetAddressCoordinates(address1);
+        var (latitude2, longitude2) = GetAddressCoordinates(address2);
+
+        // חישוב המרחק האווירי באמצעות נוסחת Haversine
+        const double EarthRadiusKm = 6371.0; // רדיוס כדור הארץ בקילומטרים
+
+        double latitude1Rad = DegreesToRadians(latitude1);
+        double longitude1Rad = DegreesToRadians(longitude1);
+        double latitude2Rad = DegreesToRadians(latitude2);
+        double longitude2Rad = DegreesToRadians(longitude2);
+
+        double deltaLatitude = latitude2Rad - latitude1Rad;
+        double deltaLongitude = longitude2Rad - longitude1Rad;
+
+        double a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
+                   Math.Cos(latitude1Rad) * Math.Cos(latitude2Rad) *
+                   Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
+
+        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+        // חישוב המרחק בקילומטרים
+        double distance = EarthRadiusKm * c;
+
+        return distance;
+    }
+
+    // פונקציה להמיר מעלות לרדיאנים
+    private static double DegreesToRadians(double degrees)
+    {
+        return degrees * (Math.PI / 180);
+    }
 
 
 
