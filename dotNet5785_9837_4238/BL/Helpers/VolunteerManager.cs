@@ -71,6 +71,21 @@ internal class VolunteerManager
 
 
 
+    public static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
+    {
+        return new BO.Volunteer
+        {
+            VolunteerId = volunteer.VolunteerId,
+            Name = volunteer.Name,
+            Phone = volunteer.Phone,
+            Email = volunteer.Email,
+            RoleType = (BO.Role)volunteer.RoleType,
+            DistanceType = (BO.DistanceType)volunteer.DistanceType,
+            Password = volunteer.Password,
+            Adress = volunteer.Adress,
+            Distance = volunteer.Distance
+        };
+    }
 
 
 

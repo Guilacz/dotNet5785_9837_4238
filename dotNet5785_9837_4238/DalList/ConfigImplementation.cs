@@ -1,6 +1,7 @@
-﻿using DalApi;
+﻿namespace Dal;
 
-namespace Dal;
+using DalApi;
+
 
 /// <summary>
 ///Implement the properties and methods defined in the `IConfig` interface to manage configurations related to the "Configuration" entity.

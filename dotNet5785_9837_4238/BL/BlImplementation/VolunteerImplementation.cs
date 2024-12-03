@@ -1,6 +1,7 @@
 ﻿namespace BlImplementation;
 using BlApi;
 using BO;
+using DO;
 using Helpers;
 using System.Collections.Generic;
 
@@ -8,36 +9,39 @@ internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
-    public void Create(BO.Volunteer boVolunteer)
+    public void ChoiceOfCallToCare(int volId, int callId)
     {
+        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+        if (call == null)
+            throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
+        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+        if (volunteer == null)
+            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
+        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+        if (!Helpers.CallManager.CheckCall(boCall))
+            throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
+        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
         if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-        {
-            throw new BO.BlInvalidValueException("Invalid volunteer data");
-        }
-        try
-        {
-            _dal.Volunteer.Create(new DO.Volunteer
-            {
-                VolunteerId = boVolunteer.VolunteerId,
-                Name = boVolunteer.Name,
-                Phone = boVolunteer.Phone,
-                Email = boVolunteer.Email,
-                RoleType = (DO.Role)boVolunteer.RoleType,
-                DistanceType = (DO.Distance)boVolunteer.DistanceType,
-                Password = boVolunteer.Password,
-                Adress = boVolunteer.Adress,
-                Distance = boVolunteer.Distance,
-                Latitude = boVolunteer.Latitude,
-                Longitude = boVolunteer.Longitude,
-                IsActive = boVolunteer.IsActive,
-            });
-        }
-
-
-        catch (DO.DalAlreadyExistException ex)
-        {
-            throw new BO.BlAlreadyExistException(ex.Message);
-        }
+            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
+        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+        if (isCallAlreadyHandled)
+            throw new InvalidOperationException($"Call with ID {callId} has already been handled.");
+        bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+        if (isCallInProcess)
+            throw new InvalidOperationException($"Call with ID {callId} is already in process by another volunteer.");
+        var newAssignment = new DO.Assignment
+        (
+            Id: assignments.Any()
+                ? assignments.Max(a => a.Id) + 1
+                : 1, 
+            CallId: callId,
+            VolunteerId: volId,
+            StartTime: DateTime.Now,
+            TypeOfEnd: null, 
+            FinishTime: null 
+        );
+        _dal.Assignment.Create(newAssignment);
     }
 
 
@@ -97,7 +101,6 @@ internal class VolunteerImplementation : IVolunteer
         return (BO.Role)vol.RoleType;
     }
 
-
     public BO.Volunteer GetVolunteerDetails(int volId)
     {
         try
@@ -134,6 +137,7 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlAlreadyExistException(ex.Message);
         }
     }
+    /*
     public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null)
     {
         try
@@ -176,9 +180,53 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw new Exception("An error occurred while getting the volunteer list.", ex);
         }
-    }
+    }*/
+    public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.CallType? sortType = null)
+    {
+        try
+        {
+            IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
 
-  
+            if (isActive != null)
+            {
+                volunteers = volunteers.Where(v => v.IsActive == isActive.Value);
+            }
+
+            var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
+            {
+                VolunteerId = v.VolunteerId,
+                Name = v.Name,
+                IsActive = v.IsActive,
+                SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
+                SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
+                SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
+                CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
+                CallType = (BO.CallType)assignment.Where(a => a.VolunteerId == v.VolunteerId).Select(a => calls.FirstOrDefault(c => c.CallId == a.CallId)?.CallType).FirstOrDefault()
+            }).ToList();
+
+
+            volunteerInLists = sortType switch
+            {
+                BO.CallType.Math_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_Primary).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.Math_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_Middle).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.Math_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_High).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.English_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_Primary).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.English_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_Middle).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.English_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_High).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.Grammary_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_Primary).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.Grammary_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_Middle).ThenBy(v => v.VolunteerId).ToList(),
+                BO.CallType.Grammary_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_High).ThenBy(v => v.VolunteerId).ToList(),
+                _ => volunteerInLists.OrderBy(v => v.VolunteerId).ToList() 
+            };
+            return volunteerInLists;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 
     public BO.Volunteer? Read(int volId)
     {
@@ -252,4 +300,36 @@ internal class VolunteerImplementation : IVolunteer
             throw;
         }
     }
+
+    public void Create(BO.Volunteer vol)
+    {
+        if (!Helpers.VolunteerManager.CheckVolunteer(vol))
+        {
+            throw new BO.BlInvalidValueException("Invalid call data");
+        }
+        try
+        {
+            _dal.Volunteer.Create(new DO.Volunteer
+            {
+                VolunteerId = vol.VolunteerId,
+                RoleType = (DO.Role)vol.RoleType,
+                DistanceType = (DO.Distance)vol.DistanceType,
+                Name = vol.Name,
+                Latitude = vol.Latitude,
+                Longitude = vol.Longitude,
+                Phone = vol.Phone,
+                Email = vol.Email,
+                Password = vol.Password,
+                Adress = vol.Adress,
+                IsActive = vol.IsActive,
+                Distance = vol.Distance,
+
+            });
+        }
+        catch (DO.DalAlreadyExistException ex)
+        {
+            throw new BO.BlAlreadyExistException(ex.Message);
+        }
+    }
 }
+

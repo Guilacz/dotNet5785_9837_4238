@@ -2,6 +2,7 @@
 using BlApi;
 using BO;
 using Helpers;
+using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,66 +11,61 @@ internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    
     public void ChoiceOfCallToCare(int volId, int callId)
     {
-        try
-        {
-            // קריאה לשכבת הנתונים עבור הקריאות, ההקצאות והמתנדבים
-            var calls = _dal.Call.ReadAll();
-            var assignments = _dal.Assignment.ReadAll();
-            var volunteers = _dal.Volunteer.ReadAll();
+        // שליפת הקריאה והמתנדב משכבת הנתונים
+        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+        if (call == null)
+            throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
 
-            // בדיקת קיום הקריאה
-            var call = calls.FirstOrDefault(c => c.CallId == callId);
-            if (call == null)
-            {
-                throw new BO.BlArgumentNullException($"Call with ID {callId} does not exist.");
-            }
+        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+        if (volunteer == null)
+            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
 
-            // בדיקת קיום המתנדב
-            var volunteer = volunteers.FirstOrDefault(v => v.VolunteerId == volId);
-            if (volunteer == null)
-            {
-                throw new BO.BlArgumentNullException($"Volunteer with ID {volId} does not exist.");
-            }
+        // בדיקה אם הקריאה והמתנדב חוקיים
+        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
 
-            // בדיקה שהקריאה לא טופלה ואין הקצאה פתוחה
-            bool isCallAssigned = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
-            if (isCallAssigned)
-            {
-                throw new BO.BlInvalidValueException("This call is already assigned to a volunteer.");
-            }
+        // בדיקת הקריאה
+        if (!Helpers.CallManager.CheckCall(boCall))
+            throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
 
-            // בדיקה שסטטוס הקריאה לא "Expired" או "Closed"
-            if (call.Status == DO.CallStatus.Closed || call.Status == DO.CallStatus.Expired)
-            {
-                throw new BO.BlInvalidValueException("This call is either closed or expired and cannot be assigned.");
-            }
+        // המרת המתנדב מ-DO ל-BO
+        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
 
-            // יצירת ישות הקצאה חדשה
-            var newAssignment = new DO.Assignment
-            {
-                Id = _dal.Assignment.GetNextId(), // יצירת מזהה ייחודי חדש
-                VolunteerId = volId,
-                CallId = callId,
-                StartTime = DateTime.Now,
-                FinishTime = null,
-                TypeOfEnd = null
-            };
+        // בדיקת המתנדב
+        if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
+            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
 
-            // הוספת ההקצאה לשכבת הנתונים
-            _dal.Assignment.Create(newAssignment);
-        }
-        catch (DO.DalArgumentNullException ex)
-        {
-            throw new BO.BlArgumentNullException(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        // שליפת רשימת ההקצאות משכבת הנתונים
+        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+        // בדיקה אם הקריאה כבר טופלה
+        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+        if (isCallAlreadyHandled)
+            throw new InvalidOperationException($"Call with ID {callId} has already been handled.");
+
+        // בדיקה אם הקריאה נמצאת בטיפול פעיל
+        bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+        if (isCallInProcess)
+            throw new InvalidOperationException($"Call with ID {callId} is already in process by another volunteer.");
+
+        // יצירת ישות הקצאה חדשה
+        var newAssignment = new DO.Assignment
+        (
+            Id: assignments.Any()
+                ? assignments.Max(a => a.Id) + 1
+                : 1, // יצירת מזהה ייחודי
+            CallId: callId,
+            VolunteerId: volId,
+            StartTime: DateTime.Now,
+            TypeOfEnd: null, // ערך ברירת מחדל
+            FinishTime: null // ערך ברירת מחדל
+        );
+
+        // הוספת ההקצאה החדשה לשכבת הנתונים
+        _dal.Assignment.Create(newAssignment);
     }
-
 
 
     public void Create(BO.Call c)
@@ -135,7 +131,7 @@ internal class CallImplementation : ICall
         }
     }
 
-    public IEnumerable<CallInList> GetListOfCalls(CallType? filterType = null, object? filterValue = null, CallType? sortType = null)
+    public IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallType? sortType = null)
     {
         IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
         IEnumerable<DO.Assignment> assigments = _dal.Assignment.ReadAll();
@@ -153,12 +149,59 @@ internal class CallImplementation : ICall
         return callList;
     }
 
-    public ClosedCallInList GetListOfClosedCall(int volId, CallType? type = null)
+    public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.TypeOfEnd? end = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+
+            assignment = assignment.Where(v => v.VolunteerId == volId);
+
+            assignment = type switch
+            {
+                BO.CallType.Math_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Primary).ToList(),
+                BO.CallType.Math_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Middle).ToList(),
+                BO.CallType.Math_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_High).ToList(),
+                BO.CallType.English_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Primary).ToList(),
+                BO.CallType.English_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Middle).ToList(),
+                BO.CallType.English_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_High).ToList(),
+                BO.CallType.Grammary_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Primary).ToList(),
+                BO.CallType.Grammary_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Middle).ToList(),
+                BO.CallType.Grammary_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_High).ToList(),
+                _ => assignment.ToList() 
+            };
+
+            if (end != null)
+            {
+                assignment = assignment.Where(v => v.TypeOfEnd == (DO.TypeOfEnd)end).ToList();
+            }
+
+            var closedCallInList = assignment.Select(a => new BO.ClosedCallInList
+            {
+                CallId = a.CallId,
+                CallType = (BO.CallType)calls.FirstOrDefault(c => c.CallId == a.CallId)?.CallType, 
+                TypeOfEnd = (BO.TypeOfEnd)a.TypeOfEnd 
+            }).ToList();
+
+            var result = end switch
+            {
+                BO.TypeOfEnd.Fulfilled => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.Fulfilled).ThenBy(v => v.CallId).ToList(),
+                BO.TypeOfEnd.CancelledByVolunteer => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledByVolunteer).ThenBy(v => v.CallId).ToList(),
+                BO.TypeOfEnd.CancelledByManager => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledByManager).ThenBy(v => v.CallId).ToList(),
+                BO.TypeOfEnd.CancelledAfterTime => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledAfterTime).ThenBy(v => v.CallId).ToList(),
+                _ => closedCallInList.OrderBy(v => v.CallId).ToList() 
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 
-    public OpenCallInList GetListOfOpenCall(int volId, CallType? type = null, OpenCallInList? openCall = null)
+    public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInList? openCall = null)
     {
         throw new NotImplementedException();
     }
@@ -199,14 +242,15 @@ internal class CallImplementation : ICall
         try
         {
             var calls = _dal.Call.ReadAll();
+            var assignments = _dal.Assignment.ReadAll();
 
             int[] countOfCalls = calls
-                .GroupBy(call => call.CallStatus)
+                .GroupBy(call => Helpers.CallManager.GetCallStatus(call, assignments)) 
                 .Aggregate(
-                    new int[5],
+                    new int[Enum.GetValues(typeof(BO.CallStatus)).Length],
                     (arr, group) =>
                     {
-                        arr[group.Key] = group.Count();
+                        arr[(int)group.Key] = group.Count();
                         return arr;
                     });
 
@@ -310,8 +354,6 @@ internal class CallImplementation : ICall
             throw new Exception(ex.Message);
         }
     }
-
-
 
     public void UpdateCallFinished(int id, int assiId)
     {

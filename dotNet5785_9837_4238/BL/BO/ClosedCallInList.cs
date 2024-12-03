@@ -15,13 +15,13 @@ namespace BO;
 
 public class ClosedCallInList
 {
-public int CallId { get; init; }
-CallType CallType;
-public string Adress { get; set; }
-DateTime OpenTime { get; init; }
-DateTime StartTime { get; set; }
-TypeOfEnd? TypeOfEnd;
-DateTime? FinishTime { get; init; }
+    public int CallId { get; init; }
+    public CallType CallType;
+    public string Adress { get; set; }
+    public DateTime OpenTime { get; init; }
+    public DateTime StartTime { get; set; }
+    public TypeOfEnd? TypeOfEnd;
+    public DateTime? FinishTime { get; init; }
 
     /// <summary>
     /// toString function 

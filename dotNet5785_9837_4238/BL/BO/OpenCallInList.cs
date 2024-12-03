@@ -16,14 +16,14 @@ namespace BO;
 public class OpenCallInList
 {
     public int CallId { get; init; }
-    CallType CallType;
-    public string Adress { get; set; }
+    public CallType CallType;
+    public string Address { get; set; }
 
-    DateTime OpenTime { get; init; }
-    DateTime? MaxTime { get; set; }
+    public DateTime OpenTime { get; init; }
+    public DateTime? MaxTime { get; set; }
 
     public string? Details { get; set; }
-    public double distance { get; init; }
+    public double Distance { get; set; }
 
     /// <summary>
     /// toString function 
