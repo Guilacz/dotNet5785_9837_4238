@@ -203,20 +203,15 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // קריאת כל הקריאות והמשימות מה-DAL
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-            // קריאת נתוני המתנדב לפי volId
             DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
 
-            // המרה ל-BO אם יש צורך
             BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
 
-            // כתובת המתנדב
             string volunteerAddress = boVolunteer.Adress;
 
-            // סינון הקריאות הפתוחות והפתוחות בסיכון
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
