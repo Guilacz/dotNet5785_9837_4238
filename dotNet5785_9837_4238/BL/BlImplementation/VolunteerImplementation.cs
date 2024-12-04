@@ -180,52 +180,6 @@ internal class VolunteerImplementation : IVolunteer
             throw new Exception("An error occurred while getting the volunteer list.", ex);
         }
     }
-    /*public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.CallType? sortType = null)
-    {
-        try
-        {
-            IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
-            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
-            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
-
-            if (isActive != null)
-            {
-                volunteers = volunteers.Where(v => v.IsActive == isActive.Value);
-            }
-
-            var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
-            {
-                VolunteerId = v.VolunteerId,
-                Name = v.Name,
-                IsActive = v.IsActive,
-                SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
-                SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
-                SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
-                CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
-                CallType = (BO.CallType)assignment.Where(a => a.VolunteerId == v.VolunteerId).Select(a => calls.FirstOrDefault(c => c.CallId == a.CallId)?.CallType).FirstOrDefault()
-            }).ToList();
-
-
-            volunteerInLists = sortType switch
-            {
-                BO.CallType.Math_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_Primary).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.Math_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_Middle).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.Math_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Math_High).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.English_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_Primary).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.English_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_Middle).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.English_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.English_High).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.Grammary_Primary => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_Primary).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.Grammary_Middle => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_Middle).ThenBy(v => v.VolunteerId).ToList(),
-                BO.CallType.Grammary_High => volunteerInLists.OrderByDescending(v => v.CallType == BO.CallType.Grammary_High).ThenBy(v => v.VolunteerId).ToList(),
-                _ => volunteerInLists.OrderBy(v => v.VolunteerId).ToList() 
-            };
-            return volunteerInLists;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }*/
 
     public BO.Volunteer? Read(int volId)
     {
@@ -271,6 +225,9 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             var volun = _dal.Volunteer.Read(volId);
+            if (!Helpers.VolunteerManager.CheckPassword(volun.Password))
+                throw new BlInvalidValueException("Volunteer not found or incorrect password.");
+
             if (!(volun.VolunteerId == volId || volun.RoleType == 0))
 
                 throw new BlInvalidValueException("Volunteer not found or incorrect password.");
@@ -306,6 +263,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw new BO.BlInvalidValueException("Invalid call data");
         }
+        if (!Helpers.VolunteerManager.CheckPassword(vol.Password))
+            throw new BlInvalidValueException("Volunteer not found or incorrect password.");
         try
         {
             _dal.Volunteer.Create(new DO.Volunteer

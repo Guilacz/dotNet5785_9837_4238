@@ -238,7 +238,7 @@ internal class CallImplementation : ICall
                 OpenTime = c.OpenTime,
                 MaxTime = c.MaxTime,
                 Details = c.Details,
-                Distance = Helpers.Tools.CalculateAirDistance(volunteerAddress, c.Address) // חישוב המרחק
+                Distance = Helpers.Tools.DistanceCalculator.CalculateDistance(volunteerAddress, c.Address, boVolunteer.DistanceType)
             }).ToList();
 
             // מיון לפי openCall אם הוא לא null
