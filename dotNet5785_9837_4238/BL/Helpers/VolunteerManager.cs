@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using DO;
 using System.Net;
+using System.Text.RegularExpressions;
 
 internal class VolunteerManager
 {
@@ -175,5 +176,16 @@ internal class VolunteerManager
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
 
     }
-
+    public static bool CheckPassword(string password)
+    {
+        if (password == null) 
+            return false;
+        if (password.Length <8)
+            return false;
+        if (!Regex.IsMatch(password, @"^[a-zA-Z0-9@.]+$"))
+            return false;
+        if (!password.Contains('@') || password.Contains('.'))
+            return false;
+        return true;
+    }
 }

@@ -102,6 +102,38 @@ public enum VolunteerSortField
     SumOfCancelledCall,
     SumOfCallExpired,
     CallId,
-    RoleType,
-    DistanceType
+    CallType
+}
+public enum CallInListSort
+{
+    Id,
+    CallId,
+    CallType,
+    OpenTime,
+    TimeToEnd,
+    LastName, 
+    TimeToCare,
+    CallInListStatus
+
+}
+public enum CloseCallInListSort
+{
+    CallId, 
+    CallType,
+    Adress, 
+    OpenTime, 
+    StartTime, 
+    TypeOfEnd,
+    FinishTime
+}
+public enum OpenCallInListSort
+{
+    CallId, 
+    CallType, 
+    Address, 
+    OpenTime, 
+    MaxTime,
+    Details, 
+    Distance
+
 }

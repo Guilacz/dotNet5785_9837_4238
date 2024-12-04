@@ -16,6 +16,7 @@ namespace BO;
 public class ClosedCallInList
 {
     public int CallId { get; init; }
+
     public CallType CallType;
     public string Adress { get; set; }
     public DateTime OpenTime { get; init; }

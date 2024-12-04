@@ -16,6 +16,7 @@ namespace BO;
 public class OpenCallInList
 {
     public int CallId { get; init; }
+
     public CallType CallType;
     public string Address { get; set; }
 

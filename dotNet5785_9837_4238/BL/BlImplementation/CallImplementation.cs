@@ -7,11 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 
 internal class CallImplementation : ICall
-
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
-    
     public void ChoiceOfCallToCare(int volId, int callId)
     {
         // שליפת הקריאה והמתנדב משכבת הנתונים
@@ -67,7 +65,6 @@ internal class CallImplementation : ICall
         _dal.Assignment.Create(newAssignment);
     }
 
-
     public void Create(BO.Call c)
     {
 
@@ -95,7 +92,6 @@ internal class CallImplementation : ICall
         }
 
     }
-   
 
     public void Delete(int callId)
     {
@@ -131,7 +127,7 @@ internal class CallImplementation : ICall
         }
     }
 
-    public IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallType? sortType = null)
+    public IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
         IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
         IEnumerable<DO.Assignment> assigments = _dal.Assignment.ReadAll();
@@ -149,7 +145,7 @@ internal class CallImplementation : ICall
         return callList;
     }
 
-    public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.TypeOfEnd? end = null)
+    public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
     {
         try
         {
@@ -172,9 +168,9 @@ internal class CallImplementation : ICall
                 _ => assignment.ToList() 
             };
 
-            if (end != null)
+            if (sort != null)
             {
-                assignment = assignment.Where(v => v.TypeOfEnd == (DO.TypeOfEnd)end).ToList();
+                assignment = assignment.Where(v => v.TypeOfEnd == (DO.TypeOfEnd)sort).ToList();
             }
 
             var closedCallInList = assignment.Select(a => new BO.ClosedCallInList
@@ -184,15 +180,17 @@ internal class CallImplementation : ICall
                 TypeOfEnd = (BO.TypeOfEnd)a.TypeOfEnd 
             }).ToList();
 
-            var result = end switch
+            var result = sort switch
             {
-                BO.TypeOfEnd.Fulfilled => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.Fulfilled).ThenBy(v => v.CallId).ToList(),
-                BO.TypeOfEnd.CancelledByVolunteer => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledByVolunteer).ThenBy(v => v.CallId).ToList(),
-                BO.TypeOfEnd.CancelledByManager => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledByManager).ThenBy(v => v.CallId).ToList(),
-                BO.TypeOfEnd.CancelledAfterTime => closedCallInList.OrderBy(v => v.TypeOfEnd == BO.TypeOfEnd.CancelledAfterTime).ThenBy(v => v.CallId).ToList(),
+                BO.CloseCallInListSort.CallId => closedCallInList.OrderBy(v => v.CallId).ToList(),
+                BO.CloseCallInListSort.CallType => closedCallInList.OrderBy(v => v.CallType).ToList(),
+                BO.CloseCallInListSort.FinishTime => closedCallInList.OrderBy(v => v.FinishTime).ToList(),
+                BO.CloseCallInListSort.OpenTime => closedCallInList.OrderBy(v => v.OpenTime).ToList(),
+                BO.CloseCallInListSort.StartTime => closedCallInList.OrderBy(v => v.StartTime).ToList(),
+                BO.CloseCallInListSort.Adress => closedCallInList.OrderBy(v => v.Adress).ToList(),
+                BO.CloseCallInListSort.TypeOfEnd => closedCallInList.OrderBy(v => v.TypeOfEnd).ToList(),
                 _ => closedCallInList.OrderBy(v => v.CallId).ToList() 
             };
-
             return result;
         }
         catch (Exception ex)
@@ -201,9 +199,67 @@ internal class CallImplementation : ICall
         }
     }
 
-    public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInList? openCall = null)
+    public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // קריאת כל הקריאות והמשימות מה-DAL
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+            // קריאת נתוני המתנדב לפי volId
+            DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
+
+            // המרה ל-BO אם יש צורך
+            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+
+            // כתובת המתנדב
+            string volunteerAddress = boVolunteer.Adress;
+
+            // סינון הקריאות הפתוחות והפתוחות בסיכון
+            calls = calls.Where(call =>
+            {
+                var status = Helpers.CallManager.GetCallStatus(call, assignments);
+                return status == BO.CallStatus.Open || status == BO.CallStatus.OpenAtRisk;
+            });
+
+            // סינון לפי סוג הקריאה אם type לא null
+            if (type.HasValue)
+            {
+                calls = calls.Where(c => c.CallType == (DO.CallType)type);
+            }
+
+            // מיפוי הקריאות הפתוחות לישויות BO.OpenCallInList
+            var openCalls = calls.Select(c => new BO.OpenCallInList
+            {
+                CallId = c.CallId,
+                CallType = (BO.CallType)c.CallType,
+                Address = c.Address,
+                OpenTime = c.OpenTime,
+                MaxTime = c.MaxTime,
+                Details = c.Details,
+                Distance = Helpers.Tools.DistanceCalculator.CalculateDistance(volunteerAddress, c.Address, boVolunteer.DistanceType)
+            }).ToList();
+
+            // מיון לפי openCall אם הוא לא null
+            var result = openCall switch
+            {
+                OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
+                OpenCallInListSort.CallType => openCalls.OrderBy(c => c.CallType).ToList(),
+                OpenCallInListSort.Address => openCalls.OrderBy(c => c.Address).ToList(),
+                OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
+                OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
+                OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
+                OpenCallInListSort.Distance => openCalls.OrderBy(c => c.Distance).ToList(),
+                _ => openCalls.OrderBy(c => c.CallId).ToList() // ברירת מחדל: מיון לפי CallId
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while fetching open calls: {ex.Message}");
+        }
     }
 
     public Call? Read(int callId)
