@@ -1,14 +1,6 @@
 ﻿namespace Helpers;
-using BO;
 using DalApi;
 using System;
-
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using DO;
-using System.Net;
 using System.Text.RegularExpressions;
 
 internal class VolunteerManager
@@ -182,10 +174,70 @@ internal class VolunteerManager
             return false;
         if (password.Length <8)
             return false;
-        if (!Regex.IsMatch(password, @"^[a-zA-Z0-9@.]+$"))
+        if (!Regex.IsMatch(password, @"^[a-z@.]+$"))
             return false;
         if (!password.Contains('@') || password.Contains('.'))
             return false;
         return true;
+    }
+    /// <summary>
+    /// encryption function : applies the ATBASH encryption + shift 2
+    /// </summary>
+
+    public static string EncryptPassword(string password)
+    {
+        char[] encryptedChars = new char[password.Length];
+        for (int i = 0; i < password.Length; i++)
+        {
+            char letter = password[i];
+            if (letter >= 'a' && letter <= 'z')
+            {
+                // atbash
+                char atbashChar = (char)('a' + ('z' - letter));
+                // +2 
+                char finalChar = (char)(atbashChar + 2);
+                if (finalChar > 'z')
+                {
+                    finalChar = (char)(finalChar - 26);
+                }
+                encryptedChars[i] = finalChar;
+            }
+            else
+            {
+                encryptedChars[i] = letter;
+            }
+        }
+        return new string(encryptedChars);
+    }
+
+
+    /// <summary>
+    /// decryption function : return the origin password
+    /// </summary>
+
+    public static string DecryptPassword(string password)
+    {
+        char[] decryptedChars = new char[password.Length];
+
+        for (int i = 0; i < password.Length; i++)
+        {
+            char letter = password[i];
+            if (letter >= 'a' && letter <= 'z')
+            {
+                char minusChar = (char)(letter - 2);
+                char finalChar = (char)('a' + ('z' - minusChar));
+
+                if (finalChar < 'a')
+                {
+                    finalChar = (char)(finalChar + 26);
+                }
+                decryptedChars[i] = finalChar;
+            }
+            else
+            {
+                decryptedChars[i] = letter;
+            }
+        }
+        return new string(decryptedChars);
     }
 }

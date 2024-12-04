@@ -127,23 +127,68 @@ internal class CallImplementation : ICall
         }
     }
 
-    public IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
+   
+    public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
-        IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
-        IEnumerable<DO.Assignment> assigments = _dal.Assignment.ReadAll();
-        IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+        try
+        {
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll(); 
 
-        IEnumerable<CallInList> callList = from call in calls
-                                           let assigment = assigments.First(x => x.CallId == call.CallId)
-                                           let volunteer = volunteers.First(x => x.VolunteerId == assigment.VolunteerId)
-                                           select new CallInList()
-                                           {
-                                               Id = assigment.Id,
-                                               CallId = assigment.CallId,
-                                           };
+            if (filterType != null && filterValue != null)
+            {
+                calls = filterType switch
+                {
+                    BO.CallInListSort.Id => calls.Where(c => c.CallId == Convert.ToInt32(filterValue)),
+                    BO.CallInListSort.CallType => calls.Where(c => c.CallType == (DO.CallType)filterValue),
+                    BO.CallInListSort.OpenTime => calls.Where(c => c.OpenTime == (DateTime)filterValue),
+                    BO.CallInListSort.TimeToEnd => calls.Where(c => c.MaxTime.HasValue && c.MaxTime.Value == (DateTime)filterValue),
+                    _ => calls
+                };
+            }
 
-        return callList;
+            // ** יצירת רשימה של BO.CallInList **
+            var callInList = calls.Select(c => new BO.CallInList
+            {
+                CallId = c.CallId,
+                CallType = (BO.CallType)c.CallType,
+                OpenTime = c.OpenTime,
+                LastName = null, // לא קיים שדה כזה במחלקת Call
+                TimeToEnd = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(c.OpenTime) : (TimeSpan?)null,
+                TimeToCare = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
+                CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+            }).ToList();
+
+            // ** מיון הרשימה **
+            if (sortType != null)
+            {
+                callInList = sortType switch
+                {
+                    BO.CallInListSort.Id => callInList.OrderBy(c => c.CallId).ToList(),
+                    BO.CallInListSort.CallType => callInList.OrderBy(c => c.CallType).ToList(),
+                    BO.CallInListSort.OpenTime => callInList.OrderBy(c => c.OpenTime).ToList(),
+                    BO.CallInListSort.TimeToEnd => callInList.OrderBy(c => c.TimeToEnd).ToList(),
+                    BO.CallInListSort.TimeToCare => callInList.OrderBy(c => c.TimeToCare).ToList(),
+                    BO.CallInListSort.CallInListStatus => callInList.OrderBy(c => c.CallInListStatus).ToList(),
+                    _ => callInList.OrderBy(c => c.CallId).ToList()
+                };
+            }
+            else
+            {
+                // מיון ברירת מחדל לפי CallId אם לא נבחר ערך
+                callInList = callInList.OrderBy(c => c.CallId).ToList();
+            }
+
+            return callInList;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error in {nameof(GetListOfCalls)}: {ex.Message}");
+        }
     }
+
+
+
 
     public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
     {

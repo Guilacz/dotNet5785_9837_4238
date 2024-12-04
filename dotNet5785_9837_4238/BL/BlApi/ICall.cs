@@ -18,7 +18,7 @@ public interface ICall
     /// <param name="filterValue"></param>
     /// <param name="sortType"></param>
     /// <returns></returns>
-    IEnumerable<CallInList> GetListOfCalls(BO.CallType? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null);
+    IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null);
 
     /// <summary>
     /// 
