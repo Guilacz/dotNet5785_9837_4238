@@ -1,7 +1,6 @@
 ﻿namespace BlImplementation;
 using BlApi;
 using BO;
-using DO;
 using Helpers;
 using System.Collections.Generic;
 
@@ -34,12 +33,12 @@ internal class VolunteerImplementation : IVolunteer
         (
             Id: assignments.Any()
                 ? assignments.Max(a => a.Id) + 1
-                : 1, 
+                : 1,
             CallId: callId,
             VolunteerId: volId,
             StartTime: DateTime.Now,
-            TypeOfEnd: null, 
-            FinishTime: null 
+            TypeOfEnd: null,
+            FinishTime: null
         );
         _dal.Assignment.Create(newAssignment);
     }
@@ -137,7 +136,7 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlAlreadyExistException(ex.Message);
         }
     }
-    
+
     public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null)
     {
         try
@@ -185,8 +184,8 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            BO.Volunteer volunteer = Read(volId);
-
+            DO.Volunteer volu = _dal.Volunteer.Read(volId);
+            BO.Volunteer volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
             if (volunteer == null)
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} was not found.");
@@ -198,7 +197,7 @@ internal class VolunteerImplementation : IVolunteer
                 Phone = volunteer.Phone,
                 Email = volunteer.Email,
                 RoleType = volunteer.RoleType,
-                DistanceType =volunteer.DistanceType,
+                DistanceType = volunteer.DistanceType,
                 Password = volunteer.Password,
                 Adress = volunteer.Adress,
                 Distance = volunteer.Distance,
@@ -290,4 +289,3 @@ internal class VolunteerImplementation : IVolunteer
         }
     }
 }
-

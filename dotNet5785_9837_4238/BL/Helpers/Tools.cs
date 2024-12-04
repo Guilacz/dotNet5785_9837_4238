@@ -49,23 +49,25 @@ internal static class Tools
     }
 
 
-    //check address
 
+
+    /// <summary>
+    /// function that finds the geographical coordinates (latitude and longitude) for a given address
+    /// it utses the LocationIQ API. The function validates the input address, 
+    /// sends a GET request to the API, processes the JSON response, and returns the coordinates 
+    /// as a tuple (latitude, longitude). If no results are found or if the request fails, 
+    /// it throws an exception.
+    /// /// </summary>
     public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
-    {
-        return GetCoordinatesFromAddress(address);
-    }
-
-    public static (double Latitude, double Longitude) GetCoordinatesFromAddress(string address)
     {
         if (string.IsNullOrWhiteSpace(address))
         {
             throw new ArgumentException("Address cannot be null or empty.", nameof(address));
         }
 
-        const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7"; // החליפי במפתח ה-API שלך
+        const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
         const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
-
+        //in the request we send a key and the address to find
         string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
         using (var client = new HttpClient())
@@ -90,85 +92,59 @@ internal static class Tools
         }
     }
 
+    /// <summary>
+    /// class to get the latitude and longitude of a LocationIqResponse
+    /// </summary>
     private class LocationIqResponse
     {
         public string Lat { get; set; }
         public string Lon { get; set; }
     }
+
+    /// <summary>
+    /// function that checks if the coordinates of a volunteer match the coordinates based on his address. 
+    /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
+    /// </summary>
     public static bool CheckAddressVolunteer(Volunteer vol)
     {
-        // אם ה-Latitude וה-Longitude אינם null, אפשר להמשיך
         if (vol.Latitude == null || vol.Longitude == null)
         {
             throw new Exception("Latitude or Longitude is null.");
         }
 
-        // קריאה לפונקציה שמחזירה את קווי הרוחב והאורך עבור הכתובת
         var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(vol.Adress);
 
-        // הגדרת סובלנות לבדוק אם הקואורדינטות תואמות
         const double tolerance = 0.0001;
-
-        // בדיקה אם הקואורדינטות תואמות בקווים רוחב ואורך
         bool isLatitudeMatch = Math.Abs(vol.Latitude.Value - expectedLatitude) < tolerance;
         bool isLongitudeMatch = Math.Abs(vol.Longitude.Value - expectedLongitude) < tolerance;
 
         return isLatitudeMatch && isLongitudeMatch;
     }
+
+    /// <summary>
+    /// function that checks if the coordinates of a call match the coordinates based on his address. 
+    /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
+    /// </summary>
     public static bool CheckAddressCall(Call c)
     {
-        // לא צריך לבדוק אם הם null כי הם לא nullable
         var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
-
-        // הגדרת סובלנות לבדוק אם הקואורדינטות תואמות
         const double tolerance = 0.0001;
 
-        // בדיקה אם הקואורדינטות תואמות בקווים רוחב ואורך
         bool isLatitudeMatch = Math.Abs(c.Latitude - expectedLatitude) < tolerance;
         bool isLongitudeMatch = Math.Abs(c.Longitude - expectedLongitude) < tolerance;
 
         return isLatitudeMatch && isLongitudeMatch;
     }
+
+    /// <summary>
+    ///  function to calculate the distance between two addresses
+    ///  we use Haversine formula
+    /// </summary>
     public static double CalculateDistanceBetweenAddresses(string address1, string address2)
     {
-        // קבלת קווי הרוחב והאורך עבור שתי הכתובות
         var (latitude1, longitude1) = GetAddressCoordinates(address1);
         var (latitude2, longitude2) = GetAddressCoordinates(address2);
 
-        // חישוב המרחק האווירי באמצעות נוסחת Haversine
-        const double EarthRadiusKm = 6371.0; // רדיוס כדור הארץ בקילומטרים
-
-        double latitude1Rad = DegreesToRadians(latitude1);
-        double longitude1Rad = DegreesToRadians(longitude1);
-        double latitude2Rad = DegreesToRadians(latitude2);
-        double longitude2Rad = DegreesToRadians(longitude2);
-
-        double deltaLatitude = latitude2Rad - latitude1Rad;
-        double deltaLongitude = longitude2Rad - longitude1Rad;
-
-        double a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
-                   Math.Cos(latitude1Rad) * Math.Cos(latitude2Rad) *
-                   Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
-
-        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-        // חישוב המרחק בקילומטרים
-        double distance = EarthRadiusKm * c;
-
-        return distance;
-    }
-
-    // פונקציה להמיר מעלות לרדיאנים
-    private static double DegreesToRadians(double degrees)
-    {
-        return degrees * (Math.PI / 180);
-    }
-    public static double CalculateDistanceBetweenCoordinates(
-    double latitude1,
-    double longitude1,
-    double latitude2,
-    double longitude2)
-    {
         const double EarthRadiusKm = 6371.0;
 
         double latitude1Rad = DegreesToRadians(latitude1);
@@ -184,25 +160,26 @@ internal static class Tools
                    Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
 
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        double distance = EarthRadiusKm * c;
 
-        return EarthRadiusKm * c;
+        return distance;
     }
-    public static double CalculateAirDistance(string volunteerAddress, string callAddress)
+
+    /// <summary>
+    /// function to transform Degrees To Radians
+    /// </summary>
+    private static double DegreesToRadians(double degrees)
     {
-        if (string.IsNullOrWhiteSpace(volunteerAddress) || string.IsNullOrWhiteSpace(callAddress))
-        {
-            throw new ArgumentException("Addresses cannot be null or empty.");
-        }
-
-        // קבלת קואורדינטות של כל כתובת
-        var (volunteerLatitude, volunteerLongitude) = Tools.GetAddressCoordinates(volunteerAddress);
-        var (callLatitude, callLongitude) = Tools.GetAddressCoordinates(callAddress);
-
-        // חישוב המרחק האווירי בין הקואורדינטות
-        return Tools.CalculateDistanceBetweenCoordinates(
-            volunteerLatitude, volunteerLongitude,
-            callLatitude, callLongitude);
+        return degrees * (Math.PI / 180);
     }
+
+
+    /// <summary>
+    /// function to calculates the air distance between two addresses 
+    /// by first retrieving the geographical coordinates for the volunteer's address and the call address
+    /// then using CalculateDistanceBetweenCoordinates to calculate the distance between these coordinates
+    /// </summary>
+
 
     public static class DistanceCalculator
     {
@@ -229,6 +206,9 @@ internal static class Tools
             }
         }
 
+        /// <summary>
+        /// calulate the air distance with the coordinates
+        /// </summary>
         private static double CalculateAirDistance(string address1, string address2)
         {
             var (latitude1, longitude1) = GetAddressCoordinates(address1);
@@ -236,6 +216,7 @@ internal static class Tools
 
             return CalculateDistanceBetweenCoordinates(latitude1, longitude1, latitude2, longitude2);
         }
+
 
         private static double CalculateWalkingDistance(string address1, string address2)
         {
@@ -247,9 +228,12 @@ internal static class Tools
             return CalculateTravelDistance(address1, address2, "driving");
         }
 
+        /// <summary>
+        /// calculate driving and waliking distance
+        /// </summary>=
         private static double CalculateTravelDistance(string address1, string address2, string mode)
         {
-            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7"; // החליפי במפתח ה-API שלך
+            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
             const string BaseUrl = "https://us1.locationiq.com/v1/directions/";
 
             var (latitude1, longitude1) = GetAddressCoordinates(address1);
@@ -274,10 +258,13 @@ internal static class Tools
                     throw new Exception("No route data found for the provided addresses.");
                 }
 
-                return routeData.Routes[0].Distance / 1000.0; // המרחק מחושב במטרים - הופך לקילומטרים
+                return routeData.Routes[0].Distance / 1000.0;
             }
         }
 
+        /// <summary>
+        /// calculate the distances between coordinates
+        /// </summary>
         private static double CalculateDistanceBetweenCoordinates(double latitude1, double longitude1, double latitude2, double longitude2)
         {
             const double EarthRadiusKm = 6371.0;
@@ -299,44 +286,8 @@ internal static class Tools
             return EarthRadiusKm * c;
         }
 
-        private static double DegreesToRadians(double degrees)
-        {
-            return degrees * (Math.PI / 180);
-        }
 
-        private static (double Latitude, double Longitude) GetAddressCoordinates(string address)
-        {
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                throw new ArgumentException("Address cannot be null or empty.", nameof(address));
-            }
 
-            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7"; // החליפי במפתח ה-API שלך
-            const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
-
-            string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
-
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = client.GetAsync(requestUrl).Result;
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"Error fetching geolocation data: {response.ReasonPhrase}");
-                }
-
-                string responseContent = response.Content.ReadAsStringAsync().Result;
-
-                var locations = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
-
-                if (locations == null || locations.Count == 0)
-                {
-                    throw new Exception("No geolocation data found for the provided address.");
-                }
-
-                var firstResult = locations.First();
-                return (Latitude: double.Parse(firstResult.Lat), Longitude: double.Parse(firstResult.Lon));
-            }
-        }
         private class LocationIqDirectionsResponse
         {
             public Route[] Routes { get; set; }
@@ -344,7 +295,7 @@ internal static class Tools
 
         private class Route
         {
-            public double Distance { get; set; } // המרחק במטרים
+            public double Distance { get; set; }
         }
 
         private class LocationIqResponse
@@ -355,7 +306,9 @@ internal static class Tools
     }
 
 
-
+    /// <summary>
+    /// returns the riskrange
+    /// </summary>
     public static TimeSpan RiskTime(IConfig config)
     {
         if (config == null)
