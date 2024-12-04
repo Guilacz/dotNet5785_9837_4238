@@ -177,7 +177,7 @@ internal class VolunteerImplementation : IVolunteer
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while getting the volunteer list.", ex);
+            throw new Exception(ex.Message);
         }
     }
 

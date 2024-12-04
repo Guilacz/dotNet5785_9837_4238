@@ -135,5 +135,4 @@ public enum OpenCallInListSort
     MaxTime,
     Details, 
     Distance
-
 }
