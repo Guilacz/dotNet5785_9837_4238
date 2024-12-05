@@ -95,6 +95,49 @@ internal class CallManager
         };
     }
 
+    internal static void PeriodicVolunteersUpdates()
+    {
+        var allCalls = _dal.Call.ReadAll().ToList();
 
+        foreach (var call in allCalls)
+        {
+            var CurrentCall = ConvertDOToBO(call);
+            if (call.MaxTimeToFinish.HasValue && call.MaxTimeToFinish.Value < ClockManager.Now)
+            {
+                if (CurrentCall.StatusCall != StatusCall.Close)
+                {
+                    var assignments = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.Id).ToList();
 
-}
+                    if (assignments.Count == 0)
+                    {
+                        // No assignment exists, create a new one with "Expired Cancellation"
+                        var newAssignment = new DO.Assignment
+                        {
+                            CallId = call.Id,
+                            VolunteerId = null,
+                            EntryTime = ClockManager.Now,
+                            EndTime = ClockManager.Now,
+                            TypeEndTime = DO.TypeEndTime.CancellationExpired
+                        };
+                        assignments.Add(newAssignment);
+                        //s_dal.Assignment.Add(newAssignment);
+                    }
+                    else
+                    {
+                        // Update existing assignment with "Expired Cancellation"
+                        var assignment = assignments.LastOrDefault(a => !a.EndTime.HasValue);
+                        if (assignment != null)
+                        {
+
+                            assignment.EndTime = ClockManager.Now;
+                            assignment.TypeEndTime = DO.TypeEndTime.ExpiredCancellation;
+                            s_dal.Assignment.Update(assignment);
+                        }
+                    }
+
+                    // Update the call status to closed
+                    // call.StatusCall = StatusCall.Closed;
+                    s_dal.Call.Update(call);
+                }
+
+            }

@@ -69,7 +69,7 @@ class Program
                     Console.WriteLine("הזן את מזהה המתנדב:");
                     volId = int.Parse(Console.ReadLine());
                     Console.WriteLine("הזן פרטי מתנדב לעדכון:");
-                    BO.Volunteer vol = new BO.Volunteer(); // תבצע את האתחול לפי הצורך
+                    BO.Volunteer vol = new BO.Volunteer(); 
                     s_bl.Volunteer.Update(volId, vol);
                     break;
                 case "4":
@@ -79,7 +79,7 @@ class Program
                     break;
                 case "5":
                     Console.WriteLine("הזן פרטי מתנדב חדש:");
-                    vol = new BO.Volunteer(); // תבצע את האתחול לפי הצורך
+                    vol = new BO.Volunteer(); 
                     s_bl.Volunteer.Create(vol);
                     break;
                 case "6":
@@ -129,7 +129,7 @@ class Program
                 case "3":
                     Console.WriteLine("הזן את מזהה הקריאה:");
                     callId = int.Parse(Console.ReadLine());
-                    Call c = new Call(); // תבצע את האתחול לפי הצורך
+                    Call c = new Call(); 
                     s_bl.Call.Update(c);
                     break;
                 case "4":
@@ -138,7 +138,7 @@ class Program
                     s_bl.Call.Delete(callId);
                     break;
                 case "5":
-                    c = new Call(); // תבצע את האתחול לפי הצורך
+                    c = new Call();  
                     s_bl.Call.Create(c);
                     break;
                 case "6":
