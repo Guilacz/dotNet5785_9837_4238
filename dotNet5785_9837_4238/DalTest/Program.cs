@@ -12,6 +12,7 @@ internal class Program
     //static readonly IDal s_dal = new DalXml();//stage 3
     static readonly IDal s_dal = Factory.Get; //stage 4
 
+
     /// <summary>
     /// Main entry point of the application. Displays the main menu and handles user input.
     /// </summary>
@@ -156,7 +157,7 @@ internal class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -198,7 +199,7 @@ internal class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -240,7 +241,7 @@ internal class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
 
     }

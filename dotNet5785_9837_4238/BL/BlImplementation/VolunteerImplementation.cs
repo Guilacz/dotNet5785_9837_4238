@@ -10,40 +10,46 @@ internal class VolunteerImplementation : IVolunteer
 
     public void ChoiceOfCallToCare(int volId, int callId)
     {
-        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
-        if (call == null)
-            throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
-        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
-        if (volunteer == null)
-            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
-        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
-        if (!Helpers.CallManager.CheckCall(boCall))
-            throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
-        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
-        if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
-        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
-        if (isCallAlreadyHandled)
-            throw new InvalidOperationException($"Call with ID {callId} has already been handled.");
-        bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
-        if (isCallInProcess)
-            throw new InvalidOperationException($"Call with ID {callId} is already in process by another volunteer.");
-        var newAssignment = new DO.Assignment
-        (
-            Id: assignments.Any()
-                ? assignments.Max(a => a.Id) + 1
-                : 1,
-            CallId: callId,
-            VolunteerId: volId,
-            StartTime: DateTime.Now,
-            TypeOfEnd: null,
-            FinishTime: null
-        );
-        _dal.Assignment.Create(newAssignment);
+        try
+        {
+            DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+            if (call == null)
+                throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
+            DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+            if (volunteer == null)
+                throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
+            BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+            if (!Helpers.CallManager.CheckCall(boCall))
+                throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
+            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+            if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
+                throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+            if (isCallAlreadyHandled)
+                throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled.");
+            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+            if (isCallInProcess)
+                throw new BO.BlInvalidValueException($"Call with ID {callId} is already in process by another volunteer.");
+            var newAssignment = new DO.Assignment
+            (
+                Id: assignments.Any()
+                    ? assignments.Max(a => a.Id) + 1
+                    : 1,
+                CallId: callId,
+                VolunteerId: volId,
+                StartTime: DateTime.Now,
+                TypeOfEnd: null,
+                FinishTime: null
+            );
+            _dal.Assignment.Create(newAssignment);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // טיפול בחריגה של InvalidValue (למשל, קריאה או מתנדב שלא קיימים)
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
     }
-
-
     public void Delete(int volId)
     {
         BO.Volunteer? vol = Read(volId);
@@ -59,47 +65,63 @@ internal class VolunteerImplementation : IVolunteer
         {
             _dal.Volunteer.Delete(volId);
         }
-        catch (DO.DalAlreadyExistException ex)
+        catch (DO.DalDeletionImpossible ex)
         {
-            throw new BO.BlDoesNotExistException(ex.Message);
+            throw new BO.BlDeletionImpossible(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex) 
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
         }
 
     }
-
     public BO.Role EnterSystem(string name, int password)
     {
-        var volunteersFromDal = _dal.Volunteer.ReadAll();
-        string passwordAsString = password.ToString();
-
-        var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
-
-        if (vol == null)
+        try
         {
-            throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            var volunteersFromDal = _dal.Volunteer.ReadAll();
+            string passwordAsString = password.ToString();
+            passwordAsString = Helpers.VolunteerManager.EncryptPassword(passwordAsString);
+
+            var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
+
+            if (vol == null)
+            {
+                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            }
+
+            if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
+            {
+                VolunteerId = vol.VolunteerId,
+                Name = vol.Name,
+                Phone = vol.Phone,
+                Email = vol.Email,
+                RoleType = (BO.Role)vol.RoleType,
+                DistanceType = (BO.DistanceType)vol.DistanceType,
+                Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+                Adress = vol.Adress,
+                Distance = vol.Distance,
+                Latitude = vol.Latitude,
+                Longitude = vol.Longitude,
+                IsActive = vol.IsActive,
+            }))
+            {
+                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+            }
+
+            return (BO.Role)vol.RoleType;
         }
-
-        if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
+        catch (DO.DalArgumentNullException ex)
         {
-            VolunteerId = vol.VolunteerId,
-            Name = vol.Name,
-            Phone = vol.Phone,
-            Email = vol.Email,
-            RoleType = (BO.Role)vol.RoleType,
-            DistanceType = (BO.DistanceType)vol.DistanceType,
-            Password = vol.Password,
-            Adress = vol.Adress,
-            Distance = vol.Distance,
-            Latitude = vol.Latitude,
-            Longitude = vol.Longitude,
-            IsActive = vol.IsActive,
-        }))
-        {
-            throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+            // This handles the specific case where the volunteer is not found or password is incorrect
+            throw new BO.BlArgumentNullException(ex.Message);
         }
-
-        return (BO.Role)vol.RoleType;
+        catch (DO.DalInvalidValueException ex)
+        {
+            // This handles the specific case where the volunteer data is invalid
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
     }
-
     public BO.Volunteer GetVolunteerDetails(int volId)
     {
         try
@@ -127,7 +149,7 @@ internal class VolunteerImplementation : IVolunteer
             };
 
             if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-                throw new BO.BlAlreadyExistException("Volunteer not found or incorrect password.");
+                throw new BO.BlAlreadyExistException("Incorrect call.");
             return boVolunteer;
 
         }
@@ -136,7 +158,6 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlAlreadyExistException(ex.Message);
         }
     }
-
     public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null)
     {
         try
@@ -176,15 +197,15 @@ internal class VolunteerImplementation : IVolunteer
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw new BO.BlInvalidValueException(ex.Message);
         }
     }
-
     public BO.Volunteer? Read(int volId)
     {
         try
         {
-            DO.Volunteer volu = _dal.Volunteer.Read(volId);
+            DO.Volunteer volu1 = _dal.Volunteer.Read(volId);
+            DO.Volunteer volu = volu1 with { Password = Helpers.VolunteerManager.DecryptPassword(volu1.Password) };
             BO.Volunteer volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
             if (volunteer == null)
             {
@@ -211,29 +232,30 @@ internal class VolunteerImplementation : IVolunteer
             };
             return vol;
         }
-
-        catch (Exception ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            // Optionally, log the exception or handle additional scenarios
-            throw new Exception(ex.Message);
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
         }
     }
-
     public void Update(int volId, BO.Volunteer vol)
     {
         try
         {
+            vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
             var volun = _dal.Volunteer.Read(volId);
             if (!Helpers.VolunteerManager.CheckPassword(volun.Password))
-                throw new BlInvalidValueException("Volunteer not found or incorrect password.");
+                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
 
             if (!(volun.VolunteerId == volId || volun.RoleType == 0))
-
-                throw new BlInvalidValueException("Volunteer not found or incorrect password.");
+                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
             else
             {
                 if (!Helpers.VolunteerManager.CheckVolunteer(vol))
-                    throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+                    throw new BO.BlInvalidValueException("Invalid volunteer data.");
                 else
                 {
                     if (vol.RoleType == 0)
@@ -246,24 +268,25 @@ internal class VolunteerImplementation : IVolunteer
                         DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
                         _dal.Volunteer.Update(DOvolunteer);
                     }
-
                 }
             }
         }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
 
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+
+    }
     public void Create(BO.Volunteer vol)
     {
         if (!Helpers.VolunteerManager.CheckVolunteer(vol))
         {
-            throw new BO.BlInvalidValueException("Invalid call data");
+            throw new BO.BlInvalidValueException("Invalid volunteer data.");
         }
         if (!Helpers.VolunteerManager.CheckPassword(vol.Password))
-            throw new BlInvalidValueException("Volunteer not found or incorrect password.");
+            throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+        vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password);
         try
         {
             _dal.Volunteer.Create(new DO.Volunteer
@@ -280,12 +303,19 @@ internal class VolunteerImplementation : IVolunteer
                 Adress = vol.Adress,
                 IsActive = vol.IsActive,
                 Distance = vol.Distance,
-
             });
         }
         catch (DO.DalAlreadyExistException ex)
         {
             throw new BO.BlAlreadyExistException(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
         }
     }
 }

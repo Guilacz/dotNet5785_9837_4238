@@ -1,4 +1,6 @@
 ﻿namespace Helpers;
+
+using BO;
 using DalApi;
 using System;
 using System.Text.RegularExpressions;
@@ -239,5 +241,18 @@ internal class VolunteerManager
             }
         }
         return new string(decryptedChars);
+    }
+
+    public static void UpdateExpiredCalls()
+    {
+        try
+        {
+
+        }
+        catch (Exception ex)
+        {
+            // טיפול בשגיאות (לוגיקה או בעיות חיבור לבסיס נתונים)
+            throw new Exception($"Error while updating expired calls: {ex.Message}");
+        }
     }
 }
