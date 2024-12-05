@@ -17,7 +17,7 @@ internal class AssignmentImplementation : IAssignment
     public void Create(Assignment item)
     {
         int currentId = Config.NextAssignmentId; // Get the next unique Id for the Assignment
-        Assignment currentItem = new Assignment(currentId, item.CallId, item.VolunteerId, item.StartTime, item.TypeOfEnd, item.FinishTime);
+        Assignment currentItem = new Assignment(currentId, item.CallId,  item.StartTime, item.VolunteerId, item.TypeOfEnd, item.FinishTime);
         DataSource.Assignments.Add(currentItem); // Add the new Assignment to the data source
     }
 
