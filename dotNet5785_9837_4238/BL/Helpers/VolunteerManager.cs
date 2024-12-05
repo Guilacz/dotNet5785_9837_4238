@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 internal class VolunteerManager
 {
-    private static IDal s_dal = Factory.Get; //stage 4
+    private static readonly IDal s_dal = Factory.Get; //stage 4
         
     
     /// <summary>

@@ -2,11 +2,11 @@
 
 using BO;
 using DalApi;
-using DO;
+using System.Xml.Linq;
 
 internal class CallManager
 {
-    private readonly DalApi.IDal _dal = DalApi.Factory.Get;
+    private static readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
 
     /// <summary>
@@ -16,11 +16,11 @@ internal class CallManager
     /// <returns></returns>
     internal static bool CheckCall(BO.Call c)
     {
-        if(CheckTime(c) == false)
+        if (CheckTime(c) == false)
             return false;
         if (!Tools.CheckAddressCall(c))
             return false;
-        
+
         return true;
     }
 
@@ -31,7 +31,7 @@ internal class CallManager
     /// <returns></returns>
     internal static bool CheckTime(BO.Call c)
     {
-        if(c.MaxTime < c.OpenTime)
+        if (c.MaxTime < c.OpenTime)
             return false;
         return true;
     }
@@ -95,49 +95,64 @@ internal class CallManager
         };
     }
 
-    internal static void PeriodicVolunteersUpdates()
+    /// <summary>
+    /// Static helper method to update all expired open calls.
+    /// This method should be invoked from ClockManager whenever the system clock is updated.
+    /// It closes all open calls whose maximum time has passed and their treatment hasn't been completed.
+    /// </summary>
+    public static void PeriodicVolunteersUpdates()
     {
-        var allCalls = _dal.Call.ReadAll().ToList();
+
+        var allCalls = _dal.Call.ReadAll();
 
         foreach (var call in allCalls)
         {
-            var CurrentCall = ConvertDOToBO(call);
-            if (call.MaxTimeToFinish.HasValue && call.MaxTimeToFinish.Value < ClockManager.Now)
+            var CurrentCall = ConvertCallToBO(call, _dal);
+            if (call.MaxTime != null && call.MaxTime.Value < ClockManager.Now)
             {
-                if (CurrentCall.StatusCall != StatusCall.Close)
+                if (CurrentCall.CallStatus != CallStatus.Closed)
                 {
-                    var assignments = s_dal.Assignment.ReadAll().Where(a => a.CallId == call.Id).ToList();
+                    var assignments = _dal.Assignment.ReadAll().Where(a => a.CallId == call.CallId).ToList();
 
                     if (assignments.Count == 0)
                     {
                         // No assignment exists, create a new one with "Expired Cancellation"
                         var newAssignment = new DO.Assignment
                         {
-                            CallId = call.Id,
+                            CallId = call.CallId,
                             VolunteerId = null,
-                            EntryTime = ClockManager.Now,
-                            EndTime = ClockManager.Now,
-                            TypeEndTime = DO.TypeEndTime.CancellationExpired
+                            StartTime = ClockManager.Now,
+                            FinishTime = ClockManager.Now,
+                            TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
                         };
                         assignments.Add(newAssignment);
+
                         //s_dal.Assignment.Add(newAssignment);
                     }
                     else
                     {
                         // Update existing assignment with "Expired Cancellation"
-                        var assignment = assignments.LastOrDefault(a => !a.EndTime.HasValue);
+                        var assignment = assignments.LastOrDefault(a => !a.FinishTime.HasValue);
                         if (assignment != null)
                         {
+                            var updatedAssignment = assignment with
+                            {
+                                FinishTime = ClockManager.Now,
+                                TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
+                            };
 
-                            assignment.EndTime = ClockManager.Now;
-                            assignment.TypeEndTime = DO.TypeEndTime.ExpiredCancellation;
-                            s_dal.Assignment.Update(assignment);
+                            _dal.Assignment.Update(updatedAssignment);
                         }
                     }
 
+
                     // Update the call status to closed
                     // call.StatusCall = StatusCall.Closed;
-                    s_dal.Call.Update(call);
+                    _dal.Call.Update(call);
                 }
 
             }
+
+        }
+    }
+}

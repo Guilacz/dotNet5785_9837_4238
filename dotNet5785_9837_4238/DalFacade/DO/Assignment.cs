@@ -13,8 +13,9 @@ public record Assignment
 (
     int Id,
     int CallId,
-    int VolunteerId,
     DateTime StartTime,
+
+    int? VolunteerId= null,
     TypeOfEnd? TypeOfEnd = null,
     DateTime? FinishTime = null
     
@@ -23,7 +24,7 @@ public record Assignment
     /// <summary>
     /// default constructor of the assignment
     /// </summary>
-    public Assignment () : this (0,0,0, DateTime.Now, TypeOfEnd:0,DateTime.Now) { }
+    public Assignment () : this (0,0, DateTime.Now, 0, TypeOfEnd:0,DateTime.Now) { }
 
     public Assignment WithId(int id) => new Assignment
     {
