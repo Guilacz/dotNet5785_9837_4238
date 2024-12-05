@@ -78,31 +78,50 @@ public static class Initialization
 
         int[] id = new int[]
 {
-    234567890,
-    789456123,
-    543216789,
-    678901234,
-    345678901,
-    432109876,
-    567890123,
-    298765432,
-    601234567,
-    712345678,
-    456789012,
-    789012345,
-    234098765,
-    650123478,
-    345678123,
-    878787878
+    123456780,
+    234567892,
+    345678903,
+    456789014,
+    567890125,
+    678901236,
+    789012347,
+    890123458,
+    901234569,
+    123456701,
+    135792468,
+    246813579,
+    357924680,
+    468035791,
+    579146802,
+    123456793
 };
 
         string phone;
         string prefix;
         int middlePart;
         double distance;
-        string password = "";
-        
-        
+        string[] password = new string[]
+{
+    "a@a12345",
+    "b@b23456",
+    "c@c34567",
+    "d@d45678",
+    "e@e56789",
+    "f@f67890",
+    "g@g78901",
+    "h@h89012",
+    "i@i90123",
+    "j@j01234",
+    "k@k12345",
+    "l@l23456",
+    "m@m34567",
+    "n@n45678",
+    "o@o56789",
+    "p@p67890"
+};
+
+
+
         //creation of a random phone number, password... for a volunteer
         for (int k = 0; k < 15; k++)
         {
@@ -112,13 +131,9 @@ public static class Initialization
 
             distance = random.Next(0, 40000);
 
-            for (int j = 0; j < 7; j++)
-            {
-                int digit = random.Next(0, 10);
-                password += digit.ToString();
-            }
 
-            Volunteer vol = new Volunteer(id[k], volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password, volunteersAdress[k], distance);
+
+            Volunteer vol = new Volunteer(id[k], volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password[k], volunteersAdress[k], distance);
 
             s_dal!.Volunteer.Create(vol);
         }
@@ -130,13 +145,8 @@ public static class Initialization
 
         distance = random.Next(0, 40000);
 
-        // creation of a random phone number, password... for the manager
-        for (int j = 0; j < 7; j++)
-        {
-            int digit = random.Next(0, 10);
-            password += digit.ToString();
-        }
-        Volunteer v = new Volunteer(id[15], volunteersNames[15], phone, volunteersMails[15], 0, 0, password, volunteersAdress[15], distance);
+
+        Volunteer v = new Volunteer(id[15], volunteersNames[15], phone, volunteersMails[15], 0, 0, password[15], volunteersAdress[15], distance);
 
 
     }
@@ -273,22 +283,22 @@ public static class Initialization
         
         int[] volunteerId = new int[]
 {
-    234567890,
-    789456123,
-    543216789,
-    678901234,
-    345678901,
-    432109876,
-    567890123,
-    298765432,
-    601234567,
-    712345678,
-    456789012,
-    789012345,
-    234098765,
-    650123478,
-    345678123,
-    878787878
+    123456780,
+    234567892,
+    345678903,
+    456789014,
+    567890125,
+    678901236,
+    789012347,
+    890123458,
+    901234569,
+    123456701,
+    135792468,
+    246813579,
+    357924680,
+    468035791,
+    579146802,
+    123456793
 };
         int i;
         int callId = s_dal!.Config.nextCallId;

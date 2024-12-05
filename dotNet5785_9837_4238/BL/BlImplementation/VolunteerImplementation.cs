@@ -279,8 +279,8 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            DO.Volunteer volu1 = _dal.Volunteer.Read(volId);
-            DO.Volunteer volu = volu1 with { Password = Helpers.VolunteerManager.DecryptPassword(volu1.Password) };
+            DO.Volunteer volu = _dal.Volunteer.Read(volId);
+           // DO.Volunteer volu = volu1 with { Password = Helpers.VolunteerManager.DecryptPassword(volu1.Password) };
             BO.Volunteer volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
             if (volunteer == null)
             {
