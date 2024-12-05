@@ -29,10 +29,10 @@ internal class VolunteerImplementation : IVolunteer
                 throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
             BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
             if (!Helpers.CallManager.CheckCall(boCall))
-                throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
             if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-                throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
+                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
             bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
             if (isCallAlreadyHandled)

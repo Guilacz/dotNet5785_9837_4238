@@ -9,6 +9,14 @@ using DalApi;
 internal class AdminImplementation : IAdmin
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
+
+
+    /// <summary>
+    /// function to Advance the clock by a specified time unit (minute, hour, day, month, or year).
+    /// 1. Determines the new time based on the given `TimeUnit`.
+    /// 2. Updates the system clock using `ClockManager.UpdateClock`.
+    /// </summary>
+    /// <param name="unit">The time unit to advance</param>
     public void ForwardClock(TimeUnit unit)
     {
         try
@@ -40,19 +48,23 @@ internal class AdminImplementation : IAdmin
         {
             throw new BO.BlInvalidValueException(ex.Message);
         }
-        catch (Exception ex)
-        {
-            throw new BO.BlDoesNotExistException(ex.Message);
-        }
     }
 
 
-
+    /// <summary>
+    /// function to return the time according to the clockManager
+    /// </summary>
+    /// <returns></returns>
     public DateTime GetClock()
     {
         return ClockManager.Now;
     }
 
+
+    /// <summary>
+    /// function to return the value of the configuration variable "Risk Range".
+    /// </summary>
+    /// <returns></returns>
     public TimeSpan GetMaxRange()
     {
         IConfig config = _dal.Config;
@@ -60,7 +72,9 @@ internal class AdminImplementation : IAdmin
     }
 
 
-
+    /// <summary>
+    /// function to initialize the database, calls ResetDB and then initialize it
+    /// </summary>
     public void InitializeDB()
     {
         try
@@ -68,12 +82,17 @@ internal class AdminImplementation : IAdmin
             ResetDB();
             DalTest.Initialization.Do();
         }
+        // Thrown in case of unexpected errors during processing
         catch (Exception ex)
         {
-            throw new BO.BlDeletionImpossible(ex.Message);
+            throw new BO.BlArgumentNullException(ex.Message);
         }
     }
 
+
+    /// <summary>
+    /// Function to reset the database : reset the data of the configurations, all the assignments, calls and volunteers
+    /// </summary>
     public void ResetDB()
     {
         _dal.Config.Reset();
@@ -85,6 +104,11 @@ internal class AdminImplementation : IAdmin
         _dal.Volunteer.DeleteAll(); 
     }
 
+
+    /// <summary>
+    /// function to set the maxRange data
+    /// </summary>
+    /// <param name="maxRange"></param>
     public void SetMaxRange(TimeSpan maxRange)
     {
         IConfig config = _dal.Config;
