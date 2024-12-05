@@ -8,6 +8,15 @@ internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    /// <summary>
+    /// function to associate a call with a volunteer 
+    /// check that both exists and are correct
+    /// check that the call has not been completed already and is not in process by another volunteer
+    /// Creates a new assignment and stores it in the database
+    /// Throws exceptions for invalid data or improper call/volunteer state.
+    /// <param name="volId">The ID of the volunteer.</param>
+    /// <param name="callId">The ID of the call.</param>
+    /// </summary>
     public void ChoiceOfCallToCare(int volId, int callId)
     {
         try
@@ -46,10 +55,18 @@ internal class VolunteerImplementation : IVolunteer
         }
         catch (DO.DalInvalidValueException ex)
         {
-            // טיפול בחריגה של InvalidValue (למשל, קריאה או מתנדב שלא קיימים)
             throw new BO.BlInvalidValueException(ex.Message);
         }
     }
+
+
+    /// <summary>
+    /// function to delete a volunteer 
+    /// first verify that he is not in care of a call or has not taken care already
+    /// check that the volunteer data is valid and send exceptions for invalid data or deletion failure
+    /// delete it with the DO function (to delete in the database)
+    /// </summary>
+    /// <param name="volId">The ID of the volunteer to delete.</param>
     public void Delete(int volId)
     {
         BO.Volunteer? vol = Read(volId);
@@ -75,6 +92,16 @@ internal class VolunteerImplementation : IVolunteer
         }
 
     }
+
+
+    /// <summary>
+    /// function to enter the system : Authenticates a volunteer by verifying his name and password. 
+    /// If valid, returns the role of the volunteer.
+    /// Throws exceptions if the volunteer is not found, the password is incorrect, or the volunteer data is invalid.
+    /// </summary>
+    /// <param name="name">The name of the volunteer.</param>
+    /// <param name="password">The password of the volunteer.</param>
+    /// <returns>The role of the authenticated volunteer.</returns>
     public BO.Role EnterSystem(string name, int password)
     {
         try
@@ -122,11 +149,24 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlInvalidValueException(ex.Message);
         }
     }
+
+
+    /// <summary>
+    /// function to get the details of a volunteer from his id : 
+    /// Converts the dal volunteer  to a bo volunteer and validates the data.
+    /// Throws an exception if the data is invalid or if the volunteer does not exist.
+    /// </summary>
+    /// <param name="volId">The ID of the volunteer.</param>
+    /// <returns>An bo object containing detailed information about the volunteer.</returns>
     public BO.Volunteer GetVolunteerDetails(int volId)
     {
         try
         {
             var vol = Read(volId);
+            if (vol == null)
+            {
+                throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} not found.");
+            }
 
             BO.Volunteer boVolunteer = new BO.Volunteer
             {
@@ -149,15 +189,35 @@ internal class VolunteerImplementation : IVolunteer
             };
 
             if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-                throw new BO.BlAlreadyExistException("Incorrect call.");
+            {
+                throw new BO.BlInvalidValueException("Invalid volunteer data.");
+            }
             return boVolunteer;
+        }
 
-        }
-        catch (DO.DalAlreadyExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.BlAlreadyExistException(ex.Message);
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+
     }
+
+
+    /// <summary>
+    /// function to retrieve a list of volunteers with detailed information, including the number of fulfilled, 
+    /// cancelled, and expired calls. Optionally filters by activity status and sorts the result 
+    /// based on a specified field.
+    /// </summary>
+    /// <param name="isActive">Optional filter by active status (true/false).</param>
+    /// <param name="sort">Optional sorting field (VolunteerId, Name, IsActive, etc.).</param>
+    /// <returns>A sorted and filtered list of volunteers in the form of VolunteerInList objects.</returns>
+    /// <exception cref="BO.BlArgumentNullException">Thrown when data retrieval fails.</exception>
+    /// <exception cref="BO.BlInvalidValueException">Thrown when an error occurs during processing.</exception>
+
     public IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null)
     {
         try
@@ -200,6 +260,21 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlInvalidValueException(ex.Message);
         }
     }
+
+
+    /// <summary>
+    /// Reads a volunteer by ID.
+    /// Steps:
+    /// 1. Retrieve the volunteer from the DAL.
+    /// 2. Decrypt the volunteer's password.
+    /// 3. Convert the data to a bo
+    /// 4. Validate the volunteer.
+    /// 5. Return the bo volunteer
+    /// </summary>
+    /// <param name="volId">The ID of the volunteer to retrieve.</param>
+    /// <returns>A BO.Volunteer object containing the volunteer's details.</returns>
+    /// <exception cref="BO.BlDoesNotExistException">Thrown when no volunteer with the specified ID exists.</exception>
+    /// <exception cref="BO.BlInvalidValueException">Thrown when invalid data is encountered in the DAL.</exception>
     public BO.Volunteer? Read(int volId)
     {
         try
@@ -241,6 +316,20 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlInvalidValueException(ex.Message);
         }
     }
+
+
+    /// <summary>
+    /// Updates the details of a volunteet
+    /// Steps:
+    /// 1. Decrypt the password
+    /// 2. take the volunteer from the dal
+    /// 3. Validate the password and check the ID or role matches
+    /// 4. Validate the updated volunteer data
+    /// 5. Update the volunteer details in the DAL 
+    /// </summary>
+    /// <param name="volId">The ID of the volunteer to update.</param>
+    /// <param name="vol">A BO.Volunteer object containing the updated details.</param>
+    /// <exception cref="BO.BlInvalidValueException"/>
     public void Update(int volId, BO.Volunteer vol)
     {
         try
@@ -278,6 +367,20 @@ internal class VolunteerImplementation : IVolunteer
         }
 
     }
+
+
+    /// <summary>
+    /// Creates a new volunteer
+    ///  Steps:
+    /// 1. Validate the volunteer's data
+    /// 2. Validate the volunteer's password 
+    /// 3. Encrypt the password
+    /// 4. Create the volunteer in DAL
+    /// 5. Handle exceptions from the DAL.
+    /// </summary>
+    /// <param name="vol">A BO.Volunteer object containing the details of the new volunteer.</param>
+    /// <exception cref="BO.BlInvalidValueException"/>    
+    /// <exception cref="BO.BlAlreadyExistException"/>
     public void Create(BO.Volunteer vol)
     {
         if (!Helpers.VolunteerManager.CheckVolunteer(vol))
