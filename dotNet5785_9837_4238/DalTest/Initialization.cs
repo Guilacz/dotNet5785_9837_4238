@@ -297,22 +297,22 @@ public static class Initialization
         //creation of 50 assignments who are fulfilled
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId,  s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.Fulfilled);
             s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-15], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.Fulfilled);
             s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-29], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.Fulfilled);
             s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i-40], s_dal!.Config.Clock, TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.Fulfilled);
             s_dal!.Assignment.Create(a);
         }
 
@@ -320,22 +320,22 @@ public static class Initialization
 
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledAfterTime);
             s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledAfterTime);
             s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledAfterTime);
             s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledAfterTime);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledAfterTime);
             s_dal!.Assignment.Create(a);
         }
 
@@ -343,22 +343,22 @@ public static class Initialization
 
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByManager);
             s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByManager);
             s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByManager);
             s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledByManager);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByManager);
             s_dal!.Assignment.Create(a);
         }
 
@@ -367,22 +367,22 @@ public static class Initialization
         
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
             s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 15], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByVolunteer);
             s_dal!.Assignment.Create(a);
         }
         for (i = 29; i < 40; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 29], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByVolunteer);
             s_dal!.Assignment.Create(a);
         }
         for (i = 40; i < 50; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId, volunteerId[i - 40], s_dal!.Config.Clock, TypeOfEnd.CancelledByVolunteer);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByVolunteer);
             s_dal!.Assignment.Create(a);
         }
     }
