@@ -39,5 +39,6 @@ public class Call
 
     public List<BO.CallAssignInList>? callAssignInLists { get; set; }
 
+
     public override string ToString() => this.ToStringProperty();
 }

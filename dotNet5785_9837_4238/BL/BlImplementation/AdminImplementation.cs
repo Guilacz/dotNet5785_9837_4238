@@ -1,5 +1,4 @@
 ﻿namespace BlImplementation;
-using Dal;
 using BlApi;
 using BO;
 using Helpers;
@@ -12,30 +11,42 @@ internal class AdminImplementation : IAdmin
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
     public void ForwardClock(TimeUnit unit)
     {
-        DateTime newTime;
-        switch (unit)
+        try
         {
-            case TimeUnit.minute:
-                newTime = ClockManager.Now.AddMinutes(1);
-                break;
-            case TimeUnit.hour:
-                newTime = ClockManager.Now.AddHours(1);
-                break;
-            case TimeUnit.day:
-                newTime = ClockManager.Now.AddDays(1);
-                break;
-            case TimeUnit.month:
-                newTime = ClockManager.Now.AddMonths(1);
-                break;
-            case TimeUnit.year:
-                newTime = ClockManager.Now.AddYears(1);
-                break;
-            default:
-                throw new ArgumentException("Invalid time unit");
+            DateTime newTime;
+            switch (unit)
+            {
+                case TimeUnit.minute:
+                    newTime = ClockManager.Now.AddMinutes(1);
+                    break;
+                case TimeUnit.hour:
+                    newTime = ClockManager.Now.AddHours(1);
+                    break;
+                case TimeUnit.day:
+                    newTime = ClockManager.Now.AddDays(1);
+                    break;
+                case TimeUnit.month:
+                    newTime = ClockManager.Now.AddMonths(1);
+                    break;
+                case TimeUnit.year:
+                    newTime = ClockManager.Now.AddYears(1);
+                    break;
+                default:
+                    throw new BO.BlInvalidValueException("Invalid time unit");
+            }
+            ClockManager.UpdateClock(newTime);
         }
-        ClockManager.UpdateClock(newTime);
-
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
     }
+
+
 
     public DateTime GetClock()
     {
@@ -55,10 +66,11 @@ internal class AdminImplementation : IAdmin
         try
         {
             ResetDB();
+            DalTest.Initialization.Do();
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw new BO.BlDeletionImpossible(ex.Message);
         }
     }
 

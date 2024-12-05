@@ -18,7 +18,7 @@ namespace BO;
 public class CallInList
 {
 
-    public int Id { get; init; }
+    public int? Id { get; set; }
 
     public int CallId { get; init; }
 

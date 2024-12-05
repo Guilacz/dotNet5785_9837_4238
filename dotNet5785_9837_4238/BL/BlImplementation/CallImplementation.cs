@@ -12,65 +12,90 @@ internal class CallImplementation : ICall
 
     public void ChoiceOfCallToCare(int volId, int callId)
     {
-        // שליפת הקריאה והמתנדב משכבת הנתונים
-        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
-        if (call == null)
-            throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
+        try
+        {
+            // שליפת הקריאה והמתנדב משכבת הנתונים
+            DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+            if (call == null)
+                throw new BO.BlDoesNotExistException($"Call with ID {callId} does not exist or could not be found in the database.");
 
-        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
-        if (volunteer == null)
-            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
+            DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+            if (volunteer == null)
+                throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist or could not be found in the database.");
 
-        // בדיקה אם הקריאה והמתנדב חוקיים
-        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+            // בדיקה אם הקריאה והמתנדב חוקיים
+            BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
 
-        // בדיקת הקריאה
-        if (!Helpers.CallManager.CheckCall(boCall))
-            throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid.");
+            // בדיקת הקריאה
+            if (!Helpers.CallManager.CheckCall(boCall))
+                throw new BO.BlInvalidValueException($"Call with ID {callId} is invalid due to incorrect data.");
 
-        // המרת המתנדב מ-DO ל-BO
-        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+            // המרת המתנדב מ-DO ל-BO
+            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
 
-        // בדיקת המתנדב
-        if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid.");
+            // בדיקת המתנדב
+            if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
+                throw new BO.BlInvalidValueException($"Volunteer with ID {volId} is invalid due to incorrect data.");
 
-        // שליפת רשימת ההקצאות משכבת הנתונים
-        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+            // שליפת רשימת ההקצאות משכבת הנתונים
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-        // בדיקה אם הקריאה כבר טופלה
-        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
-        if (isCallAlreadyHandled)
-            throw new InvalidOperationException($"Call with ID {callId} has already been handled.");
+            // בדיקה אם הקריאה כבר טופלה
+            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+            if (isCallAlreadyHandled)
+                throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
 
-        // בדיקה אם הקריאה נמצאת בטיפול פעיל
-        bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
-        if (isCallInProcess)
-            throw new InvalidOperationException($"Call with ID {callId} is already in process by another volunteer.");
+            // בדיקה אם הקריאה נמצאת בטיפול פעיל
+            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+            if (isCallInProcess)
+                throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
 
-        // יצירת ישות הקצאה חדשה
-        var newAssignment = new DO.Assignment
-        (
-            Id: assignments.Any()
-                ? assignments.Max(a => a.Id) + 1
-                : 1, // יצירת מזהה ייחודי
-            CallId: callId,
-            VolunteerId: volId,
-            StartTime: DateTime.Now,
-            TypeOfEnd: null, // ערך ברירת מחדל
-            FinishTime: null // ערך ברירת מחדל
-        );
+            // יצירת ישות הקצאה חדשה
+            var newAssignment = new DO.Assignment
+            (
+                Id: assignments.Any()
+                    ? assignments.Max(a => a.Id) + 1
+                    : 1, // יצירת מזהה ייחודי
+                CallId: callId,
+                VolunteerId: volId,
+                StartTime: DateTime.Now,
+                TypeOfEnd: null, // ערך ברירת מחדל
+                FinishTime: null // ערך ברירת מחדל
+            );
 
-        // הוספת ההקצאה החדשה לשכבת הנתונים
-        _dal.Assignment.Create(newAssignment);
+            // הוספת ההקצאה החדשה לשכבת הנתונים
+            _dal.Assignment.Create(newAssignment);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            // טיפול בחריגת DL של אובייקט לא קיים
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // טיפול בחריגת DL של נתונים לא חוקיים
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+        catch (DO.DalArgumentNullException ex)
+        {
+            // טיפול בחריגת DL של אובייקט חסר
+            throw new BO.BlArgumentNullException(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // טיפול בחריגות כלשהן שלא כוסו
+            throw new Exception(ex.Message);
+        }
     }
+
+
+
 
     public void Create(BO.Call c)
     {
-
         if (!Helpers.CallManager.CheckCall(c))
         {
-            throw new BO.BlInvalidValueException("Invalid call data");
+            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
         }
         try
         {
@@ -88,28 +113,42 @@ internal class CallImplementation : ICall
         }
         catch (DO.DalAlreadyExistException ex)
         {
-            throw new BO.BlAlreadyExistException(ex.Message);
+            throw new BO.BlAlreadyExistException($"A call with ID {c.CallId} already exists. Please check the ID and try again.");
         }
-
     }
+
 
     public void Delete(int callId)
     {
-        BO.Call? c = Read(callId);
-        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-        if (c.CallStatus != 0 || (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
-            throw new BO.BlDeletionImpossible("cant delete this Call.");
-
-        if (!Helpers.CallManager.CheckCall(c))
-        {
-            throw new BO.BlInvalidValueException("Invalid Call data.");
-        }
         try
         {
+            BO.Call? c = Read(callId);
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+            if (c.CallStatus != 0 || (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
+                throw new BO.BlDeletionImpossible("Can't delete this Call.");
+
+            if (!Helpers.CallManager.CheckCall(c))
+            {
+                throw new BO.BlInvalidValueException("Invalid Call data.");
+            }
+
+            // ניסיון למחוק את הקריאה
             _dal.Call.Delete(callId);
         }
-        catch (DO.DalAlreadyExistException ex)
+        catch (DO.DalDeletionImpossible ex)
         {
+            // טיפול בחריגה כשלא ניתן למחוק את הקריאה
+            throw new BO.BlDeletionImpossible(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // טיפול בחריגה של נתונים לא חוקיים
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // טיפול בחריגות כלשהן שלא כוסו
             throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
@@ -121,19 +160,19 @@ internal class CallImplementation : ICall
             BO.Call call = Read(callId);
             return call;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            // טיפול בחריגות בלתי צפויות
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
-   
     public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
         try
         {
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
-            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll(); 
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
             if (filterType != null && filterValue != null)
             {
@@ -147,7 +186,7 @@ internal class CallImplementation : ICall
                 };
             }
 
-            // ** יצירת רשימה של BO.CallInList **
+            // יצירת רשימה של BO.CallInList
             var callInList = calls.Select(c => new BO.CallInList
             {
                 CallId = c.CallId,
@@ -159,7 +198,7 @@ internal class CallImplementation : ICall
                 CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
             }).ToList();
 
-            // ** מיון הרשימה **
+            // מיון הרשימה
             if (sortType != null)
             {
                 callInList = sortType switch
@@ -183,64 +222,114 @@ internal class CallImplementation : ICall
         }
         catch (Exception ex)
         {
-            throw new Exception($"Error in {nameof(GetListOfCalls)}: {ex.Message}");
+            // טיפול בחריגות כלשהן שלא כוסו
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
 
 
+    /* public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
+     {
+         try
+         {
+             IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
 
+             assignment = assignment.Where(v => v.VolunteerId == volId);
+
+             assignment = type switch
+             {
+                 BO.CallType.Math_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Primary).ToList(),
+                 BO.CallType.Math_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Middle).ToList(),
+                 BO.CallType.Math_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_High).ToList(),
+                 BO.CallType.English_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Primary).ToList(),
+                 BO.CallType.English_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Middle).ToList(),
+                 BO.CallType.English_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_High).ToList(),
+                 BO.CallType.Grammary_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Primary).ToList(),
+                 BO.CallType.Grammary_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Middle).ToList(),
+                 BO.CallType.Grammary_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_High).ToList(),
+                 _ => assignment.ToList() 
+             };
+
+             if (sort != null)
+             {
+                 assignment = assignment.Where(v => v.TypeOfEnd == (DO.TypeOfEnd)sort).ToList();
+             }
+
+             var closedCallInList = assignment.Select(a => new BO.ClosedCallInList
+             {
+                 CallId = a.CallId,
+                 CallType = (BO.CallType)calls.FirstOrDefault(c => c.CallId == a.CallId)?.CallType, 
+                 TypeOfEnd = (BO.TypeOfEnd)a.TypeOfEnd 
+             }).ToList();
+
+             var result = sort switch
+             {
+                 BO.CloseCallInListSort.CallId => closedCallInList.OrderBy(v => v.CallId).ToList(),
+                 BO.CloseCallInListSort.CallType => closedCallInList.OrderBy(v => v.CallType).ToList(),
+                 BO.CloseCallInListSort.FinishTime => closedCallInList.OrderBy(v => v.FinishTime).ToList(),
+                 BO.CloseCallInListSort.OpenTime => closedCallInList.OrderBy(v => v.OpenTime).ToList(),
+                 BO.CloseCallInListSort.StartTime => closedCallInList.OrderBy(v => v.StartTime).ToList(),
+                 BO.CloseCallInListSort.Adress => closedCallInList.OrderBy(v => v.Adress).ToList(),
+                 BO.CloseCallInListSort.TypeOfEnd => closedCallInList.OrderBy(v => v.TypeOfEnd).ToList(),
+                 _ => closedCallInList.OrderBy(v => v.CallId).ToList() 
+             };
+             return result;
+         }
+         catch (Exception ex)
+         {
+             throw new Exception(ex.Message);
+         }
+     }*/
     public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
     {
         try
         {
-            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
-            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            var assignments = _dal.Assignment.ReadAll().Where(a => a.VolunteerId == volId).ToList();
+            var calls = _dal.Call.ReadAll().ToList();
 
-            assignment = assignment.Where(v => v.VolunteerId == volId);
+            // LINQ עם שימוש ב-let כדי לשמור על הקריאה המשויכת לכל הקצאה
+            var assignmentWithCalls = from a in assignments
+                                      let relatedCall = calls.FirstOrDefault(c => c.CallId == a.CallId)
+                                      where relatedCall != null // התעלמות מהקצאות ללא קריאה משויכת
+                                      select new
+                                      {
+                                          Assignment = a,
+                                          RelatedCall = relatedCall
+                                      };
 
-            assignment = type switch
+            // סינון לפי סוג הקריאה אם נדרש
+            if (type != null)
             {
-                BO.CallType.Math_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Primary).ToList(),
-                BO.CallType.Math_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_Middle).ToList(),
-                BO.CallType.Math_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Math_High).ToList(),
-                BO.CallType.English_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Primary).ToList(),
-                BO.CallType.English_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_Middle).ToList(),
-                BO.CallType.English_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.English_High).ToList(),
-                BO.CallType.Grammary_Primary => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Primary).ToList(),
-                BO.CallType.Grammary_Middle => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_Middle).ToList(),
-                BO.CallType.Grammary_High => assignment.Where(v => calls.FirstOrDefault(c => c.CallId == v.CallId)?.CallType == DO.CallType.Grammary_High).ToList(),
-                _ => assignment.ToList() 
-            };
-
-            if (sort != null)
-            {
-                assignment = assignment.Where(v => v.TypeOfEnd == (DO.TypeOfEnd)sort).ToList();
+                assignmentWithCalls = from ac in assignmentWithCalls
+                                      where ac.RelatedCall.CallType == (DO.CallType)type
+                                      select ac;
             }
 
-            var closedCallInList = assignment.Select(a => new BO.ClosedCallInList
-            {
-                CallId = a.CallId,
-                CallType = (BO.CallType)calls.FirstOrDefault(c => c.CallId == a.CallId)?.CallType, 
-                TypeOfEnd = (BO.TypeOfEnd)a.TypeOfEnd 
-            }).ToList();
+            // המרה לרשימת קריאות סגורות
+            var closedCallInList = from ac in assignmentWithCalls
+                                   select new BO.ClosedCallInList
+                                   {
+                                       CallId = ac.Assignment.CallId,
+                                       CallType = (BO.CallType)ac.RelatedCall.CallType,
+                                       TypeOfEnd = (BO.TypeOfEnd)ac.Assignment.TypeOfEnd
+                                   };
 
-            var result = sort switch
+            // מיון הרשימה
+            closedCallInList = sort switch
             {
-                BO.CloseCallInListSort.CallId => closedCallInList.OrderBy(v => v.CallId).ToList(),
-                BO.CloseCallInListSort.CallType => closedCallInList.OrderBy(v => v.CallType).ToList(),
-                BO.CloseCallInListSort.FinishTime => closedCallInList.OrderBy(v => v.FinishTime).ToList(),
-                BO.CloseCallInListSort.OpenTime => closedCallInList.OrderBy(v => v.OpenTime).ToList(),
-                BO.CloseCallInListSort.StartTime => closedCallInList.OrderBy(v => v.StartTime).ToList(),
-                BO.CloseCallInListSort.Adress => closedCallInList.OrderBy(v => v.Adress).ToList(),
-                BO.CloseCallInListSort.TypeOfEnd => closedCallInList.OrderBy(v => v.TypeOfEnd).ToList(),
-                _ => closedCallInList.OrderBy(v => v.CallId).ToList() 
+                BO.CloseCallInListSort.CallId => closedCallInList.OrderBy(v => v.CallId),
+                BO.CloseCallInListSort.CallType => closedCallInList.OrderBy(v => v.CallType),
+                BO.CloseCallInListSort.TypeOfEnd => closedCallInList.OrderBy(v => v.TypeOfEnd),
+                _ => closedCallInList.OrderBy(v => v.CallId) // מיון ברירת מחדל לפי CallId
             };
-            return result;
+
+            return closedCallInList.ToList();
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
@@ -298,7 +387,7 @@ internal class CallImplementation : ICall
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while fetching open calls: {ex.Message}");
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
@@ -310,8 +399,9 @@ internal class CallImplementation : ICall
 
             if (call == null)
             {
-                throw new BO.BlDoesNotExistException($"Volunteer with ID {callId} was not found.");
+                throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
+
             return new BO.Call
             {
                 CallId = call.CallId,
@@ -324,14 +414,19 @@ internal class CallImplementation : ICall
                 Latitude = call.Latitude,
                 Longitude = call.Longitude,
             };
-
         }
-
+        catch (DO.DalDoesNotExistException ex)
+        {
+            // טיפול במצב של אובייקט לא קיים
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            // טיפול בחריגות כלשהן שלא כוסו
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
+
 
     public int[] SumOfCalls()
     {
@@ -341,7 +436,7 @@ internal class CallImplementation : ICall
             var assignments = _dal.Assignment.ReadAll();
 
             int[] countOfCalls = calls
-                .GroupBy(call => Helpers.CallManager.GetCallStatus(call, assignments)) 
+                .GroupBy(call => Helpers.CallManager.GetCallStatus(call, assignments))
                 .Aggregate(
                     new int[Enum.GetValues(typeof(BO.CallStatus)).Length],
                     (arr, group) =>
@@ -354,7 +449,7 @@ internal class CallImplementation : ICall
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
@@ -382,19 +477,19 @@ internal class CallImplementation : ICall
                         Details = c.Details,
                     });
                 }
-                
                 catch (DO.DalAlreadyExistException ex)
                 {
                     throw new BO.BlAlreadyExistException(ex.Message);
                 }
             }
         }
-
-
-        catch (Exception)
+        catch (DO.DalInvalidValueException ex)
         {
-
-            throw;
+            throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
 
@@ -422,7 +517,7 @@ internal class CallImplementation : ICall
 
             if (!isManager && !isAssignedToVolunteer)
             {
-                throw new Exception("Requester does not have permission to cancel this assignment.");
+                throw new BO.BlInvalidValueException("Requester does not have permission to cancel this assignment.");
             }
 
             if (assignment.FinishTime != null)
@@ -434,22 +529,30 @@ internal class CallImplementation : ICall
             {
                 FinishTime = DateTime.Now,
                 TypeOfEnd = (DO.TypeOfEnd)((id == requester.VolunteerId)
-          ? BO.TypeOfEnd.CancelledByVolunteer
-          : BO.TypeOfEnd.CancelledByManager)
+                    ? DO.TypeOfEnd.CancelledByVolunteer
+                    : DO.TypeOfEnd.CancelledByManager)
             };
 
             _dal.Assignment.Update(assignment);
-
         }
         catch (DO.DalArgumentNullException ex)
         {
+            // טיפול בחריגת DL של אובייקט חסר
             throw new BO.BlArgumentNullException(ex.Message);
         }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // טיפול בחריגת DL של נתונים לא חוקיים
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+ 
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            // טיפול בחריגות כלשהן שלא כוסו
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
+
 
     public void UpdateCallFinished(int id, int assiId)
     {
@@ -474,30 +577,38 @@ internal class CallImplementation : ICall
 
             if (!isAssignedToVolunteer)
             {
-                throw new Exception("Requester does not have permission to cancel this assignment.");
+                throw new BO.BlInvalidValueException("Requester does not have permission to finish this assignment.");
             }
 
             if (assignment.FinishTime != null)
             {
-                throw new BO.BlInvalidValueException("Assignment has already been closed or expired.");
+                throw new DO.DalInvalidValueException("Assignment has already been closed or expired.");
             }
 
             assignment = assignment with
             {
                 FinishTime = DateTime.Now,
-                TypeOfEnd = (DO.TypeOfEnd) BO.TypeOfEnd.Fulfilled
+                TypeOfEnd = (DO.TypeOfEnd)DO.TypeOfEnd.Fulfilled
             };
 
             _dal.Assignment.Update(assignment);
-
         }
         catch (DO.DalArgumentNullException ex)
         {
+            // טיפול בחריגת DL של אובייקט חסר
             throw new BO.BlArgumentNullException(ex.Message);
         }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // טיפול בחריגת DL של נתונים לא חוקיים
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            // טיפול בחריגות כלשהן שלא כוסו
+            throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
+
 }
