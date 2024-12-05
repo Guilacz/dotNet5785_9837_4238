@@ -336,8 +336,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
             var volun = _dal.Volunteer.Read(volId);
-            if (!Helpers.VolunteerManager.CheckPassword(volun.Password))
-                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+            if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
+                throw new BO.BlInvalidValueException("Password not strong enough.");
 
             if (!(volun.VolunteerId == volId || volun.RoleType == 0))
                 throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
@@ -387,8 +387,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw new BO.BlInvalidValueException("Invalid volunteer data.");
         }
-        if (!Helpers.VolunteerManager.CheckPassword(vol.Password))
-            throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+        if (!Helpers.VolunteerManager.CheckValidityOfPassword(vol.Password))
+            throw new BO.BlInvalidValueException("Password not strong enough .");
         vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password);
         try
         {

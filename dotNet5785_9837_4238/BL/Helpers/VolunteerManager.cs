@@ -8,7 +8,14 @@ using System.Text.RegularExpressions;
 internal class VolunteerManager
 {
     private static IDal s_dal = Factory.Get; //stage 4
-                                             
+        
+    
+    /// <summary>
+    /// function to check the validity of a volunteer : 
+    /// check his mail, id, phone, address
+    /// </summary>
+    /// <param name="vol"></param>
+    /// <returns></returns>
     internal static bool CheckVolunteer(BO.Volunteer vol)
     {
         if(!CheckMail(vol.Email))
@@ -18,9 +25,8 @@ internal class VolunteerManager
         if(!CheckPhone(vol.Phone)) 
             return false;
         if (!Tools.CheckAddressVolunteer(vol))
-        {
             return false;
-        }
+  
         return true;
     }
 
@@ -65,7 +71,11 @@ internal class VolunteerManager
 
 
 
-
+    /// <summary>
+    /// function to convert a DO volunteer to Bo
+    /// </summary>
+    /// <param name="volunteer"></param>
+    /// <returns></returns>
     public static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
         return new BO.Volunteer
@@ -76,7 +86,7 @@ internal class VolunteerManager
             Email = volunteer.Email,
             RoleType = (BO.Role)volunteer.RoleType,
             DistanceType = (BO.DistanceType)volunteer.DistanceType,
-            Password = volunteer.Password,
+            Password = DecryptPassword(volunteer.Password),
             Adress = volunteer.Adress,
             Distance = volunteer.Distance
         };
@@ -121,7 +131,6 @@ internal class VolunteerManager
     /// check phone function : check if it is not white space, check the size, 
     /// check that everything number is a number, checks the beggining of the number
     /// </summary>
-
     internal static bool CheckPhone(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone) || (phone.Length != 9 && phone.Length != 10))
@@ -137,6 +146,12 @@ internal class VolunteerManager
 
         return false;
     }
+
+    /// <summary>
+    /// function to make a bo volunteer to DO manager
+    /// </summary>
+    /// <param name="vol"></param>
+    /// <returns></returns>
     public static DO.Volunteer DOManeger(BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
@@ -153,6 +168,14 @@ internal class VolunteerManager
         double? Longitude = vol.Longitude;
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
     }
+
+
+    /// <summary>
+    /// function to make a 
+    /// </summary>
+    /// <param name="vol1"></param>
+    /// <param name="vol"></param>
+    /// <returns></returns>
     public static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
@@ -162,7 +185,7 @@ internal class VolunteerManager
         DO.Role Role = (DO.Role)vol1.RoleType;
         DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol1.IsActive;
-        string? Password = vol.Password;
+        string? Password = EncryptPassword(vol.Password);
         string? Adress = vol.Adress;
         double? MaxDistance = vol.Distance;
         double? Latitude = vol.Latitude;
@@ -170,7 +193,14 @@ internal class VolunteerManager
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
 
     }
-    public static bool CheckPassword(string password)
+
+
+    /// <summary>
+    /// function to check the validity and the security level of a password
+    /// </summary>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public static bool CheckValidityOfPassword(string password)
     {
         if (password == null) 
             return false;
@@ -182,10 +212,12 @@ internal class VolunteerManager
             return false;
         return true;
     }
+
+
+
     /// <summary>
     /// encryption function : applies the ATBASH encryption + shift 2
     /// </summary>
-
     public static string EncryptPassword(string password)
     {
         char[] encryptedChars = new char[password.Length];
@@ -216,9 +248,9 @@ internal class VolunteerManager
     /// <summary>
     /// decryption function : return the origin password
     /// </summary>
-
     public static string DecryptPassword(string password)
     {
+
         char[] decryptedChars = new char[password.Length];
 
         for (int i = 0; i < password.Length; i++)
@@ -251,7 +283,6 @@ internal class VolunteerManager
         }
         catch (Exception ex)
         {
-            // טיפול בשגיאות (לוגיקה או בעיות חיבור לבסיס נתונים)
             throw new Exception($"Error while updating expired calls: {ex.Message}");
         }
     }

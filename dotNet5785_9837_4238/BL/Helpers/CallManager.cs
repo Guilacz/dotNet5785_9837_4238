@@ -8,16 +8,27 @@ internal class CallManager
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+
+    /// <summary>
+    /// function to check the validity of a call: checks the maxtime and the address
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns></returns>
     internal static bool CheckCall(BO.Call c)
     {
         if(CheckTime(c) == false)
             return false;
         if (!Tools.CheckAddressCall(c))
-        {
             return false;
-        }
+        
         return true;
     }
+
+    /// <summary>
+    /// function to check if the maxTime of a call is valid
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns></returns>
     internal static bool CheckTime(BO.Call c)
     {
         if(c.MaxTime < c.OpenTime)
@@ -26,6 +37,12 @@ internal class CallManager
     }
 
 
+    /// <summary>
+    /// function to get the status of a call : in care, expired, closed, open, OpenAtRisk
+    /// </summary>
+    /// <param name="call"></param>
+    /// <param name="assignments"></param>
+    /// <returns></returns>
     public static BO.CallStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
         var now = DateTime.Now;
@@ -54,6 +71,14 @@ internal class CallManager
 
         return BO.CallStatus.Open;
     }
+
+
+    /// <summary>
+    /// function to convert a DO call to a BO call
+    /// </summary>
+    /// <param name="call"></param>
+    /// <param name="dal"></param>
+    /// <returns></returns>
     public static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
     {
         return new BO.Call

@@ -14,7 +14,6 @@ internal static class Tools
     /// explanation to the function : for all elements in T, we take its value, and add it with the name of the property
     /// and apply the basic toString function on our element wich is type stringbuilder
     /// </summary>
-
     public static string ToStringProperty<T>(this T t)
     {
         StringBuilder sb = new StringBuilder();
@@ -175,12 +174,8 @@ internal static class Tools
 
 
     /// <summary>
-    /// function to calculates the air distance between two addresses 
-    /// by first retrieving the geographical coordinates for the volunteer's address and the call address
-    /// then using CalculateDistanceBetweenCoordinates to calculate the distance between these coordinates
+    ///class to calculate any type of distance between to entries
     /// </summary>
-
-
     public static class DistanceCalculator
     {
         public static double CalculateDistance(string address1, string address2, DistanceType distanceType)
@@ -216,8 +211,6 @@ internal static class Tools
 
             return CalculateDistanceBetweenCoordinates(latitude1, longitude1, latitude2, longitude2);
         }
-
-
         private static double CalculateWalkingDistance(string address1, string address2)
         {
             return CalculateTravelDistance(address1, address2, "foot");
@@ -228,8 +221,9 @@ internal static class Tools
             return CalculateTravelDistance(address1, address2, "driving");
         }
 
+
         /// <summary>
-        /// calculate driving and waliking distance
+        /// calculate driving and walking distance
         /// </summary>=
         private static double CalculateTravelDistance(string address1, string address2, string mode)
         {
@@ -285,19 +279,14 @@ internal static class Tools
 
             return EarthRadiusKm * c;
         }
-
-
-
         private class LocationIqDirectionsResponse
         {
             public Route[] Routes { get; set; }
         }
-
         private class Route
         {
             public double Distance { get; set; }
         }
-
         private class LocationIqResponse
         {
             public string Lat { get; set; }
