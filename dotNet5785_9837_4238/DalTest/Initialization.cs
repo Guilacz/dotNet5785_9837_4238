@@ -56,23 +56,24 @@ public static class Initialization
     "Sarah@gmail.com"
 };
         string[] volunteersAdress = {
-    "רחוב יפו 123, ירושלים",
-    "רחוב המלך דוד 45, ירושלים",
-    "רחוב הנביאים 67, ירושלים",
-    "שדרות הרצל 89, ירושלים",
-    "רחוב עזה 101, ירושלים",
-    "רחוב עמק רפאים 12, ירושלים",
-    "רחוב דרך חברון 34, ירושלים",
-    "רחוב אגריפס 56, ירושלים",
-    "רחוב בן יהודה 78, ירושלים",
-    "רחוב קרן היסוד 23, ירושלים",
-    "רחוב שמואל הנגיד 15, ירושלים",
-    "רחוב בצלאל 42, ירושלים",
-    "רחוב הפלמ״ח 90, ירושלים",
-    "רחוב המלך ג׳ורג׳ 33, ירושלים",
-    "רחוב הלל 67, ירושלים",
-    "רחוב עין כרם 28, ירושלים"
+    "Yaffo Street 123, Jerusalem",
+    "King David Street 45, Jerusalem",
+    "Prophets Street 67, Jerusalem",
+    "Herzl Boulevard 89, Jerusalem",
+    "Gaza Street 101, Jerusalem",
+    "Emek Refaim Street 12, Jerusalem",
+    "Hebron Road 34, Jerusalem",
+    "Agripas Street 56, Jerusalem",
+    "Ben Yehuda Street 78, Jerusalem",
+    "Keren Hayesod Street 23, Jerusalem",
+    "Shmuel Hanagid Street 15, Jerusalem",
+    "Betzalel Street 42, Jerusalem",
+    "Palmach Street 90, Jerusalem",
+    "King George Street 33, Jerusalem",
+    "Hillel Street 67, Jerusalem",
+    "Ein Kerem Street 28, Jerusalem"
 };
+
 
         Random random = new Random();
 

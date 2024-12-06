@@ -21,7 +21,7 @@ public class Call
 {
     public int CallId { get; init; }
 
-    public CallType CallType { get; init; }
+    public CallType CallType { get; set; }
 
     public string? Address { get; set; }
 
@@ -29,7 +29,7 @@ public class Call
 
     public double Longitude { get; set; }
 
-    public DateTime OpenTime { get; init; }
+    public DateTime OpenTime { get; set; }
 
     public DateTime? MaxTime { get; set; } 
 

@@ -8,7 +8,7 @@ namespace Helpers;
 /// class for the help methods
 /// </summary>
 
-internal static class Tools
+public static class Tools
 {
     /// <summary>
     /// explanation to the function : for all elements in T, we take its value, and add it with the name of the property

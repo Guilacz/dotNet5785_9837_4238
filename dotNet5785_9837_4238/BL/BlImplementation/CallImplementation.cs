@@ -101,7 +101,7 @@ internal class CallImplementation : ICall
         {
             _dal.Call.Create(new DO.Call
             {
-                //CallId = c.CallId,
+                CallId = c.CallId,
                 CallType = (DO.CallType)c.CallType,
                 Address = c.Address,
                 Latitude = c.Latitude,

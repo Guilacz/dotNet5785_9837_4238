@@ -3,13 +3,13 @@
   <Volunteer>
     <VolunteerId>123456780</VolunteerId>
     <Name>Efrati Amar</Name>
-    <Phone>057-7884144</Phone>
+    <Phone>057-5404453</Phone>
     <Email>Efrati@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>a@a12345</Password>
     <Adress>רחוב יפו 123, ירושלים</Adress>
-    <Distance>9531</Distance>
+    <Distance>20836</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -17,13 +17,13 @@
   <Volunteer>
     <VolunteerId>234567892</VolunteerId>
     <Name>Chani Nadler</Name>
-    <Phone>058-6168184</Phone>
+    <Phone>058-3327097</Phone>
     <Email>Chani@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>b@b23456</Password>
     <Adress>רחוב המלך דוד 45, ירושלים</Adress>
-    <Distance>30184</Distance>
+    <Distance>38980</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -31,13 +31,13 @@
   <Volunteer>
     <VolunteerId>345678903</VolunteerId>
     <Name>Shulamit Reches</Name>
-    <Phone>053-3976349</Phone>
+    <Phone>052-2307565</Phone>
     <Email>Shulamit@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>c@c34567</Password>
     <Adress>רחוב הנביאים 67, ירושלים</Adress>
-    <Distance>32496</Distance>
+    <Distance>22255</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -45,13 +45,13 @@
   <Volunteer>
     <VolunteerId>456789014</VolunteerId>
     <Name>Ivy Kidron</Name>
-    <Phone>056-8074884</Phone>
+    <Phone>054-5943473</Phone>
     <Email>Ivy@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>d@d45678</Password>
     <Adress>שדרות הרצל 89, ירושלים</Adress>
-    <Distance>11377</Distance>
+    <Distance>1018</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -59,13 +59,13 @@
   <Volunteer>
     <VolunteerId>567890125</VolunteerId>
     <Name>Esteria Eisenberg</Name>
-    <Phone>058-5967471</Phone>
+    <Phone>058-9249131</Phone>
     <Email>Esteria@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>e@e56789</Password>
     <Adress>רחוב עזה 101, ירושלים</Adress>
-    <Distance>10723</Distance>
+    <Distance>27546</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -73,13 +73,13 @@
   <Volunteer>
     <VolunteerId>678901236</VolunteerId>
     <Name>Yafit Maayan</Name>
-    <Phone>056-9491418</Phone>
+    <Phone>055-9275732</Phone>
     <Email>Yafit@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>f@f67890</Password>
     <Adress>רחוב עמק רפאים 12, ירושלים</Adress>
-    <Distance>33704</Distance>
+    <Distance>34704</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -87,13 +87,13 @@
   <Volunteer>
     <VolunteerId>789012347</VolunteerId>
     <Name>Dan Zilberstein</Name>
-    <Phone>058-8705234</Phone>
+    <Phone>056-8145277</Phone>
     <Email>Dan@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>g@g78901</Password>
     <Adress>רחוב דרך חברון 34, ירושלים</Adress>
-    <Distance>20378</Distance>
+    <Distance>264</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -101,13 +101,13 @@
   <Volunteer>
     <VolunteerId>890123458</VolunteerId>
     <Name>Moshe Cohen</Name>
-    <Phone>052-5560827</Phone>
+    <Phone>057-9549015</Phone>
     <Email>Moshe@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>h@h89012</Password>
     <Adress>רחוב אגריפס 56, ירושלים</Adress>
-    <Distance>10031</Distance>
+    <Distance>625</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -115,13 +115,13 @@
   <Volunteer>
     <VolunteerId>901234569</VolunteerId>
     <Name>Yael Levy</Name>
-    <Phone>054-5062476</Phone>
+    <Phone>053-9122278</Phone>
     <Email>Yael@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>i@i90123</Password>
     <Adress>רחוב בן יהודה 78, ירושלים</Adress>
-    <Distance>6735</Distance>
+    <Distance>37415</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -129,13 +129,13 @@
   <Volunteer>
     <VolunteerId>123456701</VolunteerId>
     <Name>Noa Shapira</Name>
-    <Phone>052-2554778</Phone>
+    <Phone>056-3376530</Phone>
     <Email>Noa@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>j@j01234</Password>
     <Adress>רחוב קרן היסוד 23, ירושלים</Adress>
-    <Distance>38119</Distance>
+    <Distance>6450</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -143,13 +143,13 @@
   <Volunteer>
     <VolunteerId>135792468</VolunteerId>
     <Name>Avi Goldman</Name>
-    <Phone>054-5786597</Phone>
+    <Phone>058-4121711</Phone>
     <Email>Avi@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>k@k12345</Password>
     <Adress>רחוב שמואל הנגיד 15, ירושלים</Adress>
-    <Distance>8426</Distance>
+    <Distance>34718</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -157,13 +157,13 @@
   <Volunteer>
     <VolunteerId>246813579</VolunteerId>
     <Name>Talia Friedman</Name>
-    <Phone>052-8030948</Phone>
+    <Phone>053-9827859</Phone>
     <Email>Talia@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>l@l23456</Password>
     <Adress>רחוב בצלאל 42, ירושלים</Adress>
-    <Distance>13976</Distance>
+    <Distance>7399</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -171,13 +171,13 @@
   <Volunteer>
     <VolunteerId>357924680</VolunteerId>
     <Name>Ronen Mizrachi</Name>
-    <Phone>058-7201476</Phone>
+    <Phone>058-7059095</Phone>
     <Email>Ronen@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>m@m34567</Password>
     <Adress>רחוב הפלמ״ח 90, ירושלים</Adress>
-    <Distance>36158</Distance>
+    <Distance>39561</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -185,13 +185,13 @@
   <Volunteer>
     <VolunteerId>468035791</VolunteerId>
     <Name>Maya Berkovich</Name>
-    <Phone>058-5381072</Phone>
+    <Phone>058-6950212</Phone>
     <Email>Maya@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>n@n45678</Password>
     <Adress>רחוב המלך ג׳ורג׳ 33, ירושלים</Adress>
-    <Distance>22560</Distance>
+    <Distance>19163</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -199,13 +199,13 @@
   <Volunteer>
     <VolunteerId>579146802</VolunteerId>
     <Name>Doron Avraham</Name>
-    <Phone>054-8550764</Phone>
+    <Phone>053-4398702</Phone>
     <Email>Doron@gmail.com</Email>
     <RoleType>Volunteer</RoleType>
     <DistanceType>AirDistance</DistanceType>
     <Password>o@o56789</Password>
     <Adress>רחוב הלל 67, ירושלים</Adress>
-    <Distance>26392</Distance>
+    <Distance>23037</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
