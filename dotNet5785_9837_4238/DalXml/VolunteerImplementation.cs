@@ -50,11 +50,40 @@ internal class VolunteerImplementation : IVolunteer
     /// read a volunteer by its ID from the XML file.
     /// </summary>
     /// <returns>The requested call if found, or null.</returns>
-    public Volunteer? Read(int volunteerId)
+    /*public Volunteer? Read(int volunteerId)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
+        if (volunteers == null || volunteers.Count == 0)
+        {
+            return null;
+        }
         return volunteers.FirstOrDefault(volunteer => volunteer.VolunteerId == volunteerId);
+    }*/
+    public Volunteer? Read(int volunteerId)
+    {
+      //  Console.WriteLine($"Searching for VolunteerId: {volunteerId}");
+
+        List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
+        if (volunteers == null || volunteers.Count == 0)
+        {
+         //   Console.WriteLine("The list of volunteers is empty or null.");
+            return null;
+        }
+
+        //Console.WriteLine("Volunteers loaded:");
+        //foreach (var volunteer in volunteers)
+        //{
+        //    Console.WriteLine($"VolunteerId: {volunteer.VolunteerId}, Name: {volunteer.Name}");
+        //}
+
+        var result = volunteers.FirstOrDefault(volunteer => volunteer.VolunteerId == volunteerId);
+        //if (result == null)
+        //{
+        //    Console.WriteLine($"No volunteer found with ID: {volunteerId}");
+        //}
+        return result;
     }
+
 
     /// <summary>
     /// read a volunteer based on a filter delegate

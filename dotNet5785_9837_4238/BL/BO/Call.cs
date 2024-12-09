@@ -37,7 +37,7 @@ public class Call
 
     public string? Details { get; set; }
 
-    public List<BO.CallAssignInList>? callAssignInLists { get; set; }
+    public List<BO.CallAssignInList> callAssignInLists { get; set; } = new List<BO.CallAssignInList>();
 
 
     public override string ToString() => this.ToStringProperty();

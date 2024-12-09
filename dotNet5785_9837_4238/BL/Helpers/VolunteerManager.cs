@@ -26,6 +26,8 @@ internal class VolunteerManager
             return false;
         if (!Tools.CheckAddressVolunteer(vol))
             return false;
+        if(!CheckValidityOfPassword(vol.Password))
+            return false;
   
         return true;
     }
@@ -48,9 +50,9 @@ internal class VolunteerManager
         if (email.Length < 5 || email.Length > 254)
             return false;
 
-        int atCount = email.Count(c => c == '@');
-        if (atCount != 1)
-            return false;
+       // int atCount = email.Count(c => c == '@');
+       // if (atCount != 1)
+         //   return false;
 
         string[] validDomains = { ".com", ".il", ".net", ".org" };
         bool hasValidDomain = validDomains.Any(domain => email.EndsWith(domain));
@@ -134,7 +136,7 @@ internal class VolunteerManager
     internal static bool CheckPhone(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone) || (phone.Length != 9 && phone.Length != 10))
-            return false;
+             return false;
 
         if (!phone.All(char.IsDigit))
             return false;
@@ -206,9 +208,9 @@ internal class VolunteerManager
             return false;
         if (password.Length <8)
             return false;
-        if (!Regex.IsMatch(password, @"^[a-z@.]+$"))
-            return false;
-        if (!password.Contains('@') || password.Contains('.'))
+       // if (!Regex.IsMatch(password, @"^[a-z@]+$"))
+       //     return false;
+        if (!(password.Contains('@') || password.Contains('.')))
             return false;
         return true;
     }
@@ -273,17 +275,5 @@ internal class VolunteerManager
             }
         }
         return new string(decryptedChars);
-    }
-
-    public static void UpdateExpiredCalls()
-    {
-        try
-        {
-
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error while updating expired calls: {ex.Message}");
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 public interface IVolunteer
 {
-    BO.Role EnterSystem(string name, int password);
+    BO.Role EnterSystem(string name, string password);
 
     IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null);
 

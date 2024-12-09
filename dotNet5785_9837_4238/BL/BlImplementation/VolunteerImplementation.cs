@@ -73,7 +73,12 @@ internal class VolunteerImplementation : IVolunteer
 
         if (vol.SumOfCaredCall != 0 || vol.callInCaring != null)
             throw new BO.BlDeletionImpossible("cant delete this volunteer.");
-
+        if (vol.Latitude == null || vol.Longitude == null)
+        {
+            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+            vol.Latitude = coordinates.Latitude;
+            vol.Longitude = coordinates.Longitude;
+        }
         if (!Helpers.VolunteerManager.CheckVolunteer(vol))
         {
             throw new BO.BlInvalidValueException("Invalid volunteer data.");
@@ -102,19 +107,24 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="name">The name of the volunteer.</param>
     /// <param name="password">The password of the volunteer.</param>
     /// <returns>The role of the authenticated volunteer.</returns>
-    public BO.Role EnterSystem(string name, int password)
+    public BO.Role EnterSystem(string name, string password)
     {
         try
         {
             var volunteersFromDal = _dal.Volunteer.ReadAll();
             string passwordAsString = password.ToString();
-            passwordAsString = Helpers.VolunteerManager.EncryptPassword(passwordAsString);
+            //passwordAsString = Helpers.VolunteerManager.EncryptPassword(passwordAsString);
 
             var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
 
             if (vol == null)
             {
                 throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            }
+            if (vol.Latitude == null || vol.Longitude == null)
+            {
+                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+                vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
             }
 
             if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
@@ -126,6 +136,7 @@ internal class VolunteerImplementation : IVolunteer
                 RoleType = (BO.Role)vol.RoleType,
                 DistanceType = (BO.DistanceType)vol.DistanceType,
                 Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+                //Password = vol.Password,
                 Adress = vol.Adress,
                 Distance = vol.Distance,
                 Latitude = vol.Latitude,
@@ -135,7 +146,9 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
             }
-
+            //var coordinates = Helpers.Tools.GetAddressCoordinates(volunteer.Adress);
+            //volunteer.Latitude = coordinates.Latitude;
+            //volunteer.Longitude = coordinates.Longitude;
             return (BO.Role)vol.RoleType;
         }
         catch (DO.DalArgumentNullException ex)
@@ -167,7 +180,12 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} not found.");
             }
-
+            if (vol.Latitude == null || vol.Longitude == null)
+            {
+                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+                vol.Latitude = coordinates.Latitude;
+                vol.Longitude = coordinates.Longitude;
+            }
             BO.Volunteer boVolunteer = new BO.Volunteer
             {
                 VolunteerId = vol.VolunteerId,

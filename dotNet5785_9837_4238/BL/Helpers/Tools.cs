@@ -57,6 +57,184 @@ public static class Tools
     /// as a tuple (latitude, longitude). If no results are found or if the request fails, 
     /// it throws an exception.
     /// /// </summary>
+
+    //public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    //{
+    //    if (string.IsNullOrWhiteSpace(address))
+    //    {
+    //        throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+    //    }
+
+    //    const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+    //    const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+
+    //    // בניית כתובת הבקשה
+    //    string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+
+    //    using (var client = new HttpClient())
+    //    {
+    //        HttpResponseMessage response;
+    //        try
+    //        {
+    //            response = client.GetAsync(requestUrl).Result;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error sending request to LocationIQ API.", ex);
+    //        }
+
+    //        if (!response.IsSuccessStatusCode)
+    //        {
+    //            throw new Exception($"Error fetching geolocation data: {response.ReasonPhrase} (HTTP {response.StatusCode})");
+    //        }
+
+    //        string responseContent;
+    //        try
+    //        {
+    //            responseContent = response.Content.ReadAsStringAsync().Result;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error reading response content from LocationIQ API.", ex);
+    //        }
+
+    //        List<LocationIqResponse> locations;
+    //        try
+    //        {
+    //            locations = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent, new System.Text.Json.JsonSerializerOptions
+    //            {
+    //                PropertyNameCaseInsensitive = true
+    //            });
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error deserializing the response content from LocationIQ API.", ex);
+    //        }
+
+    //        if (locations == null || locations.Count == 0)
+    //        {
+    //            throw new Exception("No geolocation data found for the provided address.");
+    //        }
+
+    //        var firstResult = locations.First();
+
+    //        try
+    //        {
+    //            double latitude = double.Parse(firstResult.Lat, System.Globalization.CultureInfo.InvariantCulture);
+    //            double longitude = double.Parse(firstResult.Lon, System.Globalization.CultureInfo.InvariantCulture);
+    //            return (Latitude: latitude, Longitude: longitude);
+    //        }
+    //        catch (FormatException ex)
+    //        {
+    //            throw new Exception("Error parsing latitude or longitude from response.", ex);
+    //        }
+    //    }
+    //}
+    //public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    //{
+    //    if (string.IsNullOrWhiteSpace(address))
+    //    {
+    //        throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+    //    }
+
+    //    const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+    //    const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+
+    //    // בניית כתובת הבקשה
+    //    string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+
+    //    using (var client = new HttpClient())
+    //    {
+    //        HttpResponseMessage response;
+    //        try
+    //        {
+    //            // ביצוע הקריאה הסינכרונית
+    //            response = client.GetAsync(requestUrl).Result;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error sending request to LocationIQ API.", ex);
+    //        }
+
+    //        if (!response.IsSuccessStatusCode)
+    //        {
+    //            throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}");
+    //        }
+
+    //        string responseContent = response.Content.ReadAsStringAsync().Result; // קריאה סינכרונית
+
+    //        var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+    //        if (locationData == null || locationData.Count == 0)
+    //        {
+    //            throw new Exception("No coordinates found for the provided address.");
+    //        }
+
+    //        var coordinates = locationData[0]; // assuming the first result is correct
+    //        if (double.TryParse(coordinates.Lat, out double latitude) && double.TryParse(coordinates.Lon, out double longitude))
+    //        {
+    //            return (latitude, longitude);
+    //        }
+    //        else
+    //        {
+    //            throw new Exception("Invalid coordinate data received from LocationIQ.");
+    //        }
+    //    }
+    //}
+    //public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    //{
+    //    if (string.IsNullOrWhiteSpace(address))
+    //    {
+    //        throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+    //    }
+
+    //    const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+    //    const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+
+    //    // בניית כתובת הבקשה
+    //    string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+
+    //    using (var client = new HttpClient())
+    //    {
+    //        HttpResponseMessage response;
+    //        try
+    //        {
+    //            // ביצוע הקריאה הסינכרונית
+    //            response = client.GetAsync(requestUrl).Result;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error sending request to LocationIQ API.", ex);
+    //        }
+
+    //        if (!response.IsSuccessStatusCode)
+    //        {
+    //            throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}");
+    //        }
+
+    //        string responseContent = response.Content.ReadAsStringAsync().Result; // קריאה סינכרונית
+    //        var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+    //        if (locationData == null || locationData.Count == 0)
+    //        {
+    //            throw new Exception("No coordinates found for the provided address.");
+    //        }
+
+    //        var coordinates = locationData[0]; // assuming the first result is correct
+
+    //        bool isLatValid = double.TryParse(coordinates.Lat, out double latitude);
+    //        bool isLonValid = double.TryParse(coordinates.Lon, out double longitude);
+
+    //        if (isLatValid && isLonValid)
+    //        {
+    //            return (latitude, longitude);
+    //        }
+    //        else
+    //        {
+    //            throw new Exception($"Invalid coordinate data. Latitude valid: {isLatValid}, Longitude valid: {isLonValid}");
+    //        }
+    //    }
+    //}
     public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
     {
         if (string.IsNullOrWhiteSpace(address))
@@ -66,38 +244,66 @@ public static class Tools
 
         const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
         const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
-        //in the request we send a key and the address to find
+
+        // בניית כתובת הבקשה
         string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
         using (var client = new HttpClient())
         {
-            HttpResponseMessage response = client.GetAsync(requestUrl).Result;
+            HttpResponseMessage response;
+            try
+            {
+                // ביצוע הקריאה הסינכרונית
+                response = client.GetAsync(requestUrl).Result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error sending request to LocationIQ API.", ex);
+            }
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Error fetching geolocation data: {response.ReasonPhrase}");
+                throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}");
             }
 
             string responseContent = response.Content.ReadAsStringAsync().Result;
 
-            var locations = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
 
-            if (locations == null || locations.Count == 0)
+            var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+            if (locationData == null || locationData.Count == 0)
             {
-                throw new Exception("No geolocation data found for the provided address.");
+                throw new Exception("No coordinates found for the provided address.");
             }
 
-            var firstResult = locations.First();
-            return (Latitude: double.Parse(firstResult.Lat), Longitude: double.Parse(firstResult.Lon));
+            var coordinates = locationData[0];
+
+
+            bool isLatValid = double.TryParse(coordinates.lat, out double latitude);
+            bool isLonValid = double.TryParse(coordinates.lon, out double longitude);
+
+
+
+            if (isLatValid && isLonValid)
+            {
+                return (latitude, longitude);
+            }
+            else
+            {
+                throw new Exception($"Invalid coordinate data. Latitude valid: {isLatValid}, Longitude valid: {isLonValid}");
+            }
         }
     }
+
+    
 
     /// <summary>
     /// class to get the latitude and longitude of a LocationIqResponse
     /// </summary>
     private class LocationIqResponse
     {
-        public string Lat { get; set; }
-        public string Lon { get; set; }
+        public string lat { get; set; }
+        public string lon { get; set; }
     }
 
     /// <summary>
@@ -225,37 +431,84 @@ public static class Tools
         /// <summary>
         /// calculate driving and walking distance
         /// </summary>=
+
         private static double CalculateTravelDistance(string address1, string address2, string mode)
         {
             const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
             const string BaseUrl = "https://us1.locationiq.com/v1/directions/";
 
+            // מקבל את הקואורדינטות של הכתובות
             var (latitude1, longitude1) = GetAddressCoordinates(address1);
             var (latitude2, longitude2) = GetAddressCoordinates(address2);
 
-            string requestUrl = $"{BaseUrl}{mode}/{longitude1},{latitude1};{longitude2},{latitude2}?key={LocationIqApiKey}&overview=false";
+            // בונה את ה-URL לבקשה עם סדר קואורדינטות נכון
+            //string requestUrl = $"{BaseUrl}{mode}/{latitude1},{longitude1};{latitude2},{longitude2}?key={LocationIqApiKey}&overview=false";
+              string requestUrl = $"{BaseUrl}driving/{latitude1},{longitude1};{latitude2},{longitude2}?key={LocationIqApiKey}&overview=false";
+
+           // Console.WriteLine($"Request URL: {requestUrl}");
 
             using (var client = new HttpClient())
             {
-                HttpResponseMessage response = client.GetAsync(requestUrl).Result;
-                if (!response.IsSuccessStatusCode)
+                HttpResponseMessage response;
+
+                try
                 {
-                    throw new Exception($"Error fetching route data: {response.ReasonPhrase}");
+                    // שליחת בקשה
+                    response = client.GetAsync(requestUrl).Result;
+
+                 //  Console.WriteLine($"HTTP Status Code: {response.StatusCode} ({(int)response.StatusCode})");
+
+                    // בדיקת סטטוס הקוד של התגובה
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        string errorContent = response.Content.ReadAsStringAsync().Result;
+                  //      Console.WriteLine($"Error Response: {response.StatusCode} - {response.ReasonPhrase}");
+                  //      Console.WriteLine($"Error Content: {errorContent}");
+                        throw new Exception($"Error fetching route data: {response.ReasonPhrase} (HTTP {response.StatusCode})\n{errorContent}");
+                    }
+
+                    // קריאה לתוכן התגובה
+                    string responseContent = response.Content.ReadAsStringAsync().Result;
+              //      Console.WriteLine($"Response Content: {responseContent}");
+
+                    // פירוש תגובת ה-JSON
+                    var routeData = System.Text.Json.JsonSerializer.Deserialize<RouteResponse>(responseContent);
+
+                    if (routeData == null || routeData.Routes == null || routeData.Routes.Length == 0)
+                    {
+                        throw new Exception("No route data found for the provided addresses.");
+                    }
+
+                    // חישוב המרחק בקילומטרים
+                    return routeData.Routes[0].Distance / 1000.0;
                 }
-
-                string responseContent = response.Content.ReadAsStringAsync().Result;
-
-                var routeData = System.Text.Json.JsonSerializer.Deserialize<LocationIqDirectionsResponse>(responseContent);
-
-                if (routeData == null || routeData.Routes == null || routeData.Routes.Length == 0)
+                catch (HttpRequestException httpEx)
                 {
-                    throw new Exception("No route data found for the provided addresses.");
+           //         Console.WriteLine($"HTTP Request Exception: {httpEx.Message}");
+                    throw;
                 }
-
-                return routeData.Routes[0].Distance / 1000.0;
+                catch (AggregateException aggEx)
+                {
+            //        Console.WriteLine($"Aggregate Exception: {aggEx.InnerException?.Message ?? aggEx.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+          //          Console.WriteLine($"General Exception: {ex.Message}");
+                    throw;
+                }
             }
         }
 
+        public class RouteResponse
+        {
+            public Route[] Routes { get; set; }
+        }
+
+        public class Route
+        {
+            public double Distance { get; set; }
+        }
         /// <summary>
         /// calculate the distances between coordinates
         /// </summary>
@@ -283,7 +536,7 @@ public static class Tools
         {
             public Route[] Routes { get; set; }
         }
-        private class Route
+        private class Routes
         {
             public double Distance { get; set; }
         }

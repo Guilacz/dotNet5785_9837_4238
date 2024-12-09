@@ -36,15 +36,23 @@ internal class CallImplementation : ICall
             if (volunteer == null)
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist. ");
 
+            var coordinates = Helpers.Tools.GetAddressCoordinates(call.Address);
+
+            // עדכון האובייקט עם הקואורדינטות
+            call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
+
             BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
 
             if (!Helpers.CallManager.CheckCall(boCall))
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
 
-            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+            //////////////BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+            //////////////var coordinate = Helpers.Tools.GetAddressCoordinates(call.Address);
 
-            if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+            //////////////// עדכון האובייקט עם הקואורדינטות
+            //////////////call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
+            //////////////if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
+            //////////////    throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
@@ -129,15 +137,15 @@ internal class CallImplementation : ICall
     /// <param name="callId">The ID of the call to delete.</param>
     /// <exception cref="BO.BlDeletionImpossible"></exception>
     /// <exception cref="BO.BlInvalidValueException"></exception>
-    public void Delete(int callId)
+    /*public void Delete(int callId)
     {
         try
         {
             BO.Call? c = Read(callId);
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-            if (c.CallStatus != 0 || (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
-                throw new BO.BlDeletionImpossible("Can't delete this call.");
+            if(c.CallStatus != 0 || (c.callAssignInLists?.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId)) ?? false))
+    throw new BO.BlDeletionImpossible("Can't delete this call.");
 
             if (!Helpers.CallManager.CheckCall(c))
             {
@@ -145,6 +153,48 @@ internal class CallImplementation : ICall
             }
             _dal.Call.Delete(callId);
         }
+        catch (DO.DalDeletionImpossible ex)
+        {
+            throw new BO.BlDeletionImpossible(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+    }*/
+    public void Delete(int callId)
+    {
+        try
+        {
+            // קריאה לפונקציית Read על מנת להחזיר את פרטי הקריאה
+            BO.Call? c = Read(callId);
+
+            // אם לא נמצאה קריאה, זורקים חריגה
+            if (c == null)
+            {
+                throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
+            }
+
+            // קריאה לרשימת ההקצות
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+            // אם הסטטוס של הקריאה אינו אפס או אם יש הקצאות קשורות, לא ניתן למחוק את הקריאה
+            if (c.CallStatus != 0 ||
+                (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
+            {
+                throw new BO.BlDeletionImpossible("Can't delete this call.");
+            }
+
+            // בדיקה אם הקריאה תקינה בעזרת הפונקציה CheckCall
+            if (!Helpers.CallManager.CheckCall(c))
+            {
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+            }
+
+            // מחיקת הקריאה מה-DB
+            _dal.Call.Delete(callId);
+        }
+        // טיפול בחריגות הקשורות למחיקה
         catch (DO.DalDeletionImpossible ex)
         {
             throw new BO.BlDeletionImpossible(ex.Message);
@@ -181,7 +231,7 @@ internal class CallImplementation : ICall
     /// <param name="sortType">Optional: The type of sorting to apply .</param>
     /// <returns>A sorted and filtered list of calls as BO.CallInList objects.</returns>
     /// <exception cref="BO.BlDoesNotExistException"></exception>
-    public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
+    /*public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
         try
         {
@@ -237,6 +287,83 @@ internal class CallImplementation : ICall
             throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
+    */
+    public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
+    {
+        try
+        {
+            // קריאה לכל הקריאות וההקצאות מה-DAL
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+            // בדיקה שהאוספים אינם ריקים
+            if (calls == null || !calls.Any())
+            {
+                return Enumerable.Empty<BO.CallInList>();
+            }
+
+            if (assignments == null)
+            {
+                assignments = Enumerable.Empty<DO.Assignment>();
+            }
+
+            // טיפול בסינון
+            if (filterType != null && filterValue != null)
+            {
+                calls = filterType switch
+                {
+                    BO.CallInListSort.Id when int.TryParse(filterValue.ToString(), out int filterId)
+                        => calls.Where(c => c.CallId == filterId),
+                    BO.CallInListSort.CallType when Enum.TryParse(typeof(DO.CallType), filterValue.ToString(), out var callType)
+                        => calls.Where(c => c.CallType == (DO.CallType)callType),
+                    BO.CallInListSort.OpenTime when filterValue is DateTime filterDate
+                        => calls.Where(c => c.OpenTime.Date == filterDate.Date),
+                    BO.CallInListSort.TimeToEnd when filterValue is DateTime endDate
+                        => calls.Where(c => c.MaxTime.HasValue && c.MaxTime.Value.Date == endDate.Date),
+                    _ => calls // ללא סינון אם אין התאמה
+                };
+            }
+
+            // יצירת רשימת CallInList
+            var callInList = calls.Select(c => new BO.CallInList
+            {
+                CallId = c.CallId,
+                CallType = (BO.CallType)c.CallType,
+                OpenTime = c.OpenTime,
+                LastName = null, // Assuming this is not available
+                TimeToEnd = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(c.OpenTime) : (TimeSpan?)null,
+                TimeToCare = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
+                CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+            }).ToList();
+
+            // טיפול במיון
+            if (sortType != null)
+            {
+                callInList = sortType switch
+                {
+                    BO.CallInListSort.Id => callInList.OrderBy(c => c.CallId).ToList(),
+                    BO.CallInListSort.CallType => callInList.OrderBy(c => c.CallType).ToList(),
+                    BO.CallInListSort.OpenTime => callInList.OrderBy(c => c.OpenTime).ToList(),
+                    BO.CallInListSort.TimeToEnd => callInList.OrderBy(c => c.TimeToEnd ?? TimeSpan.MaxValue).ToList(),
+                    BO.CallInListSort.TimeToCare => callInList.OrderBy(c => c.TimeToCare ?? TimeSpan.MaxValue).ToList(),
+                    BO.CallInListSort.CallInListStatus => callInList.OrderBy(c => c.CallInListStatus).ToList(),
+                    _ => callInList.OrderBy(c => c.CallId).ToList()
+                };
+            }
+            else
+            {
+                callInList = callInList.OrderBy(c => c.CallId).ToList();
+            }
+
+            return callInList;
+        }
+        catch (Exception ex)
+        {
+            // זריקת חריגה כפי שמוגדר במקור
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
+    }
+
 
 
 
@@ -323,6 +450,7 @@ internal class CallImplementation : ICall
         try
         {
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            IEnumerable<DO.Volunteer> volun = _dal.Volunteer.ReadAll();
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
             DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
@@ -390,13 +518,13 @@ internal class CallImplementation : ICall
     {
         try
         {
-            BO.Call call = Read(callId);
+            DO.Call call = _dal.Call.Read(callId);
 
             if (call == null)
             {
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
-
+            /*
             return new BO.Call
             {
                 CallId = call.CallId,
@@ -408,7 +536,9 @@ internal class CallImplementation : ICall
                 Details = call.Details,
                 Latitude = call.Latitude,
                 Longitude = call.Longitude,
-            };
+            };*/
+            return Helpers.CallManager.ConvertCallToBO(call, _dal);
+
         }
         // in case of unexpected errors during processing
         catch (DO.DalDoesNotExistException ex)

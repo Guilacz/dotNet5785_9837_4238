@@ -35,7 +35,7 @@ public static class Initialization
     "Maya Berkovich",
     "Doron Avraham",
     "Sarah Rosenberg"
-};
+        };
 
         string[] volunteersMails = {
     "Efrati@gmail.com",
@@ -79,75 +79,94 @@ public static class Initialization
 
         int[] id = new int[]
 {
-    123456780,
-    234567892,
-    345678903,
-    456789014,
-    567890125,
-    678901236,
-    789012347,
-    890123458,
-    901234569,
-    123456701,
-    135792468,
-    246813579,
-    357924680,
-    468035791,
-    579146802,
-    123456793
+979662525,
+524933538,
+364447862,
+327598595,
+565353679,
+206870933,
+994168219,
+295677710,
+245657465,
+829237411,
+957760242,
+749113379,
+117511204,
+388066235,
+566248829,
+147142541
 };
 
-        string phone;
-        string prefix;
-        int middlePart;
         double distance;
         string[] password = new string[]
 {
-    "a@a12345",
-    "b@b23456",
-    "c@c34567",
-    "d@d45678",
-    "e@e56789",
-    "f@f67890",
-    "g@g78901",
-    "h@h89012",
-    "i@i90123",
-    "j@j01234",
-    "k@k12345",
-    "l@l23456",
-    "m@m34567",
-    "n@n45678",
-    "o@o56789",
-    "p@p67890"
+    "abcd@xyz",
+    "passw@rd",
+    "valid@key",
+    "strong@pw",
+    "email@tag",
+    "name@pass",
+    "data@save",
+    "secure@ok",
+    "simple@me",
+    "user@info",
+    "login@now",
+    "token@set",
+    "value@put",
+    "access@key",
+    "safe@code",
+    "check@yes"
 };
 
 
 
         //creation of a random phone number, password... for a volunteer
-        for (int k = 0; k < 15; k++)
+        string[] phoneNumbers = {
+    "0501234567", // קידומת 05
+    "0523456789", // קידומת 05
+    "0549876543", // קידומת 05
+    "0535678901", // קידומת 05
+    "0771234567", // קידומת 07
+    "0723456789", // קידומת 07
+    "031234567",  // קידומת 03 (תל אביב)
+    "022345678",  // קידומת 02 (ירושלים)
+    "045678901",  // קידומת 04 (חיפה)
+    "099876543",  // קידומת 09 (נתניה)
+    "0508765432", // קידומת 05
+    "0531234567", // קידומת 05
+    "0545678901", // קידומת 05
+    "039876543",  // קידומת 03
+    "043456789",  // קידומת 04
+    "061234567"   // קידומת 06 (השרון)
+};
+
+
+
+        for (int i = 0; i < 5; i++)
         {
-            prefix = "05" + random.Next(2, 9);
-            middlePart = random.Next(1000000, 10000000);
-            phone = $"{prefix}-{middlePart}";
 
             distance = random.Next(0, 40000);
-
-
-
-            Volunteer vol = new Volunteer(id[k], volunteersNames[k], phone, volunteersMails[k], Role.Volunteer, 0, password[k], volunteersAdress[k], distance);
-
-            s_dal!.Volunteer.Create(vol);
+            s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i], volunteersMails[i],
+                Role.Volunteer, Distance.AirDistance, password[i], volunteersAdress[i], distance));
         }
+        for (int i = 5; i < 10; i++)
+        {
 
+            distance = random.Next(0, 40000);
+            s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
+                volunteersMails[i], Role.Volunteer, Distance.CarDistance, password[i], volunteersAdress[i], distance));
+        }
+        for (int i = 10; i < 15; i++)
+        {
 
-        prefix = "05" + random.Next(2, 9);
-        middlePart = random.Next(1000000, 10000000);
-        phone = $"{prefix}-{middlePart}";
-
+            distance = random.Next(0, 40000);
+            s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
+                volunteersMails[i], Role.Volunteer, Distance.WalkDistance, password[i], volunteersAdress[i], distance));
+        }
         distance = random.Next(0, 40000);
 
-
-        Volunteer v = new Volunteer(id[15], volunteersNames[15], phone, volunteersMails[15], 0, 0, password[15], volunteersAdress[15], distance);
+        s_dal.Volunteer.Create(new Volunteer(id[15], volunteersNames[15], phoneNumbers[15], volunteersMails[15],
+            0, 0, password[15], volunteersAdress[15], distance));
 
 
     }
@@ -268,10 +287,10 @@ public static class Initialization
 
                 _ => throw new DalInvalidValueException("Invalid value in call")
             };
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5)); 
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5));
             s_dal!.Call.Create(c);
         }
-        
+
 
     }
 
@@ -281,25 +300,25 @@ public static class Initialization
 
     private static void createAssignments()
     {
-        
+
         int[] volunteerId = new int[]
 {
-    123456780,
-    234567892,
-    345678903,
-    456789014,
-    567890125,
-    678901236,
-    789012347,
-    890123458,
-    901234569,
-    123456701,
-    135792468,
-    246813579,
-    357924680,
-    468035791,
-    579146802,
-    123456793
+979662525,
+524933538,
+364447862,
+327598595,
+565353679,
+206870933,
+994168219,
+295677710,
+245657465,
+829237411,
+957760242,
+749113379,
+117511204,
+388066235,
+566248829,
+147142541
 };
         int i;
         int callId = s_dal!.Config.nextCallId;
@@ -308,7 +327,7 @@ public static class Initialization
         //creation of 50 assignments who are fulfilled
         for (i = 0; i < 15; i++)
         {
-            Assignment a = new Assignment(assignmentId, callId,  s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.Fulfilled);
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.Fulfilled);
             s_dal!.Assignment.Create(a);
         }
         for (i = 15; i < 29; i++)
@@ -375,7 +394,7 @@ public static class Initialization
 
 
         //creation of 50 assignments who are CancelledByVolunteer
-        
+
         for (i = 0; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
@@ -409,16 +428,16 @@ public static class Initialization
     /// <param name="dalConfig"></param>
     /// <exception cref="NullReferenceException"></exception>
     ///  </summary>
-    public static void Do() 
+    public static void Do()
     {
-        
+
         //s_dal = dal ?? throw new DalArgumentNullException("DAL object can not be null!");//stage 2
         s_dal = DalApi.Factory.Get; //stage 4
 
         //reset everything
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.resetDB();
-       
+
 
 
         //create news

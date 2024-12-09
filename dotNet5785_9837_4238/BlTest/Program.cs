@@ -4,6 +4,7 @@ using Helpers;
 using BO;
 using System;
 using System.Net;
+using System.Xml.Linq;
 
 class Program
 {
@@ -54,25 +55,26 @@ class Program
             Console.WriteLine("4. Delete a volunteer");
             Console.WriteLine("5. Create a new volunteer");
             Console.WriteLine("6. Read volunteer details");
+            Console.WriteLine("7. Enter to the system of the volunteers");
             Console.WriteLine("0. Return to the main menu");
 
 
             string input = Console.ReadLine();
+
             switch (input)
             {
                 case "1":
 
-                    Console.Write("Enter a number to the thing that you want to sort by it:");
-                    Console.Write("0 to VolunteerId,1 to Name,2 to IsActive,3 to SumOfCaredCall,4 to SumOfCancelledCall,5 to SumOfCallExpired,6 to CallId,7 to CallType");
-                    VolunteerSortField sort = (VolunteerSortField)int.Parse(Console.ReadLine()!);
-                    Console.WriteLine("Enter 0 for inActive, 1 for active:");
-                    int isActiv = int.Parse(Console.ReadLine()!);
-                    bool activ = false;
-                    if (isActiv == 1)
-                        activ = true;
-                    var volunteers = s_bl.Volunteer.GetVolunteerInLists(activ, sort); // זימון הפונקציה
+                    Console.WriteLine("Enter a number to sort by (0 to VolunteerId, 1 to Name, 2 to IsActive, 3 to SumOfCaredCall, 4 to SumOfCancelledCall, 5 to SumOfCallExpired, 6 to CallId, 7 to CallType, or leave empty for no sorting):");
+                    string? sortInput = Console.ReadLine();
+                    VolunteerSortField? sort = string.IsNullOrWhiteSpace(sortInput) ? null : (VolunteerSortField?)int.Parse(sortInput);
 
-                    // בדיקה אם האוסף ריק או null
+                    Console.WriteLine("Enter 0 for inActive, 1 for active, or leave empty for no filtering:");
+                    string? isActiveInput = Console.ReadLine();
+                    bool? isActive = string.IsNullOrWhiteSpace(isActiveInput) ? null : (isActiveInput == "1");
+
+                    // קריאה לפונקציה עם פרמטרים אופציונליים
+                    var volunteers = s_bl.Volunteer.GetVolunteerInLists(isActive, sort);
                     if (volunteers == null || !volunteers.Any())
                     {
                         Console.WriteLine("No volunteers available.");
@@ -179,8 +181,18 @@ class Program
                         Console.WriteLine($"Sum of Cancelled Calls: {volunteer1.SumOfCancelledCall}");
                         Console.WriteLine($"Sum of Expired Calls: {volunteer1.SumOfCallExpired}");
                     }
+                    break;
+                case "7":
+                    Console.WriteLine("Enter your name:");
+                    string name = Console.ReadLine();
 
-
+                    Console.WriteLine("Enter your password:");
+                    string password = Console.ReadLine();
+                    if (password != null)
+                    {
+                        BO.Role type = s_bl.Volunteer.EnterSystem(name, password);
+                        Console.WriteLine($"Role: {type}");
+                    }
                     break;
                 case "0":
                     exit = true;
@@ -215,7 +227,20 @@ class Program
             switch (input)
             {
                 case "1":
-                    var calls = s_bl.Call.GetListOfCalls(); // מניח שהפונקציה מחזירה רשימה או אוסף אחר
+                    Console.WriteLine("Enter a number to the thing that you want to filter by it (1 to Id, 2 to CallId, 3 to CallType, 4 to OpenTime, 5 to TimeToEnd, 6 to LastName, 7 to TimeToCare, 8 to CallInListStatus, or leave empty for no filter):");
+                    string? filterInput1 = Console.ReadLine();
+                    CallInListSort? filter = string.IsNullOrWhiteSpace(filterInput1) ? null : (CallInListSort?)int.Parse(filterInput1);
+
+                    Console.WriteLine("Enter a number to the thing that you want to sort by it (1 to CallId, 2 to CallType, 3 to Address, 4 to OpenTime, 5 to StartTime, 6 to TypeOfEnd, 7 to FinishTime, or leave empty for no sorting):");
+                    string? sortInput1 = Console.ReadLine();
+                    CallInListSort? sort = string.IsNullOrWhiteSpace(sortInput1) ? null : (CallInListSort?)int.Parse(sortInput1);
+
+                    Console.WriteLine("Enter any value that eil the object that you want to sort by it (or leave empty for no value):");
+                    string? objInput = Console.ReadLine();
+                    object? obj = string.IsNullOrWhiteSpace(objInput) ? null : objInput;
+
+                    // קריאה לפונקציה עם פרמטרים אופציונליים
+                    var calls = s_bl.Call.GetListOfCalls(filter, obj, sort);
                     if (calls == null || !calls.Any())
                     {
                         Console.WriteLine("No calls available.");
@@ -273,15 +298,23 @@ class Program
                     AddCall();
                     break;
                 case "6":
-                    Console.Write("Enter a number to the thing that you want to sort by it:");
-                    Console.Write("1 to Math_Primary, 2 to Math_Middle, 3 to Math_High, 4 to English_Primary, 5 to English_Middle, 6 to English_High, 7 to Grammary_Primary, 8 to Grammary_Middle, 9 to Grammary_High");
-                    CallType filter = (CallType)int.Parse(Console.ReadLine()!);
-                    Console.Write("Enter a number to the thing that you want to sort by it:");
-                    Console.Write("1 to CallId, 2 to CallType, 3 to Adress, 4 to OpenTime, 5 to StartTime, 6 to TypeOfEnd, 7 to FinishTime");
-                    CloseCallInListSort sort = (CloseCallInListSort)int.Parse(Console.ReadLine()!);
-                    Console.WriteLine("enter id of volunteer:");
-                    int volId = int.Parse(Console.ReadLine());
-                    var closedCalls = s_bl.Call.GetListOfClosedCall(volId, filter, sort); // זימון הפונקציה
+                    Console.Write("Enter a number to the thing that you want to filter by CallType (1 to Math_Primary, 2 to Math_Middle, 3 to Math_High, 4 to English_Primary, 5 to English_Middle, 6 to English_High, 7 to Grammary_Primary, 8 to Grammary_Middle, 9 to Grammary_High, or leave empty for no filter): ");
+                    string? filterInput2 = Console.ReadLine();
+                    CallType? filter1 = string.IsNullOrWhiteSpace(filterInput2) ? null : (CallType?)int.Parse(filterInput2);
+
+                    Console.Write("Enter a number to the thing that you want to sort by it (1 to CallId, 2 to CallType, 3 to Address, 4 to OpenTime, 5 to StartTime, 6 to TypeOfEnd, 7 to FinishTime, or leave empty for no sorting): ");
+                    string? sortInput2 = Console.ReadLine();
+                    CloseCallInListSort? sort1 = string.IsNullOrWhiteSpace(sortInput2) ? null : (CloseCallInListSort?)int.Parse(sortInput2);
+
+                    Console.WriteLine("Enter the ID of the volunteer:");
+                    int volId;
+                    while (!int.TryParse(Console.ReadLine(), out volId) || volId <= 0)
+                    {
+                        Console.WriteLine("Invalid ID. Please enter a valid positive integer:");
+                    }
+
+                    // Call the function with the required and optional parameters
+                    var closedCalls = s_bl.Call.GetListOfClosedCall(volId, filter1, sort1);
 
                     // בדיקה אם האוסף ריק או null
                     if (closedCalls == null || !closedCalls.Any())
@@ -308,17 +341,28 @@ class Program
                 case "7":
 
 
-                    Console.Write("Enter a number to the thing that you want to sort by it:");
+                    /*Console.Write("Enter a number to the thing that you want to sort by it:");
                     Console.Write("1 to Math_Primary, 2 to Math_Middle, 3 to Math_High, 4 to English_Primary, 5 to English_Middle, 6 to English_High, 7 to Grammary_Primary, 8 to Grammary_Middle, 9 to Grammary_High");
-                    CallType filter1 = (CallType)int.Parse(Console.ReadLine()!);
+                    CallType filter2 = (CallType)int.Parse(Console.ReadLine()!);
                     Console.Write("Enter a number to the thing that you want to sort by it:");
                     Console.Write("1 to CallId, 2 to CallType, 3 to Address, 4 to OpenTime, 5 to MaxTime, 6 to Details, 7 to Distance");
-                    OpenCallInListSort sort1 = (OpenCallInListSort)int.Parse(Console.ReadLine()!);
+                    OpenCallInListSort sort2 = (OpenCallInListSort)int.Parse(Console.ReadLine()!);
                     Console.WriteLine("enter id of volunteer:");
                     int voluId = int.Parse(Console.ReadLine());
-                    var openCalls = s_bl.Call.GetListOfOpenCall(voluId, filter1, sort1); // זימון הפונקציה
+                    var openCalls = s_bl.Call.GetListOfOpenCall(voluId, filter2, sort2); // זימון הפונקציה
+                    */
+                    Console.Write("Enter a number to filter by CallType (1 to Math_Primary, 2 to Math_Middle, 3 to Math_High, 4 to English_Primary, 5 to English_Middle, 6 to English_High, 7 to Grammary_Primary, 8 to Grammary_Middle, 9 to Grammary_High, or leave empty for no filter): ");
+                    string? filterInput = Console.ReadLine();
+                    CallType? filter2 = string.IsNullOrWhiteSpace(filterInput) ? null : (CallType?)int.Parse(filterInput);
 
-                    // בדיקה אם האוסף ריק או null
+                    Console.Write("Enter a number to sort by (1 to CallId, 2 to CallType, 3 to Address, 4 to OpenTime, 5 to MaxTime, 6 to Details, 7 to Distance, or leave empty for no sorting): ");
+                    string? sortInput = Console.ReadLine();
+                    OpenCallInListSort? sort2 = string.IsNullOrWhiteSpace(sortInput) ? null : (OpenCallInListSort?)int.Parse(sortInput);
+
+                    Console.WriteLine("enter id of volunteer:");
+                    int voluId = int.Parse(Console.ReadLine());
+                    var openCalls = s_bl.Call.GetListOfOpenCall(voluId, filter2, sort2);
+
                     if (openCalls == null || !openCalls.Any())
                     {
                         Console.WriteLine("No open calls available.");
@@ -416,6 +460,8 @@ class Program
                     break;
                 case "6":
                     Console.WriteLine("enter the unit to update the clock:");
+                    Console.WriteLine("0 to add 1 minute, 1 to add 1 hour, 2 to add 1 day, 3 to add 1 month, 4 to add 1 year");
+
                     string unit = Console.ReadLine();
                     BO.TimeUnit timeUnit = (BO.TimeUnit)Enum.Parse(typeof(BO.TimeUnit), unit);
                     s_bl.Admin.ForwardClock(timeUnit);

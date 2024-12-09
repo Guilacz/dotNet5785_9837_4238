@@ -29,7 +29,7 @@ public class CallInProgress
     public DateTime? MaxTime { get; set; }
 
     public string? Details { get; set; }
-    public double distance { get; init; }
+    public double distance { get; set; }
     public CallInProgressStatus CallInProgressStatus;
 
     /// <summary>
