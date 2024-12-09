@@ -78,7 +78,7 @@ internal class VolunteerManager
     /// </summary>
     /// <param name="volunteer"></param>
     /// <returns></returns>
-    public static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
+    internal static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
         return new BO.Volunteer
         {
@@ -154,7 +154,7 @@ internal class VolunteerManager
     /// </summary>
     /// <param name="vol"></param>
     /// <returns></returns>
-    public static DO.Volunteer DOManeger(BO.Volunteer vol)
+    internal static DO.Volunteer DOManeger(BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
         string FullName = vol.Name;
@@ -178,7 +178,7 @@ internal class VolunteerManager
     /// <param name="vol1"></param>
     /// <param name="vol"></param>
     /// <returns></returns>
-    public static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
+    internal static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
         string FullName = vol.Name;
@@ -202,7 +202,7 @@ internal class VolunteerManager
     /// </summary>
     /// <param name="password"></param>
     /// <returns></returns>
-    public static bool CheckValidityOfPassword(string password)
+    internal static bool CheckValidityOfPassword(string password)
     {
         if (password == null) 
             return false;
@@ -220,7 +220,7 @@ internal class VolunteerManager
     /// <summary>
     /// encryption function : applies the ATBASH encryption + shift 2
     /// </summary>
-    public static string EncryptPassword(string password)
+    internal static string EncryptPassword(string password)
     {
         char[] encryptedChars = new char[password.Length];
         for (int i = 0; i < password.Length; i++)
@@ -250,7 +250,7 @@ internal class VolunteerManager
     /// <summary>
     /// decryption function : return the origin password
     /// </summary>
-    public static string DecryptPassword(string password)
+    internal static string DecryptPassword(string password)
     {
 
         char[] decryptedChars = new char[password.Length];

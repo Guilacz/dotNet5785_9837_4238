@@ -43,7 +43,7 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="assignments"></param>
     /// <returns></returns>
-    public static BO.CallStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    internal static BO.CallStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
         var now = DateTime.Now;
 
@@ -79,7 +79,7 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="dal"></param>
     /// <returns></returns>
-    public static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
+    internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
     {
         return new BO.Call
         {
@@ -100,7 +100,7 @@ internal class CallManager
     /// This method should be invoked from ClockManager whenever the system clock is updated.
     /// It closes all open calls whose maximum time has passed and their treatment hasn't been completed.
     /// </summary>
-    public static void PeriodicVolunteersUpdates()
+    internal static void PeriodicVolunteersUpdates()
     {
 
         var allCalls = _dal.Call.ReadAll();
