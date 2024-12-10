@@ -38,7 +38,6 @@ internal class CallImplementation : ICall
 
             var coordinates = Helpers.Tools.GetAddressCoordinates(call.Address);
 
-            // עדכון האובייקט עם הקואורדינטות
             call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
 
             BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
@@ -46,13 +45,6 @@ internal class CallImplementation : ICall
             if (!Helpers.CallManager.CheckCall(boCall))
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
 
-            //////////////BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
-            //////////////var coordinate = Helpers.Tools.GetAddressCoordinates(call.Address);
-
-            //////////////// עדכון האובייקט עם הקואורדינטות
-            //////////////call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
-            //////////////if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-            //////////////    throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
@@ -99,31 +91,7 @@ internal class CallImplementation : ICall
     /// <param name="c">The bo object representing the call to create.</param>
     /// <exception cref="BO.BlInvalidValueException"></exception>
     /// <exception cref="BO.BlAlreadyExistException"></exception>
-    //public void Create(BO.Call c)
-    //{
-    //    if (!Helpers.CallManager.CheckCall(c))
-    //    {
-    //        throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-    //    }
-    //    try
-    //    {
-    //        _dal.Call.Create(new DO.Call
-    //        {
-    //            CallId = c.CallId,
-    //            CallType = (DO.CallType)c.CallType,
-    //            Address = c.Address,
-    //            Latitude = c.Latitude,
-    //            Longitude = c.Longitude,
-    //            OpenTime = c.OpenTime,
-    //            MaxTime = c.MaxTime,
-    //            Details = c.Details,
-    //        });
-    //    }
-    //    catch (DO.DalInvalidValueException ex)
-    //    {
-    //        throw new BO.BlInvalidValueException(ex.Message);
-    //    }
-    //}
+
     public void Create(BO.Call c)
     {
         if (!Helpers.CallManager.CheckCall(c))
@@ -131,7 +99,6 @@ internal class CallImplementation : ICall
             throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
         }
 
-        // בדיקת ערכי null עבור Latitude ו-Longitude
         if (c.Latitude == null || c.Longitude == null)
         {
             throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
@@ -144,8 +111,8 @@ internal class CallImplementation : ICall
                 CallId = c.CallId,
                 CallType = (DO.CallType)c.CallType,
                 Address = c.Address,
-                Latitude = c.Latitude.Value, // .Value כי הם נבדקו קודם
-                Longitude = c.Longitude.Value, // .Value כי הם נבדקו קודם
+                Latitude = c.Latitude.Value, 
+                Longitude = c.Longitude.Value, 
                 OpenTime = c.OpenTime,
                 MaxTime = c.MaxTime,
                 Details = c.Details,
@@ -169,64 +136,34 @@ internal class CallImplementation : ICall
     /// <param name="callId">The ID of the call to delete.</param>
     /// <exception cref="BO.BlDeletionImpossible"></exception>
     /// <exception cref="BO.BlInvalidValueException"></exception>
-    /*public void Delete(int callId)
-    {
-        try
-        {
-            BO.Call? c = Read(callId);
-            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-            if(c.CallStatus != 0 || (c.callAssignInLists?.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId)) ?? false))
-    throw new BO.BlDeletionImpossible("Can't delete this call.");
-
-            if (!Helpers.CallManager.CheckCall(c))
-            {
-                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-            }
-            _dal.Call.Delete(callId);
-        }
-        catch (DO.DalDeletionImpossible ex)
-        {
-            throw new BO.BlDeletionImpossible(ex.Message);
-        }
-        catch (DO.DalInvalidValueException ex)
-        {
-            throw new BO.BlInvalidValueException(ex.Message);
-        }
-    }*/
     public void Delete(int callId)
     {
         try
         {
-            // קריאה לפונקציית Read על מנת להחזיר את פרטי הקריאה
             BO.Call? c = Read(callId);
 
-            // אם לא נמצאה קריאה, זורקים חריגה
             if (c == null)
             {
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
 
-            // קריאה לרשימת ההקצות
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-            // אם הסטטוס של הקריאה אינו אפס או אם יש הקצאות קשורות, לא ניתן למחוק את הקריאה
             if (c.CallStatus != 0 ||
                 (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
             {
                 throw new BO.BlDeletionImpossible("Can't delete this call.");
             }
 
-            // בדיקה אם הקריאה תקינה בעזרת הפונקציה CheckCall
             if (!Helpers.CallManager.CheckCall(c))
             {
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             }
 
-            // מחיקת הקריאה מה-DB
             _dal.Call.Delete(callId);
         }
-        // טיפול בחריגות הקשורות למחיקה
+
         catch (DO.DalDeletionImpossible ex)
         {
             throw new BO.BlDeletionImpossible(ex.Message);
@@ -263,21 +200,36 @@ internal class CallImplementation : ICall
     /// <param name="sortType">Optional: The type of sorting to apply .</param>
     /// <returns>A sorted and filtered list of calls as BO.CallInList objects.</returns>
     /// <exception cref="BO.BlDoesNotExistException"></exception>
-    /*public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
+
+    public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
         try
         {
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
+            if (calls == null || !calls.Any())
+            {
+                return Enumerable.Empty<BO.CallInList>();
+            }
+
+            if (assignments == null)
+            {
+                assignments = Enumerable.Empty<DO.Assignment>();
+            }
+
             if (filterType != null && filterValue != null)
             {
                 calls = filterType switch
                 {
-                    BO.CallInListSort.Id => calls.Where(c => c.CallId == Convert.ToInt32(filterValue)),
-                    BO.CallInListSort.CallType => calls.Where(c => c.CallType == (DO.CallType)filterValue),
-                    BO.CallInListSort.OpenTime => calls.Where(c => c.OpenTime == (DateTime)filterValue),
-                    BO.CallInListSort.TimeToEnd => calls.Where(c => c.MaxTime.HasValue && c.MaxTime.Value == (DateTime)filterValue),
+                    BO.CallInListSort.Id when int.TryParse(filterValue.ToString(), out int filterId)
+                        => calls.Where(c => c.CallId == filterId),
+                    BO.CallInListSort.CallType when Enum.TryParse(typeof(DO.CallType), filterValue.ToString(), out var callType)
+                        => calls.Where(c => c.CallType == (DO.CallType)callType),
+                    BO.CallInListSort.OpenTime when filterValue is DateTime filterDate
+                        => calls.Where(c => c.OpenTime.Date == filterDate.Date),
+                    BO.CallInListSort.TimeToEnd when filterValue is DateTime endDate
+                        => calls.Where(c => c.MaxTime.HasValue && c.MaxTime.Value.Date == endDate.Date),
                     _ => calls
                 };
             }
@@ -300,82 +252,6 @@ internal class CallImplementation : ICall
                     BO.CallInListSort.Id => callInList.OrderBy(c => c.CallId).ToList(),
                     BO.CallInListSort.CallType => callInList.OrderBy(c => c.CallType).ToList(),
                     BO.CallInListSort.OpenTime => callInList.OrderBy(c => c.OpenTime).ToList(),
-                    BO.CallInListSort.TimeToEnd => callInList.OrderBy(c => c.TimeToEnd).ToList(),
-                    BO.CallInListSort.TimeToCare => callInList.OrderBy(c => c.TimeToCare).ToList(),
-                    BO.CallInListSort.CallInListStatus => callInList.OrderBy(c => c.CallInListStatus).ToList(),
-                    _ => callInList.OrderBy(c => c.CallId).ToList()
-                };
-            }
-            else
-            {
-                callInList = callInList.OrderBy(c => c.CallId).ToList();
-            }
-
-            return callInList;
-        }
-        // Thrown in case of unexpected errors during processing
-        catch (Exception ex)
-        {
-            throw new BO.BlDoesNotExistException(ex.Message);
-        }
-    }
-    */
-    public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
-    {
-        try
-        {
-            // קריאה לכל הקריאות וההקצאות מה-DAL
-            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
-            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-
-            // בדיקה שהאוספים אינם ריקים
-            if (calls == null || !calls.Any())
-            {
-                return Enumerable.Empty<BO.CallInList>();
-            }
-
-            if (assignments == null)
-            {
-                assignments = Enumerable.Empty<DO.Assignment>();
-            }
-
-            // טיפול בסינון
-            if (filterType != null && filterValue != null)
-            {
-                calls = filterType switch
-                {
-                    BO.CallInListSort.Id when int.TryParse(filterValue.ToString(), out int filterId)
-                        => calls.Where(c => c.CallId == filterId),
-                    BO.CallInListSort.CallType when Enum.TryParse(typeof(DO.CallType), filterValue.ToString(), out var callType)
-                        => calls.Where(c => c.CallType == (DO.CallType)callType),
-                    BO.CallInListSort.OpenTime when filterValue is DateTime filterDate
-                        => calls.Where(c => c.OpenTime.Date == filterDate.Date),
-                    BO.CallInListSort.TimeToEnd when filterValue is DateTime endDate
-                        => calls.Where(c => c.MaxTime.HasValue && c.MaxTime.Value.Date == endDate.Date),
-                    _ => calls // ללא סינון אם אין התאמה
-                };
-            }
-
-            // יצירת רשימת CallInList
-            var callInList = calls.Select(c => new BO.CallInList
-            {
-                CallId = c.CallId,
-                CallType = (BO.CallType)c.CallType,
-                OpenTime = c.OpenTime,
-                LastName = null, // Assuming this is not available
-                TimeToEnd = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(c.OpenTime) : (TimeSpan?)null,
-                TimeToCare = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
-                CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
-            }).ToList();
-
-            // טיפול במיון
-            if (sortType != null)
-            {
-                callInList = sortType switch
-                {
-                    BO.CallInListSort.Id => callInList.OrderBy(c => c.CallId).ToList(),
-                    BO.CallInListSort.CallType => callInList.OrderBy(c => c.CallType).ToList(),
-                    BO.CallInListSort.OpenTime => callInList.OrderBy(c => c.OpenTime).ToList(),
                     BO.CallInListSort.TimeToEnd => callInList.OrderBy(c => c.TimeToEnd ?? TimeSpan.MaxValue).ToList(),
                     BO.CallInListSort.TimeToCare => callInList.OrderBy(c => c.TimeToCare ?? TimeSpan.MaxValue).ToList(),
                     BO.CallInListSort.CallInListStatus => callInList.OrderBy(c => c.CallInListStatus).ToList(),
@@ -391,7 +267,6 @@ internal class CallImplementation : ICall
         }
         catch (Exception ex)
         {
-            // זריקת חריגה כפי שמוגדר במקור
             throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
@@ -556,19 +431,7 @@ internal class CallImplementation : ICall
             {
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
-            /*
-            return new BO.Call
-            {
-                CallId = call.CallId,
-                CallType = call.CallType,
-                Address = call.Address,
-                OpenTime = call.OpenTime,
-                MaxTime = call.MaxTime,
-                CallStatus = call.CallStatus,
-                Details = call.Details,
-                Latitude = call.Latitude,
-                Longitude = call.Longitude,
-            };*/
+         
             return Helpers.CallManager.ConvertCallToBO(call, _dal);
 
         }
@@ -629,42 +492,6 @@ internal class CallImplementation : ICall
     /// <param name="c">The call object containing updated data.</param>
     /// <exception cref="BO.BlInvalidValueException">Thrown if the provided call data is invalid.</exception>
     /// <exception cref="BO.BlDoesNotExistException">Thrown for any other errors that occur during the update process.</exception>
-    //public void Update(Call c)
-    //{
-    //    try
-    //    {
-    //        if (!Helpers.CallManager.CheckCall(c))
-    //        {
-    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-    //        }
-    //        else
-    //        {
-    //            try
-    //            {
-    //                _dal.Call.Update(new DO.Call
-    //                {
-    //                    CallId = c.CallId,
-    //                    CallType = (DO.CallType)c.CallType,
-    //                    Address = c.Address,
-    //                    Latitude = c.Latitude,
-    //                    Longitude = c.Longitude,
-    //                    OpenTime = c.OpenTime,
-    //                    MaxTime = c.MaxTime,
-    //                    Details = c.Details,
-    //                });
-    //            }
-    //            //catch the exception from Update of Do
-    //            catch (DO.DalDoesNotExistException ex)
-    //            {
-    //                throw new BO.BlDoesNotExistException(ex.Message);
-    //            }
-    //        }
-    //    }
-    //    catch (DO.DalInvalidValueException ex)
-    //    {
-    //        throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
-    //    }
-    //}
     public void Update(Call c)
     {
         try
@@ -674,7 +501,6 @@ internal class CallImplementation : ICall
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             }
 
-            // בדיקת ערכי null עבור Latitude ו-Longitude
             if (c.Latitude == null || c.Longitude == null)
             {
                 throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
@@ -687,14 +513,13 @@ internal class CallImplementation : ICall
                     CallId = c.CallId,
                     CallType = (DO.CallType)c.CallType,
                     Address = c.Address,
-                    Latitude = c.Latitude.Value, // .Value כי הם נבדקו קודם
-                    Longitude = c.Longitude.Value, // .Value כי הם נבדקו קודם
+                    Latitude = c.Latitude.Value, 
+                    Longitude = c.Longitude.Value, 
                     OpenTime = c.OpenTime,
                     MaxTime = c.MaxTime,
                     Details = c.Details,
                 });
             }
-            // טיפול בחריגות מ-DO.Update
             catch (DO.DalDoesNotExistException ex)
             {
                 throw new BO.BlDoesNotExistException(ex.Message);
