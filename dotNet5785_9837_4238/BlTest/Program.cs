@@ -127,7 +127,7 @@ class Program
                             Console.WriteLine($"Sum of Cared Calls: {volunteerr.SumOfCaredCall}");
                             Console.WriteLine($"Sum of Cancelled Calls: {volunteerr.SumOfCancelledCall}");
                             Console.WriteLine($"Sum of Expired Calls: {volunteerr.SumOfCallExpired}");
-                            Console.WriteLine($"Current Call ID: {volunteerr.CallId?.ToString() ?? "N/A"}"); // בודק אם CallId הוא null
+                            Console.WriteLine($"Current Call ID: {volunteerr.CallId?.ToString() ?? "N/A"}"); 
                             Console.WriteLine($"Current Call Type: {volunteerr.CallType}");
                             Console.WriteLine("--------------------------------------");
                         }
@@ -598,12 +598,12 @@ class Program
 
         if (pas == 1)
         {
-            passwords = NewPassword(); // קריאה לפונקציה שיצרת ליצירת סיסמה
+            passwords = NewPassword(); 
         }
         else
         {
             Console.Write("Enter volunteer password: ");
-            passwords = Console.ReadLine(); // קבלת סיסמה מהמשתמש
+            passwords = Console.ReadLine(); 
         }
 
         Console.Write("Enter volunteer address: ");
