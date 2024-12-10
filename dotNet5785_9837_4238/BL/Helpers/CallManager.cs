@@ -4,6 +4,9 @@ using BO;
 using DalApi;
 using System.Xml.Linq;
 
+/// <summary>
+/// Class of all the help function that we will use in the Call Implementation
+/// </summary>
 internal class CallManager
 {
     private static readonly DalApi.IDal _dal = DalApi.Factory.Get;
@@ -126,8 +129,6 @@ internal class CallManager
                             TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
                         };
                         assignments.Add(newAssignment);
-
-                        //s_dal.Assignment.Add(newAssignment);
                     }
                     else
                     {
@@ -145,9 +146,6 @@ internal class CallManager
                         }
                     }
 
-
-                    // Update the call status to closed
-                    // call.StatusCall = StatusCall.Closed;
                     _dal.Call.Update(call);
                 }
 

@@ -57,8 +57,6 @@ public static class Tools
     /// as a tuple (latitude, longitude). If no results are found or if the request fails, 
     /// it throws an exception.
     /// /// </summary>
-
-  
     public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
     {
         if (string.IsNullOrWhiteSpace(address))
@@ -69,7 +67,6 @@ public static class Tools
         const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
         const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
 
-        // בניית כתובת הבקשה
         string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
         using (var client = new HttpClient())
@@ -77,7 +74,6 @@ public static class Tools
             HttpResponseMessage response;
             try
             {
-                // ביצוע הקריאה הסינכרונית
                 response = client.GetAsync(requestUrl).Result;
             }
             catch (Exception ex)
@@ -154,29 +150,16 @@ public static class Tools
     /// function that checks if the coordinates of a call match the coordinates based on his address. 
     /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
     /// </summary>
-    //public static bool CheckAddressCall(Call c)
-    //{
-    //    var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
-    //    const double tolerance = 0.0001;
-
-    //    bool isLatitudeMatch = Math.Abs(c.Latitude - expectedLatitude) < tolerance;
-    //    bool isLongitudeMatch = Math.Abs(c.Longitude - expectedLongitude) < tolerance;
-
-    //    return isLatitudeMatch && isLongitudeMatch;
-    //}
     public static bool CheckAddressCall(Call c)
     {
-        // בדיקה אם Latitude או Longitude הם null
         if (!c.Latitude.HasValue || !c.Longitude.HasValue)
         {
             throw new Exception("Latitude or Longitude is null for the call.");
         }
 
-        // קבלת הקואורדינטות הצפויות מהכתובת
         var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
         const double tolerance = 0.0001;
 
-        // בדיקת התאמה לקואורדינטות עם טווח סובלנות
         bool isLatitudeMatch = Math.Abs(c.Latitude.Value - expectedLatitude) < tolerance;
         bool isLongitudeMatch = Math.Abs(c.Longitude.Value - expectedLongitude) < tolerance;
 
@@ -273,21 +256,16 @@ public static class Tools
         /// <summary>
         /// calculate driving and walking distance
         /// </summary>=
-
         private static double CalculateTravelDistance(string address1, string address2, string mode)
         {
             const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
             const string BaseUrl = "https://us1.locationiq.com/v1/directions/";
 
-            // מקבל את הקואורדינטות של הכתובות
             var (latitude1, longitude1) = GetAddressCoordinates(address1);
             var (latitude2, longitude2) = GetAddressCoordinates(address2);
 
-            // בונה את ה-URL לבקשה עם סדר קואורדינטות נכון
-            //string requestUrl = $"{BaseUrl}{mode}/{latitude1},{longitude1};{latitude2},{longitude2}?key={LocationIqApiKey}&overview=false";
               string requestUrl = $"{BaseUrl}driving/{latitude1},{longitude1};{latitude2},{longitude2}?key={LocationIqApiKey}&overview=false";
 
-           // Console.WriteLine($"Request URL: {requestUrl}");
 
             using (var client = new HttpClient())
             {
@@ -295,25 +273,17 @@ public static class Tools
 
                 try
                 {
-                    // שליחת בקשה
                     response = client.GetAsync(requestUrl).Result;
 
-                 //  Console.WriteLine($"HTTP Status Code: {response.StatusCode} ({(int)response.StatusCode})");
-
-                    // בדיקת סטטוס הקוד של התגובה
                     if (!response.IsSuccessStatusCode)
                     {
                         string errorContent = response.Content.ReadAsStringAsync().Result;
-                  //      Console.WriteLine($"Error Response: {response.StatusCode} - {response.ReasonPhrase}");
-                  //      Console.WriteLine($"Error Content: {errorContent}");
+
                         throw new Exception($"Error fetching route data: {response.ReasonPhrase} (HTTP {response.StatusCode})\n{errorContent}");
                     }
 
-                    // קריאה לתוכן התגובה
                     string responseContent = response.Content.ReadAsStringAsync().Result;
-              //      Console.WriteLine($"Response Content: {responseContent}");
 
-                    // פירוש תגובת ה-JSON
                     var routeData = System.Text.Json.JsonSerializer.Deserialize<RouteResponse>(responseContent);
 
                     if (routeData == null || routeData.Routes == null || routeData.Routes.Length == 0)
@@ -321,22 +291,18 @@ public static class Tools
                         throw new Exception("No route data found for the provided addresses.");
                     }
 
-                    // חישוב המרחק בקילומטרים
                     return routeData.Routes[0].Distance / 1000.0;
                 }
                 catch (HttpRequestException httpEx)
                 {
-           //         Console.WriteLine($"HTTP Request Exception: {httpEx.Message}");
                     throw;
                 }
                 catch (AggregateException aggEx)
                 {
-            //        Console.WriteLine($"Aggregate Exception: {aggEx.InnerException?.Message ?? aggEx.Message}");
                     throw;
                 }
                 catch (Exception ex)
                 {
-          //          Console.WriteLine($"General Exception: {ex.Message}");
                     throw;
                 }
             }

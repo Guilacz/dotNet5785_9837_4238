@@ -5,6 +5,10 @@ using DalApi;
 using System;
 using System.Text.RegularExpressions;
 
+
+/// <summary>
+/// Class of all the help function that we will use in the Volunteer Implementation
+/// </summary>
 internal class VolunteerManager
 {
     private static readonly IDal s_dal = Factory.Get; //stage 4
@@ -50,9 +54,6 @@ internal class VolunteerManager
         if (email.Length < 5 || email.Length > 254)
             return false;
 
-       // int atCount = email.Count(c => c == '@');
-       // if (atCount != 1)
-         //   return false;
 
         string[] validDomains = { ".com", ".il", ".net", ".org" };
         bool hasValidDomain = validDomains.Any(domain => email.EndsWith(domain));
@@ -67,7 +68,6 @@ internal class VolunteerManager
         if (dotIndex == -1 || dotIndex <= atIndex + 1) 
             return false;
 
-        // If all conditions pass, the email is valid
         return true;
     }
 
@@ -208,8 +208,8 @@ internal class VolunteerManager
             return false;
         if (password.Length <8)
             return false;
-       // if (!Regex.IsMatch(password, @"^[a-z@]+$"))
-       //     return false;
+       if (!Regex.IsMatch(password, @"^[a-z@]+$"))
+           return false;
         if (!(password.Contains('@') || password.Contains('.')))
             return false;
         return true;
