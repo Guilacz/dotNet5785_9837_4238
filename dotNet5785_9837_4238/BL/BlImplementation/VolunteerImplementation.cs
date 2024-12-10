@@ -126,7 +126,7 @@ internal class VolunteerImplementation : IVolunteer
             }
             if (vol.Latitude == null || vol.Longitude == null)
             {
-                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
                 vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
             }
 
@@ -140,7 +140,7 @@ internal class VolunteerImplementation : IVolunteer
                 DistanceType = (BO.DistanceType)vol.DistanceType,
                 Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
                 //Password = vol.Password,
-                Adress = vol.Adress,
+                Adress = vol.Address,
                 Distance = vol.Distance,
                 Latitude = vol.Latitude,
                 Longitude = vol.Longitude,
@@ -420,7 +420,7 @@ internal class VolunteerImplementation : IVolunteer
                 Phone = vol.Phone,
                 Email = vol.Email,
                 Password = vol.Password,
-                Adress = vol.Adress,
+                Address = vol.Adress,
                 IsActive = vol.IsActive,
                 Distance = vol.Distance,
             });

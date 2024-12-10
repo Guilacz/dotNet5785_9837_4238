@@ -1,9 +1,9 @@
-﻿using BO;
+﻿namespace Helpers;
+using BO;
 using DalApi;
 using System.Net;
 using System.Text;
 
-namespace Helpers;
 /// <summary>
 /// class for the help methods
 /// </summary>

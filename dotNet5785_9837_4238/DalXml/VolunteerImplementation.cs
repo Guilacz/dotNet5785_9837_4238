@@ -123,7 +123,7 @@ internal class VolunteerImplementation : IVolunteer
         details.AppendLine($"Role: {item.RoleType}");
         details.AppendLine($"Type of Distance: {item.DistanceType}");
         details.AppendLine($"Password: {item.Password}");
-        details.AppendLine($"Address: {item.Adress}");
+        details.AppendLine($"Address: {item.Address}");
         details.AppendLine($"Distance: {item.Distance}");
         details.AppendLine($"Latitude: {item.Latitude}");
         details.AppendLine($"Longitude: {item.Longitude}");

@@ -397,7 +397,7 @@ internal class Program
         Console.Write("Enter maximum distance: ");
         double dis = int.Parse(Console.ReadLine()!);
 
-        Volunteer v = new Volunteer (){VolunteerId = id,  Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
+        Volunteer v = new Volunteer (){VolunteerId = id,  Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Address = address, Distance = dis };
         s_dal.Volunteer?.Create(v);
         Console.WriteLine("Volunteer added.");
 
@@ -479,9 +479,9 @@ internal class Program
         if (!string.IsNullOrEmpty(newPassword)) volunteer = volunteer with { Password = newPassword };
 
         // עדכון כתובת
-        Console.WriteLine($"Current address: {volunteer.Adress}. Enter new address (or press Enter to keep current):");
+        Console.WriteLine($"Current address: {volunteer.Address}. Enter new address (or press Enter to keep current):");
         string newAddress = Console.ReadLine()!;
-        if (!string.IsNullOrEmpty(newAddress)) volunteer = volunteer with { Adress = newAddress };
+        if (!string.IsNullOrEmpty(newAddress)) volunteer = volunteer with { Address = newAddress };
 
         // עדכון מרחק
         Console.WriteLine($"Current distance: {volunteer.Distance}. Enter new distance (or press Enter to keep current):");

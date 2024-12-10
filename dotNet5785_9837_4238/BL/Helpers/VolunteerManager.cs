@@ -89,7 +89,7 @@ internal class VolunteerManager
             RoleType = (BO.Role)volunteer.RoleType,
             DistanceType = (BO.DistanceType)volunteer.DistanceType,
             Password = DecryptPassword(volunteer.Password),
-            Adress = volunteer.Adress,
+            Adress = volunteer.Address,
             Distance = volunteer.Distance
         };
     }

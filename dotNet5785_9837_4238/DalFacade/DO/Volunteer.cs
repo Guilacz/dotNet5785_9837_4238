@@ -10,7 +10,7 @@ namespace DO;
 /// <param name="Phone">Private Number of the volunteer</param>
 /// <param name="Email">Private Mail of the volunteer</param>
 /// <param name="Password">Password of the volunteer</param>
-/// <param name="Adress">Private adress of the volunteer</param>
+/// <param name="Address">Private adress of the volunteer</param>
 /// <param name="Latitude">latitude</param>
 /// <param name="Longitude">Longitude</param>
 /// <param name="IsActive">is the volunteer active or not</param>
@@ -27,7 +27,7 @@ public record Volunteer
     Distance DistanceType,
 
     string? Password = null,
-    string? Adress = null,
+    string? Address = null,
     double? Distance = null,
     double? Latitude = null,
     double? Longitude = null,
