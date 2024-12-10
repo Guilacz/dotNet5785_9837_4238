@@ -1,5 +1,9 @@
 ﻿namespace BlApi;
 
+/// <summary>
+/// Volunteer Interface
+/// functions : EnterSystem, GetVolunteerInLists, GetVolunteerDetails, Update, Delete, Create, Read
+/// </summary>
 public interface IVolunteer
 {
     BO.Role EnterSystem(string name, string password);

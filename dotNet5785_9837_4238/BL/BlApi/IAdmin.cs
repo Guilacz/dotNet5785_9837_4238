@@ -1,7 +1,8 @@
 ﻿namespace BlApi;
 
 /// <summary>
-/// iadmin interface
+/// Admin interface
+/// functions : InitializeDB,ResetDB, GetMaxRange, SetMaxRange, GetClock, ForwardClock
 /// </summary>
 public interface IAdmin
 {

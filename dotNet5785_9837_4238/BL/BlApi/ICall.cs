@@ -2,29 +2,19 @@
 
 using BO;
 
-
+/// <summary>
+/// Call Interface
+/// functions : GetListOfCalls, GetCallDetails, Update, Delete, Create, GetListOfClosedCall, GetListOfOpenCall,
+/// UpdateCallFinished, UpdateCallCancelled, ChoiceOfCallToCare, Read
+/// array : SumOfCalls
+/// </summary>
 public interface ICall
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
     int[] SumOfCalls();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="filterType"></param>
-    /// <param name="filterValue"></param>
-    /// <param name="sortType"></param>
-    /// <returns></returns>
+ 
     IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="callId"></param>
-    /// <returns></returns>
     Call GetCallDetails(int callId);
 
     void Update(Call c);
