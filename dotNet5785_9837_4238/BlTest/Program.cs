@@ -5,6 +5,8 @@ using BO;
 using System;
 using System.Net;
 using System.Xml.Linq;
+using System.Linq.Expressions;
+using System.ComponentModel.Design;
 
 class Program
 {
@@ -17,35 +19,59 @@ class Program
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        bool exit = false;
-        while (!exit)
+        try
         {
-            Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Volunteers Management");
-            Console.WriteLine("2. Calls Management");
-            Console.WriteLine("3. System Management");
-            Console.WriteLine("0. Exit");
-
-            string input = Console.ReadLine();
-            switch (input)
+            bool exit = false;
+            while (!exit)
             {
-                case "1":
-                    VolunteerMenu();
-                    break;
-                case "2":
-                    CallMenu();
-                    break;
-                case "3":
-                    AdminMenu();
-                    break;
-                case "0":
-                    exit = true;
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice");
-                    break;
+                Console.WriteLine("Choose an option:");
+                Console.WriteLine("1. Volunteers Management");
+                Console.WriteLine("2. Calls Management");
+                Console.WriteLine("3. System Management");
+                Console.WriteLine("0. Exit");
+
+                string input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        VolunteerMenu();
+                        break;
+                    case "2":
+                        CallMenu();
+                        break;
+                    case "3":
+                        AdminMenu();
+                        break;
+                    case "0":
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice");
+                        break;
+                }
             }
         }
+        catch (BO.BlDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
+        catch (BO.BlInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+        catch (BO.BlAlreadyExistException ex)
+        {
+            throw new BO.BlAlreadyExistException(ex.Message);
+        }
+        catch (BO.BlDeletionImpossible ex)
+        {
+            throw new BO.BlDeletionImpossible(ex.Message);
+        }
+        catch (BO.BlArgumentNullException ex)
+        {
+            throw new BO.BlArgumentNullException(ex.Message);
+        }
+
     }
 
 
@@ -422,63 +448,63 @@ class Program
     /// get the current clock, forward the clock
     /// </summary>
     static void AdminMenu()
-    {
-        bool exit = false;
-        while (!exit)
         {
-            Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Initialize database");
-            Console.WriteLine("2. Reset database");
-            Console.WriteLine("3. Get maximum time range");
-            Console.WriteLine("4. Update maximum time range");
-            Console.WriteLine("5. Get current clock");
-            Console.WriteLine("6. Forward the clock");
-            Console.WriteLine("0. Return to the main menu");
-
-            string input = Console.ReadLine();
-            switch (input)
+            bool exit = false;
+            while (!exit)
             {
-                case "1":
-                    s_bl.Admin.InitializeDB();
-                    Console.WriteLine("The initialization of the database has succeeded");
-                    break;
-                case "2":
-                    s_bl.Admin.ResetDB();
-                    Console.WriteLine("The reset of the database has succeeded");
+                Console.WriteLine("Choose an option:");
+                Console.WriteLine("1. Initialize database");
+                Console.WriteLine("2. Reset database");
+                Console.WriteLine("3. Get maximum time range");
+                Console.WriteLine("4. Update maximum time range");
+                Console.WriteLine("5. Get current clock");
+                Console.WriteLine("6. Forward the clock");
+                Console.WriteLine("0. Return to the main menu");
 
-                    break;
-                case "3":
-                    TimeSpan maxRange = s_bl.Admin.GetMaxRange();
-                    Console.WriteLine($"Max Range: {maxRange}");
-                    break;
-                case "4":
-                    Console.WriteLine("Enter the max range:");
-                    TimeSpan maxrange = TimeSpan.Parse(Console.ReadLine());
-                    s_bl.Admin.SetMaxRange(maxrange);
-                    Console.WriteLine("The update of the max range succeeded");
-                    break;
-                case "5":
-                    DateTime cl = s_bl.Admin.GetClock();
-                    Console.WriteLine($"Get clock: {cl}");
-                    break;
-                case "6":
-                    Console.WriteLine("Enter the unit to update the clock:");
-                    Console.WriteLine("0 to add 1 minute, 1 to add 1 hour, 2 to add 1 day, 3 to add 1 month, 4 to add 1 year");
+                string input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        s_bl.Admin.InitializeDB();
+                        Console.WriteLine("The initialization of the database has succeeded");
+                        break;
+                    case "2":
+                        s_bl.Admin.ResetDB();
+                        Console.WriteLine("The reset of the database has succeeded");
 
-                    string unit = Console.ReadLine();
-                    BO.TimeUnit timeUnit = (BO.TimeUnit)Enum.Parse(typeof(BO.TimeUnit), unit);
-                    s_bl.Admin.ForwardClock(timeUnit);
-                    Console.WriteLine("The update of the time succeeded");
+                        break;
+                    case "3":
+                        TimeSpan maxRange = s_bl.Admin.GetMaxRange();
+                        Console.WriteLine($"Max Range: {maxRange}");
+                        break;
+                    case "4":
+                        Console.WriteLine("Enter the max range:");
+                        TimeSpan maxrange = TimeSpan.Parse(Console.ReadLine());
+                        s_bl.Admin.SetMaxRange(maxrange);
+                        Console.WriteLine("The update of the max range succeeded");
+                        break;
+                    case "5":
+                        DateTime cl = s_bl.Admin.GetClock();
+                        Console.WriteLine($"Get clock: {cl}");
+                        break;
+                    case "6":
+                        Console.WriteLine("Enter the unit to update the clock:");
+                        Console.WriteLine("0 to add 1 minute, 1 to add 1 hour, 2 to add 1 day, 3 to add 1 month, 4 to add 1 year");
 
-                    break;
-                case "0":
-                    exit = true;
-                    break;
-                default:
-                    Console.WriteLine("Incorrect Choice");
-                    break;
+                        string unit = Console.ReadLine();
+                        BO.TimeUnit timeUnit = (BO.TimeUnit)Enum.Parse(typeof(BO.TimeUnit), unit);
+                        s_bl.Admin.ForwardClock(timeUnit);
+                        Console.WriteLine("The update of the time succeeded");
+
+                        break;
+                    case "0":
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Incorrect Choice");
+                        break;
+                }
             }
-        }
     }
 
     /// <summary>
@@ -565,8 +591,21 @@ class Program
         Role role = (Role)int.Parse(Console.ReadLine()!);
         Console.Write("Enter 1 forAirDistance, 2 for WalkDistance,and 3 for CarDistance: ");
         DistanceType distance = (DistanceType)int.Parse(Console.ReadLine()!);
-        Console.Write("Enter volunteer password: ");
-        string password = Console.ReadLine()!;
+        string passwords;
+
+        Console.Write("Enter 1 if you want to get a password, or 2 to create a password: ");
+        int pas = int.Parse(Console.ReadLine());
+
+        if (pas == 1)
+        {
+            passwords = NewPassword(); // קריאה לפונקציה שיצרת ליצירת סיסמה
+        }
+        else
+        {
+            Console.Write("Enter volunteer password: ");
+            passwords = Console.ReadLine(); // קבלת סיסמה מהמשתמש
+        }
+
         Console.Write("Enter volunteer address: ");
         string address = Console.ReadLine()!;
 
@@ -576,7 +615,7 @@ class Program
         var coordinates = Helpers.Tools.GetAddressCoordinates(address);
         double latitude = coordinates.Latitude;
         double longitude = coordinates.Longitude;
-        Volunteer v = new Volunteer() { VolunteerId = id, Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = password, Adress = address, Distance = dis };
+        Volunteer v = new Volunteer() { VolunteerId = id, Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = passwords, Adress = address, Distance = dis };
         s_bl.Volunteer?.Create(v);
         Console.WriteLine("Volunteer added.");
 
@@ -691,5 +730,17 @@ class Program
         s_bl.Call.Update(call);
         Console.WriteLine("Call details updated.");
     }
+    private static string NewPassword()
+    {
+        Random random = new Random();
+        char[] password = new char[9];
 
+        for (int i = 0; i < 4; i++)
+            password[i] = (char)random.Next('a', 'z' + 1);
+        password[4] = '@';
+
+        for (int i = 5; i < 9; i++)
+            password[i] = (char)random.Next('a', 'z' + 1);
+        return new string(password);
+    }
 }
