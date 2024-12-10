@@ -40,7 +40,7 @@ internal static class ClockManager //stage 4
         //(students becomes not active after 5 years etc.)
 
         //VolunteerManager.PeriodicVolunteersUpdates(oldClock, newClock); //stage 4
-        CallManager.PeriodicVolunteersUpdates(); //stage 4
+        CallManager.PeriodicCallUpdates(); //stage 4
 
         //etc ...
 

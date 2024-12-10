@@ -99,12 +99,44 @@ internal class CallImplementation : ICall
     /// <param name="c">The bo object representing the call to create.</param>
     /// <exception cref="BO.BlInvalidValueException"></exception>
     /// <exception cref="BO.BlAlreadyExistException"></exception>
+    //public void Create(BO.Call c)
+    //{
+    //    if (!Helpers.CallManager.CheckCall(c))
+    //    {
+    //        throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //    }
+    //    try
+    //    {
+    //        _dal.Call.Create(new DO.Call
+    //        {
+    //            CallId = c.CallId,
+    //            CallType = (DO.CallType)c.CallType,
+    //            Address = c.Address,
+    //            Latitude = c.Latitude,
+    //            Longitude = c.Longitude,
+    //            OpenTime = c.OpenTime,
+    //            MaxTime = c.MaxTime,
+    //            Details = c.Details,
+    //        });
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+    //}
     public void Create(BO.Call c)
     {
         if (!Helpers.CallManager.CheckCall(c))
         {
             throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
         }
+
+        // בדיקת ערכי null עבור Latitude ו-Longitude
+        if (c.Latitude == null || c.Longitude == null)
+        {
+            throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
+        }
+
         try
         {
             _dal.Call.Create(new DO.Call
@@ -112,8 +144,8 @@ internal class CallImplementation : ICall
                 CallId = c.CallId,
                 CallType = (DO.CallType)c.CallType,
                 Address = c.Address,
-                Latitude = c.Latitude,
-                Longitude = c.Longitude,
+                Latitude = c.Latitude.Value, // .Value כי הם נבדקו קודם
+                Longitude = c.Longitude.Value, // .Value כי הם נבדקו קודם
                 OpenTime = c.OpenTime,
                 MaxTime = c.MaxTime,
                 Details = c.Details,
@@ -597,6 +629,42 @@ internal class CallImplementation : ICall
     /// <param name="c">The call object containing updated data.</param>
     /// <exception cref="BO.BlInvalidValueException">Thrown if the provided call data is invalid.</exception>
     /// <exception cref="BO.BlDoesNotExistException">Thrown for any other errors that occur during the update process.</exception>
+    //public void Update(Call c)
+    //{
+    //    try
+    //    {
+    //        if (!Helpers.CallManager.CheckCall(c))
+    //        {
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //        }
+    //        else
+    //        {
+    //            try
+    //            {
+    //                _dal.Call.Update(new DO.Call
+    //                {
+    //                    CallId = c.CallId,
+    //                    CallType = (DO.CallType)c.CallType,
+    //                    Address = c.Address,
+    //                    Latitude = c.Latitude,
+    //                    Longitude = c.Longitude,
+    //                    OpenTime = c.OpenTime,
+    //                    MaxTime = c.MaxTime,
+    //                    Details = c.Details,
+    //                });
+    //            }
+    //            //catch the exception from Update of Do
+    //            catch (DO.DalDoesNotExistException ex)
+    //            {
+    //                throw new BO.BlDoesNotExistException(ex.Message);
+    //            }
+    //        }
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
+    //    }
+    //}
     public void Update(Call c)
     {
         try
@@ -605,27 +673,31 @@ internal class CallImplementation : ICall
             {
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             }
-            else
+
+            // בדיקת ערכי null עבור Latitude ו-Longitude
+            if (c.Latitude == null || c.Longitude == null)
             {
-                try
+                throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
+            }
+
+            try
+            {
+                _dal.Call.Update(new DO.Call
                 {
-                    _dal.Call.Update(new DO.Call
-                    {
-                        CallId = c.CallId,
-                        CallType = (DO.CallType)c.CallType,
-                        Address = c.Address,
-                        Latitude = c.Latitude,
-                        Longitude = c.Longitude,
-                        OpenTime = c.OpenTime,
-                        MaxTime = c.MaxTime,
-                        Details = c.Details,
-                    });
-                }
-                //catch the exception from Update of Do
-                catch (DO.DalDoesNotExistException ex)
-                {
-                    throw new BO.BlDoesNotExistException(ex.Message);
-                }
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude.Value, // .Value כי הם נבדקו קודם
+                    Longitude = c.Longitude.Value, // .Value כי הם נבדקו קודם
+                    OpenTime = c.OpenTime,
+                    MaxTime = c.MaxTime,
+                    Details = c.Details,
+                });
+            }
+            // טיפול בחריגות מ-DO.Update
+            catch (DO.DalDoesNotExistException ex)
+            {
+                throw new BO.BlDoesNotExistException(ex.Message);
             }
         }
         catch (DO.DalInvalidValueException ex)

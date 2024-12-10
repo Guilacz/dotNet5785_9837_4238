@@ -100,7 +100,7 @@ internal class CallManager
     /// This method should be invoked from ClockManager whenever the system clock is updated.
     /// It closes all open calls whose maximum time has passed and their treatment hasn't been completed.
     /// </summary>
-    internal static void PeriodicVolunteersUpdates()
+    internal static void PeriodicCallUpdates()
     {
 
         var allCalls = _dal.Call.ReadAll();

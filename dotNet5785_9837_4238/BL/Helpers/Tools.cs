@@ -154,13 +154,31 @@ public static class Tools
     /// function that checks if the coordinates of a call match the coordinates based on his address. 
     /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
     /// </summary>
+    //public static bool CheckAddressCall(Call c)
+    //{
+    //    var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
+    //    const double tolerance = 0.0001;
+
+    //    bool isLatitudeMatch = Math.Abs(c.Latitude - expectedLatitude) < tolerance;
+    //    bool isLongitudeMatch = Math.Abs(c.Longitude - expectedLongitude) < tolerance;
+
+    //    return isLatitudeMatch && isLongitudeMatch;
+    //}
     public static bool CheckAddressCall(Call c)
     {
+        // בדיקה אם Latitude או Longitude הם null
+        if (!c.Latitude.HasValue || !c.Longitude.HasValue)
+        {
+            throw new Exception("Latitude or Longitude is null for the call.");
+        }
+
+        // קבלת הקואורדינטות הצפויות מהכתובת
         var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
         const double tolerance = 0.0001;
 
-        bool isLatitudeMatch = Math.Abs(c.Latitude - expectedLatitude) < tolerance;
-        bool isLongitudeMatch = Math.Abs(c.Longitude - expectedLongitude) < tolerance;
+        // בדיקת התאמה לקואורדינטות עם טווח סובלנות
+        bool isLatitudeMatch = Math.Abs(c.Latitude.Value - expectedLatitude) < tolerance;
+        bool isLongitudeMatch = Math.Abs(c.Longitude.Value - expectedLongitude) < tolerance;
 
         return isLatitudeMatch && isLongitudeMatch;
     }
