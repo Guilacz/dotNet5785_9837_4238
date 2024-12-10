@@ -730,6 +730,11 @@ class Program
         s_bl.Call.Update(call);
         Console.WriteLine("Call details updated.");
     }
+
+    /// <summary>
+    /// function to generate a new Password
+    /// </summary>
+    /// <returns></returns>
     private static string NewPassword()
     {
         Random random = new Random();
