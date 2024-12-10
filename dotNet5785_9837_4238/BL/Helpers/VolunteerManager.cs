@@ -89,7 +89,7 @@ internal class VolunteerManager
             RoleType = (BO.Role)volunteer.RoleType,
             DistanceType = (BO.DistanceType)volunteer.DistanceType,
             Password = DecryptPassword(volunteer.Password),
-            Adress = volunteer.Address,
+            Address = volunteer.Address,
             Distance = volunteer.Distance
         };
     }
@@ -164,7 +164,7 @@ internal class VolunteerManager
         DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol.IsActive;
         string? Password = vol.Password;
-        string? Address = vol.Adress;
+        string? Address = vol.Address;
         double? Distance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
@@ -188,7 +188,7 @@ internal class VolunteerManager
         DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol1.IsActive;
         string? Password = EncryptPassword(vol.Password);
-        string? Adress = vol.Adress;
+        string? Adress = vol.Address;
         double? MaxDistance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;

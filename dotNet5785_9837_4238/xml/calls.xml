@@ -2,101 +2,101 @@
 <ArrayOfCall xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Call>
     <CallId>2</CallId>
-    <CallType>Grammary_Middle</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>10 Jaffa Street, Jerusalem</Address>
     <Latitude>35.22119546257982</Latitude>
     <Longitude>31.78130811991647</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>3</CallId>
-    <CallType>Math_High</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>20 Emek Refaim Street, Jerusalem</Address>
     <Latitude>35.22123577032626</Latitude>
     <Longitude>31.76543961779154</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>4</CallId>
-    <CallType>Grammary_Middle</CallType>
+    <CallType>English_Middle</CallType>
     <Address>30 Agripas Street, Jerusalem</Address>
     <Latitude>35.215657362641764</Latitude>
     <Longitude>31.783470280009738</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>5</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>English_Middle</CallType>
     <Address>40 Shmuel HaNavi Street, Jerusalem</Address>
     <Latitude>35.224665335668945</Latitude>
     <Longitude>31.791048846509597</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>6</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>English_High</CallType>
     <Address>50 HaNevi'im Street, Jerusalem</Address>
     <Latitude>35.221665622205705</Latitude>
     <Longitude>31.78391107912798</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>7</CallId>
-    <CallType>English_High</CallType>
+    <CallType>English_Middle</CallType>
     <Address>60 Gaza Street, Jerusalem</Address>
     <Latitude>35.21205714918638</Latitude>
     <Longitude>31.771053788166768</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>8</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>English_Primary</CallType>
     <Address>4 Herzl Boulevard, Jerusalem</Address>
     <Latitude>35.19764122028971</Latitude>
     <Longitude>31.785777797665002</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>9</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>English_High</CallType>
     <Address>40 Masliansky Street, Jerusalem</Address>
     <Latitude>35.18968763754008</Latitude>
     <Longitude>31.817876781912197</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>10</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>English_High</CallType>
     <Address>10 Ben Yehuda Street, Jerusalem</Address>
     <Latitude>35.21774235102746</Latitude>
     <Longitude>31.78186936361579</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>11</CallId>
-    <CallType>Math_High</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>150 Hebron Road, Jerusalem</Address>
     <Latitude>35.21658163568471</Latitude>
     <Longitude>31.74578724034863</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>12</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>5 Hillel Street, Jerusalem</Address>
     <Latitude>35.21638617800225</Latitude>
     <Longitude>31.78068910546481</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -105,7 +105,7 @@
     <Address>6 Korazin Street, Jerusalem</Address>
     <Latitude>35.209312878017535</Latitude>
     <Longitude>31.78255160178496</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -114,88 +114,88 @@
     <Address>35 King George Street, Jerusalem</Address>
     <Latitude>35.2159379</Latitude>
     <Longitude>31.779769</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>15</CallId>
-    <CallType>English_High</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>78 Ben Zvi Street, Jerusalem</Address>
     <Latitude>35.2092867</Latitude>
     <Longitude>31.7798566</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>16</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>English_Middle</CallType>
     <Address>4 Devorah HaNeviah Street, Jerusalem</Address>
     <Latitude>35.224894</Latitude>
     <Longitude>31.789588</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>17</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>15 Yehuda HaNasi Street, Jerusalem</Address>
     <Latitude>35.202146</Latitude>
     <Longitude>31.75577</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>18</CallId>
-    <CallType>Math_Middle</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>5 Aliash Street, Jerusalem</Address>
     <Latitude>35.201317</Latitude>
     <Longitude>31.755974</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>19</CallId>
-    <CallType>English_High</CallType>
+    <CallType>Math_Primary</CallType>
     <Address>15 Arlozorov Street, Jerusalem</Address>
     <Latitude>35.215236</Latitude>
     <Longitude>31.781584</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>20</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Math_Primary</CallType>
     <Address>13 Shamai Street, Jerusalem</Address>
     <Latitude>35.216455</Latitude>
     <Longitude>31.77261</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>21</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>10 Tavor Street, Jerusalem</Address>
     <Latitude>35.218053</Latitude>
     <Longitude>31.781239</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>22</CallId>
-    <CallType>Grammary_Primary</CallType>
+    <CallType>Math_High</CallType>
     <Address>55 Ussishkin Street, Jerusalem</Address>
     <Latitude>35.213336</Latitude>
     <Longitude>31.782361</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>23</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>English_Middle</CallType>
     <Address>7 Helene HaMalka Street, Jerusalem</Address>
     <Latitude>35.212081</Latitude>
     <Longitude>31.780486</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -204,16 +204,16 @@
     <Address>14 Lincoln Street, Jerusalem</Address>
     <Latitude>35.221056</Latitude>
     <Longitude>31.7820255</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>25</CallId>
-    <CallType>Grammary_Primary</CallType>
+    <CallType>Math_Primary</CallType>
     <Address>40 Zerach Street, Jerusalem</Address>
     <Latitude>35.219964</Latitude>
     <Longitude>31.775421</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -222,70 +222,70 @@
     <Address>22 Mea Shearim Street, Jerusalem</Address>
     <Latitude>35.190149</Latitude>
     <Longitude>31.816719</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>27</CallId>
-    <CallType>Grammary_Primary</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>10 King David Street, Jerusalem</Address>
     <Latitude>35.222337</Latitude>
     <Longitude>31.787706</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>28</CallId>
-    <CallType>Math_Middle</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>30 Ruth Street, Jerusalem</Address>
     <Latitude>35.222155</Latitude>
     <Longitude>31.776943</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>29</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>English_High</CallType>
     <Address>9 Beit HaDfus Street, Jerusalem</Address>
     <Latitude>35.217356</Latitude>
     <Longitude>31.7765005</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>30</CallId>
-    <CallType>Math_Primary</CallType>
+    <CallType>English_High</CallType>
     <Address>5 David Yellin Street, Jerusalem</Address>
     <Latitude>35.18918</Latitude>
     <Longitude>31.785952</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>31</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>8 Shmuel HaNagid Street, Jerusalem</Address>
     <Latitude>35.216914</Latitude>
     <Longitude>31.786426</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>32</CallId>
-    <CallType>Math_High</CallType>
+    <CallType>English_Primary</CallType>
     <Address>15 HaTzanhanim Street, Jerusalem</Address>
     <Latitude>35.214816</Latitude>
     <Longitude>31.780594</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>33</CallId>
-    <CallType>Math_High</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>9 Rabbi Akiva Street, Jerusalem</Address>
     <Latitude>35.226296</Latitude>
     <Longitude>31.779808</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -294,52 +294,52 @@
     <Address>7 Greenberg Street, Jerusalem</Address>
     <Latitude>35.192176</Latitude>
     <Longitude>31.81637</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>35</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>6 Henrietta Szold Street, Jerusalem</Address>
     <Latitude>35.218002</Latitude>
     <Longitude>31.779226</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>36</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>5 Shmuel HaNagid Street, Jerusalem</Address>
     <Latitude>35.1915</Latitude>
     <Longitude>31.817092</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>37</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>18 Beit Vagan Street, Jerusalem</Address>
     <Latitude>35.160694</Latitude>
     <Longitude>31.757365</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>38</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Grammary_Primary</CallType>
     <Address>12 Neve Sha'anan Street, Jerusalem</Address>
     <Latitude>35.214955</Latitude>
     <Longitude>31.780274</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>39</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>English_High</CallType>
     <Address>3 Rachel Imenu Street, Jerusalem</Address>
     <Latitude>35.183917</Latitude>
     <Longitude>31.771251</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -348,25 +348,25 @@
     <Address>15 Hillel Street, Jerusalem</Address>
     <Latitude>35.200909</Latitude>
     <Longitude>31.771493</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>41</CallId>
-    <CallType>Grammary_Primary</CallType>
+    <CallType>English_Middle</CallType>
     <Address>8 Bezalel Street, Jerusalem</Address>
     <Latitude>35.218213</Latitude>
     <Longitude>31.763331</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>42</CallId>
-    <CallType>English_High</CallType>
+    <CallType>English_Middle</CallType>
     <Address>9 Kiryat Moshe Street, Jerusalem</Address>
     <Latitude>35.217068</Latitude>
     <Longitude>31.780627</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -375,25 +375,25 @@
     <Address>13 Pierre Koenig Street, Jerusalem</Address>
     <Latitude>35.214544</Latitude>
     <Longitude>31.780728</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>44</CallId>
-    <CallType>English_Middle</CallType>
+    <CallType>Math_Primary</CallType>
     <Address>24 Rabbi Herzog Street, Jerusalem</Address>
     <Latitude>35.195686</Latitude>
     <Longitude>31.786061</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>45</CallId>
-    <CallType>Grammary_Middle</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>5 Ein Gedi Street, Jerusalem</Address>
     <Latitude>35.215021</Latitude>
     <Longitude>31.756843</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -402,16 +402,16 @@
     <Address>8 HaOman Street, Jerusalem</Address>
     <Latitude>35.208627</Latitude>
     <Longitude>31.769767</Longitude>
-    <OpenTime>2024-12-10T11:26:42</OpenTime>
+    <OpenTime>2024-12-10T15:37:57</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>47</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Math_Middle</CallType>
     <Address>5 Ibn Shaprut Street, Jerusalem</Address>
     <Latitude>35.221349</Latitude>
     <Longitude>31.753902</Longitude>
-    <OpenTime>2024-12-10T11:26:37</OpenTime>
+    <OpenTime>2024-12-10T15:37:52</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -420,7 +420,7 @@
     <Address>25 Bar Ilan Street, Jerusalem</Address>
     <Latitude>35.211373</Latitude>
     <Longitude>31.74881</Longitude>
-    <OpenTime>2024-12-10T11:26:37</OpenTime>
+    <OpenTime>2024-12-10T15:37:52</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
@@ -429,25 +429,25 @@
     <Address>6 Yitzhak Kariv Street, Jerusalem</Address>
     <Latitude>35.211675</Latitude>
     <Longitude>31.776448</Longitude>
-    <OpenTime>2024-12-10T11:26:37</OpenTime>
+    <OpenTime>2024-12-10T15:37:52</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>50</CallId>
-    <CallType>English_Primary</CallType>
+    <CallType>Math_High</CallType>
     <Address>17 Weizmann Street, Jerusalem</Address>
     <Latitude>35.218078</Latitude>
     <Longitude>31.794707</Longitude>
-    <OpenTime>2024-12-10T11:26:37</OpenTime>
+    <OpenTime>2024-12-10T15:37:52</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
     <CallId>51</CallId>
-    <CallType>English_High</CallType>
+    <CallType>Grammary_Middle</CallType>
     <Address>9 Shmuel HaNagid Street, Jerusalem</Address>
     <Latitude>35.224944</Latitude>
     <Longitude>31.777475</Longitude>
-    <OpenTime>2024-12-10T11:26:37</OpenTime>
+    <OpenTime>2024-12-10T15:37:52</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
 </ArrayOfCall>

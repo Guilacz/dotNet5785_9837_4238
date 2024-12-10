@@ -32,27 +32,61 @@ static class XMLTools
             throw new DalXMLFileLoadCreateException($"fail to create xml file: , {ex.Message}");
         }
     }
+    //public static List<T> LoadListFromXMLSerializer<T>(string filePath)
+    //{
+    //    try
+    //    {
+    //        if (File.Exists(s_xmlDir + filePath))
+    //        {
+    //            List<T> list;
+    //            XmlSerializer x = new XmlSerializer(typeof(List<T>));
+    //            using FileStream file = new FileStream(s_xmlDir + filePath, FileMode.Open, FileAccess.Read, FileShare.None);
+    //            list = (List<T>)x.Deserialize(file)!;
+    //            file.Close();
+    //            return list;
+    //        }
+    //        else
+    //            return new List<T>();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new DalXMLFileLoadCreateException($"fail to load xml file: {filePath}, {ex.Message}");
+    //    }
+    //}
     public static List<T> LoadListFromXMLSerializer<T>(string filePath)
     {
         try
         {
-            if (File.Exists(s_xmlDir + filePath))
+            string fullPath = s_xmlDir + filePath;
+            if (File.Exists(fullPath))
             {
-                List<T> list;
+                // בדוק אם הקובץ ריק
+                if (new FileInfo(fullPath).Length == 0)
+                {
+                    return new List<T>();
+                }
+
                 XmlSerializer x = new XmlSerializer(typeof(List<T>));
-                using FileStream file = new FileStream(s_xmlDir + filePath, FileMode.Open, FileAccess.Read, FileShare.None);
-                list = (List<T>)x.Deserialize(file)!;
+                using FileStream file = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.None);
+                List<T> list = (List<T>)x.Deserialize(file)!;
                 file.Close();
                 return list;
             }
             else
+            {
                 return new List<T>();
+            }
+        }
+        catch (XmlException xmlEx)
+        {
+            throw new DalXMLFileLoadCreateException($"Invalid XML file: {filePath}. Error: {xmlEx.Message}");
         }
         catch (Exception ex)
         {
-            throw new DalXMLFileLoadCreateException($"fail to load xml file: {filePath}, {ex.Message}");
+            throw new DalXMLFileLoadCreateException($"Fail to load xml file: {filePath}. Error: {ex.Message}");
         }
     }
+
     #endregion
 
     #region SaveLoadWithXElement

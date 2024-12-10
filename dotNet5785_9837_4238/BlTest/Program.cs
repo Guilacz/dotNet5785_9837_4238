@@ -157,7 +157,7 @@ class Program
                         Console.WriteLine($"Role: {volunteer.RoleType}");
                         Console.WriteLine($"Distance Type: {volunteer.DistanceType}");
                         Console.WriteLine($"Password: {volunteer.Password ?? "N/A"}");
-                        Console.WriteLine($"Address: {volunteer.Adress ?? "N/A"}");
+                        Console.WriteLine($"Address: {volunteer.Address ?? "N/A"}");
                         Console.WriteLine($"Distance: {volunteer.Distance?.ToString() ?? "N/A"}");
                         Console.WriteLine($"Latitude: {volunteer.Latitude?.ToString() ?? "N/A"}");
                         Console.WriteLine($"Longitude: {volunteer.Longitude?.ToString() ?? "N/A"}");
@@ -204,7 +204,7 @@ class Program
                         Console.WriteLine($"Role: {volunteer1.RoleType}");
                         Console.WriteLine($"Distance Type: {volunteer1.DistanceType}");
                         Console.WriteLine($"Password: {volunteer1.Password ?? "N/A"}");
-                        Console.WriteLine($"Address: {volunteer1.Adress ?? "N/A"}");
+                        Console.WriteLine($"Address: {volunteer1.Address ?? "N/A"}");
                         Console.WriteLine($"Distance: {volunteer1.Distance?.ToString() ?? "N/A"}");
                         Console.WriteLine($"Latitude: {volunteer1.Latitude?.ToString() ?? "N/A"}");
                         Console.WriteLine($"Longitude: {volunteer1.Longitude?.ToString() ?? "N/A"}");
@@ -552,12 +552,12 @@ class Program
         if (!string.IsNullOrEmpty(newName))
             volunteer.Password = newPassword; 
         
-        Console.WriteLine($"Current address: {volunteer.Adress}. Enter new address (or press Enter to keep current):");
+        Console.WriteLine($"Current address: {volunteer.Address}. Enter new address (or press Enter to keep current):");
         string newAddress = Console.ReadLine()!;
         if (!string.IsNullOrEmpty(newName))
-            volunteer.Adress = newAddress; 
+            volunteer.Address = newAddress; 
         
-        var coordinates = Helpers.Tools.GetAddressCoordinates(volunteer.Adress);
+        var coordinates = Helpers.Tools.GetAddressCoordinates(volunteer.Address);
         volunteer.Latitude = coordinates.Latitude;
         volunteer.Longitude = coordinates.Longitude;
         Console.WriteLine($"Current distance: {volunteer.Distance}. Enter new distance (or press Enter to keep current):");
@@ -587,9 +587,9 @@ class Program
         string phone = Console.ReadLine()!;
         Console.Write("Enter volunteer email: ");
         string email = Console.ReadLine()!;
-        Console.Write("Enter 1 for manager and 2 for volunteer: ");
+        Console.Write("Enter 0 for manager and 1 for volunteer: ");
         Role role = (Role)int.Parse(Console.ReadLine()!);
-        Console.Write("Enter 1 forAirDistance, 2 for WalkDistance,and 3 for CarDistance: ");
+        Console.Write("Enter 0 forAirDistance, 1 for WalkDistance,and 2 for CarDistance: ");
         DistanceType distance = (DistanceType)int.Parse(Console.ReadLine()!);
         string passwords;
 
@@ -609,13 +609,14 @@ class Program
         Console.Write("Enter volunteer address: ");
         string address = Console.ReadLine()!;
 
-        Console.Write("Enter maximum distance: ");
-        double dis = int.Parse(Console.ReadLine()!);
+       
 
         var coordinates = Helpers.Tools.GetAddressCoordinates(address);
         double latitude = coordinates.Latitude;
         double longitude = coordinates.Longitude;
-        Volunteer v = new Volunteer() { VolunteerId = id, Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = passwords, Adress = address, Distance = dis };
+        Console.Write("Enter maximum distance: ");
+        double dis = int.Parse(Console.ReadLine()!);
+        Volunteer v = new Volunteer() { VolunteerId = id, Name = name, Phone = phone, Email = email, RoleType = role, DistanceType = distance, Password = passwords, Address = address, Distance = dis };
         s_bl.Volunteer?.Create(v);
         Console.WriteLine("Volunteer added.");
 

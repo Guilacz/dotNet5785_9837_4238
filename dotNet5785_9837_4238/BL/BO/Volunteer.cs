@@ -33,7 +33,7 @@ public class Volunteer
     public DistanceType DistanceType { get; set; }
 
     public string? Password { get; set; }
-    public string? Adress { get; set; }
+    public string? Address { get; set; }
     public double? Distance { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }

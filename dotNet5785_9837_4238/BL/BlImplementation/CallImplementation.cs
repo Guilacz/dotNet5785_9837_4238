@@ -367,7 +367,7 @@ internal class CallImplementation : ICall
 
             BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
 
-            string volunteerAddress = boVolunteer.Adress;
+            string volunteerAddress = boVolunteer.Address;
 
             calls = calls.Where(call =>
             {

@@ -137,7 +137,7 @@ public static class Tools
             throw new Exception("Latitude or Longitude is null.");
         }
 
-        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(vol.Adress);
+        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(vol.Address);
 
         const double tolerance = 0.0001;
         bool isLatitudeMatch = Math.Abs(vol.Latitude.Value - expectedLatitude) < tolerance;

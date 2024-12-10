@@ -3,6 +3,7 @@ using BlApi;
 using BO;
 using Helpers;
 using System.Collections.Generic;
+using System.Net;
 
 
 /// <summary>
@@ -79,7 +80,7 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlDeletionImpossible("cant delete this volunteer.");
         if (vol.Latitude == null || vol.Longitude == null)
         {
-            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
             vol.Latitude = coordinates.Latitude;
             vol.Longitude = coordinates.Longitude;
         }
@@ -140,7 +141,7 @@ internal class VolunteerImplementation : IVolunteer
                 DistanceType = (BO.DistanceType)vol.DistanceType,
                 Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
                 //Password = vol.Password,
-                Adress = vol.Address,
+                Address = vol.Address,
                 Distance = vol.Distance,
                 Latitude = vol.Latitude,
                 Longitude = vol.Longitude,
@@ -182,7 +183,7 @@ internal class VolunteerImplementation : IVolunteer
             }
             if (vol.Latitude == null || vol.Longitude == null)
             {
-                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Adress);
+                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
                 vol.Latitude = coordinates.Latitude;
                 vol.Longitude = coordinates.Longitude;
             }
@@ -195,7 +196,7 @@ internal class VolunteerImplementation : IVolunteer
                 RoleType = (BO.Role)vol.RoleType,
                 DistanceType = (BO.DistanceType)vol.DistanceType,
                 Password = vol.Password,
-                Adress = vol.Adress,
+                Address = vol.Address,
                 Distance = vol.Distance,
                 Latitude = vol.Latitude,
                 Longitude = vol.Longitude,
@@ -312,7 +313,7 @@ internal class VolunteerImplementation : IVolunteer
                 RoleType = volunteer.RoleType,
                 DistanceType = volunteer.DistanceType,
                 Password = volunteer.Password,
-                Adress = volunteer.Adress,
+                Address = volunteer.Address,
                 Distance = volunteer.Distance,
                 Latitude = volunteer.Latitude,
                 Longitude = volunteer.Longitude,
@@ -400,6 +401,9 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BO.BlAlreadyExistException"/>
     public void Create(BO.Volunteer vol)
     {
+        var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+        vol.Latitude = coordinates.Latitude;
+        vol.Longitude = coordinates.Longitude;
         if (!Helpers.VolunteerManager.CheckVolunteer(vol))
         {
             throw new BO.BlInvalidValueException("Invalid volunteer data.");
@@ -420,7 +424,7 @@ internal class VolunteerImplementation : IVolunteer
                 Phone = vol.Phone,
                 Email = vol.Email,
                 Password = vol.Password,
-                Address = vol.Adress,
+                Address = vol.Address,
                 IsActive = vol.IsActive,
                 Distance = vol.Distance,
             });
