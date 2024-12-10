@@ -4,6 +4,10 @@ using BO;
 using Helpers;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// Volunteer Implementation : implementation of all the elements of the Volunteer Interface
+/// </summary>
 internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
@@ -113,7 +117,6 @@ internal class VolunteerImplementation : IVolunteer
         {
             var volunteersFromDal = _dal.Volunteer.ReadAll();
             string passwordAsString = password.ToString();
-            //passwordAsString = Helpers.VolunteerManager.EncryptPassword(passwordAsString);
 
             var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
 
@@ -146,9 +149,6 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
             }
-            //var coordinates = Helpers.Tools.GetAddressCoordinates(volunteer.Adress);
-            //volunteer.Latitude = coordinates.Latitude;
-            //volunteer.Longitude = coordinates.Longitude;
             return (BO.Role)vol.RoleType;
         }
         catch (DO.DalArgumentNullException ex)
@@ -298,7 +298,6 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             DO.Volunteer volu = _dal.Volunteer.Read(volId);
-           // DO.Volunteer volu = volu1 with { Password = Helpers.VolunteerManager.DecryptPassword(volu1.Password) };
             BO.Volunteer volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
             if (volunteer == null)
             {
