@@ -5,7 +5,9 @@ using Helpers;
 using System;
 using DalApi;
 
-
+/// <summary>
+/// Admin Implementation : implementation of all the elements of the Admin Interface
+/// </summary>
 internal class AdminImplementation : IAdmin
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;

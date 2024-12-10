@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+/// <summary>
+/// Call Implementation : implementation of all the elements of the Call Interface
+/// </summary>
 internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
