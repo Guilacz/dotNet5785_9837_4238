@@ -12,8 +12,9 @@ using System.Text.RegularExpressions;
 internal class VolunteerManager
 {
     private static readonly IDal s_dal = Factory.Get; //stage 4
-        
-    
+    internal static ObserverManager Observers = new();
+
+
     /// <summary>
     /// function to check the validity of a volunteer : 
     /// check his mail, id, phone, address

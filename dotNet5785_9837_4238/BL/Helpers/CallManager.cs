@@ -10,6 +10,7 @@ using System.Xml.Linq;
 internal class CallManager
 {
     private static readonly DalApi.IDal _dal = DalApi.Factory.Get;
+    internal static ObserverManager Observers = new();
 
 
     /// <summary>
@@ -82,25 +83,9 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="dal"></param>
     /// <returns></returns>
-   /* internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
-    {
-        return new BO.Call
+ 
+    internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
         {
-            CallId = call.CallId,
-            CallType = (BO.CallType)call.CallType,
-            Address = call.Address,
-            Latitude = call.Latitude,
-            Longitude = call.Longitude,
-            OpenTime = call.OpenTime,
-            MaxTime = call.MaxTime,
-            Details = call.Details,
-            CallStatus = Helpers.CallManager.GetCallStatus(call, dal.Assignment.ReadAll())
-        };
-    }*/
-
-    
-         internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
-    {
         return new BO.Call
         {
             CallId = call.CallId,
@@ -146,7 +131,7 @@ internal class CallManager
         foreach (var call in allCalls)
         {
             var CurrentCall = ConvertCallToBO(call, _dal);
-            if (call.MaxTime != null && call.MaxTime.Value < ClockManager.Now)
+            if (call.MaxTime != null && call.MaxTime.Value < AdminManager.Now)
             {
                 if (CurrentCall.CallStatus != CallStatus.Closed)
                 {
@@ -159,11 +144,12 @@ internal class CallManager
                         {
                             CallId = call.CallId,
                             VolunteerId = null,
-                            StartTime = ClockManager.Now,
-                            FinishTime = ClockManager.Now,
+                            StartTime = AdminManager.Now,
+                            FinishTime = AdminManager.Now,
                             TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
                         };
                         assignments.Add(newAssignment);
+                        Observers.NotifyListUpdated(); 
                     }
                     else
                     {
@@ -173,15 +159,17 @@ internal class CallManager
                         {
                             var updatedAssignment = assignment with
                             {
-                                FinishTime = ClockManager.Now,
+                                FinishTime = AdminManager.Now,
                                 TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
                             };
 
                             _dal.Assignment.Update(updatedAssignment);
+                            Observers.NotifyItemUpdated(call.CallId);
                         }
                     }
 
                     _dal.Call.Update(call);
+                    Observers.NotifyItemUpdated(call.CallId);
                 }
 
             }

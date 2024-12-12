@@ -8,7 +8,7 @@ using BO;
 /// UpdateCallFinished, UpdateCallCancelled, ChoiceOfCallToCare, Read
 /// array : SumOfCalls
 /// </summary>
-public interface ICall
+public interface ICall : IObservable
 {
     int[] SumOfCalls();
 

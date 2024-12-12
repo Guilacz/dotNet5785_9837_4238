@@ -13,6 +13,14 @@ internal class VolunteerImplementation : IVolunteer
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    #region Stage 5
+    public void AddObserver(Action listObserver) => VolunteerManager.Observers.AddListObserver(listObserver); //stage 5
+    public void AddObserver(int id, Action observer) => VolunteerManager.Observers.AddObserver(id, observer); //stage 5
+    public void RemoveObserver(Action listObserver) => VolunteerManager.Observers.RemoveListObserver(listObserver); //stage 5
+    public void RemoveObserver(int id, Action observer) => VolunteerManager.Observers.RemoveObserver(id, observer); //stage 5
+    #endregion Stage 5
+
+
     /// <summary>
     /// function to associate a call with a volunteer 
     /// check that both exists and are correct
@@ -91,6 +99,7 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             _dal.Volunteer.Delete(volId);
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalDeletionImpossible ex)
         {
@@ -374,6 +383,8 @@ internal class VolunteerImplementation : IVolunteer
                     {
                         DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
                         _dal.Volunteer.Update(DOvolunteer);
+                        CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+                        CallManager.Observers.NotifyListUpdated();
                     }
                 }
             }
@@ -428,6 +439,7 @@ internal class VolunteerImplementation : IVolunteer
                 IsActive = vol.IsActive,
                 Distance = vol.Distance,
             });
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalAlreadyExistException ex)
         {

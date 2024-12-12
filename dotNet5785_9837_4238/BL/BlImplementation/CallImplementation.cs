@@ -14,6 +14,12 @@ internal class CallImplementation : ICall
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    #region Stage 5
+    public void AddObserver(Action listObserver) => CallManager.Observers.AddListObserver(listObserver); //stage 5
+    public void AddObserver(int id, Action observer) => CallManager.Observers.AddObserver(id, observer); //stage 5
+    public void RemoveObserver(Action listObserver) => CallManager.Observers.RemoveListObserver(listObserver); //stage 5
+    public void RemoveObserver(int id, Action observer) => CallManager.Observers.RemoveObserver(id, observer); //stage 5
+    #endregion Stage 5
 
 
     /// <summary>
@@ -120,6 +126,7 @@ internal class CallImplementation : ICall
                 MaxTime = c.MaxTime,
                 Details = c.Details,
             });
+            CallManager.Observers.NotifyListUpdated(); 
         }
         catch (DO.DalInvalidValueException ex)
         {
@@ -165,6 +172,7 @@ internal class CallImplementation : ICall
             }
 
             _dal.Call.Delete(callId);
+            CallManager.Observers.NotifyListUpdated();
         }
 
         catch (DO.DalDeletionImpossible ex)
@@ -522,6 +530,10 @@ internal class CallImplementation : ICall
                     MaxTime = c.MaxTime,
                     Details = c.Details,
                 });
+                CallManager.Observers.NotifyItemUpdated(c.CallId);
+                CallManager.Observers.NotifyListUpdated(); 
+
+
             }
             catch (DO.DalDoesNotExistException ex)
             {
@@ -588,6 +600,8 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Update(assignment);
+            CallManager.Observers.NotifyItemUpdated(assiId);
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -652,6 +666,8 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Update(assignment);
+            CallManager.Observers.NotifyItemUpdated(assiId);
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {

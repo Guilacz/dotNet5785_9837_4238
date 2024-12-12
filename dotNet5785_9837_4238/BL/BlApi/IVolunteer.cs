@@ -4,7 +4,7 @@
 /// Volunteer Interface
 /// functions : EnterSystem, GetVolunteerInLists, GetVolunteerDetails, Update, Delete, Create, Read
 /// </summary>
-public interface IVolunteer
+public interface IVolunteer : IObservable
 {
     BO.Role EnterSystem(string name, string password);
 

@@ -12,6 +12,17 @@ internal class AdminImplementation : IAdmin
 {
     private readonly DalApi.IDal _dal = DalApi.Factory.Get;
 
+    #region Stage 5
+    public void AddClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers += clockObserver;
+    public void RemoveClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers -= clockObserver;
+    public void AddConfigObserver(Action configObserver) =>
+   AdminManager.ConfigUpdatedObservers += configObserver;
+    public void RemoveConfigObserver(Action configObserver) =>
+    AdminManager.ConfigUpdatedObservers -= configObserver;
+    #endregion Stage 5
+
 
     /// <summary>
     /// function to Advance the clock by a specified time unit (minute, hour, day, month, or year).
@@ -27,24 +38,24 @@ internal class AdminImplementation : IAdmin
             switch (unit)
             {
                 case TimeUnit.minute:
-                    newTime = ClockManager.Now.AddMinutes(1);
+                    newTime = AdminManager.Now.AddMinutes(1);
                     break;
                 case TimeUnit.hour:
-                    newTime = ClockManager.Now.AddHours(1);
+                    newTime = AdminManager.Now.AddHours(1);
                     break;
                 case TimeUnit.day:
-                    newTime = ClockManager.Now.AddDays(1);
+                    newTime = AdminManager.Now.AddDays(1);
                     break;
                 case TimeUnit.month:
-                    newTime = ClockManager.Now.AddMonths(1);
+                    newTime = AdminManager.Now.AddMonths(1);
                     break;
                 case TimeUnit.year:
-                    newTime = ClockManager.Now.AddYears(1);
+                    newTime = AdminManager.Now.AddYears(1);
                     break;
                 default:
                     throw new BO.BlInvalidValueException("Invalid time unit");
             }
-            ClockManager.UpdateClock(newTime);
+            AdminManager.UpdateClock(newTime);
         }
         catch (DO.DalInvalidValueException ex)
         {
@@ -59,7 +70,7 @@ internal class AdminImplementation : IAdmin
     /// <returns></returns>
     public DateTime GetClock()
     {
-        return ClockManager.Now;
+        return AdminManager.Now;
     }
 
 
@@ -69,8 +80,9 @@ internal class AdminImplementation : IAdmin
     /// <returns></returns>
     public TimeSpan GetMaxRange()
     {
-        IConfig config = _dal.Config;
-        return config.RiskRange;
+        //IConfig config = _dal.Config;
+        //return config.RiskRange;
+        return AdminManager.RiskRange;
     }
 
 
@@ -83,6 +95,8 @@ internal class AdminImplementation : IAdmin
         {
             ResetDB();
             DalTest.Initialization.Do();
+            AdminManager.UpdateClock(AdminManager.Now);
+            AdminManager.RiskRange = AdminManager.RiskRange;
         }
         // Thrown in case of unexpected errors during processing
         catch (Exception ex)
@@ -103,7 +117,9 @@ internal class AdminImplementation : IAdmin
         var allCalls = _dal.Call.ReadAll().ToList();
         _dal.Call.DeleteAll(); 
         var allVolunteers = _dal.Volunteer.ReadAll().ToList();
-        _dal.Volunteer.DeleteAll(); 
+        _dal.Volunteer.DeleteAll();
+        AdminManager.UpdateClock(AdminManager.Now);
+        AdminManager.RiskRange = AdminManager.RiskRange;
     }
 
 
@@ -113,9 +129,10 @@ internal class AdminImplementation : IAdmin
     /// <param name="maxRange"></param>
     public void SetMaxRange(TimeSpan maxRange)
     {
-        IConfig config = _dal.Config;
-        config.RiskRange = maxRange;
-        Tools.RiskTime(config);
+        //IConfig config = _dal.Config;
+        //config.RiskRange = maxRange;
+        //Tools.RiskTime(config);
+        AdminManager.RiskRange = maxRange;
     }
 
 }
