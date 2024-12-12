@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{ADDF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlTest", "BlTest\BlTest.csproj", "{C1DB0CFD-8D7F-4E3B-AF12-6624208D259B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PL", "PL\PL.csproj", "{8E811980-793D-4783-A380-01F6DA026C5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{C1DB0CFD-8D7F-4E3B-AF12-6624208D259B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1DB0CFD-8D7F-4E3B-AF12-6624208D259B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1DB0CFD-8D7F-4E3B-AF12-6624208D259B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E811980-793D-4783-A380-01F6DA026C5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E811980-793D-4783-A380-01F6DA026C5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E811980-793D-4783-A380-01F6DA026C5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E811980-793D-4783-A380-01F6DA026C5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
