@@ -7,11 +7,33 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label Content="Label" HorizontlAlignment="Left" Margin="292,31,0,0" VerticalAlignment="Top" Width="170"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="344,109,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="377,155,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="227,175,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="326,203,0,0" VerticalAlignment="Top"/>
+
+        <!--Clock Section-->
+
+        <Button Content="Add One Minute" HorizontalAlignment="Left" Margin="85,75,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
+        <Button Content="Add One Hour" HorizontalAlignment="Left" Margin="85,112,0,0" VerticalAlignment="Top" Height="32" Width="73"/>
+        <Button Content="Add One Day" HorizontalAlignment="Left" Margin="85,149,0,0" VerticalAlignment="Top" Height="32" Width="73"/>
+        <Button Content="Add One Month" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
+        <Button Content="Add One Year" HorizontalAlignment="Left" Margin="84,224,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
+
+        <Label Content="Label" HorizontalAlignment="Left" Margin="100,44,0,0" VerticalAlignment="Top" Height="42" Width="71"/>
+        <!--End of clock section-->
+
+        <!--Configuration Section-->
+        <TextBox HorizontalAlignment="Left" Margin="364,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Update" HorizontalAlignment="Left" Margin="515,98,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.036,0.558"/>
+        <TextBox HorizontalAlignment="Left" Margin="364,68,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Update" HorizontalAlignment="Left" Margin="515,66,0,0" VerticalAlignment="Top"/>
+        <!--End of configuration section-->
+
+        <!--Initialize Button-->
+        <Button Content="InitDB" HorizontalAlignment="Left" Margin="652,362,0,0" VerticalAlignment="Top"/>
+
+        <!--Reset Button-->
+        <Button Content="ResetDB" HorizontalAlignment="Left" Margin="515,362,0,0" VerticalAlignment="Top"/>
+
+        <!--Handle List of Volunteers-->
+        <Button Content="Handle Volunteers" HorizontalAlignment="Left" Margin="323,362,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
