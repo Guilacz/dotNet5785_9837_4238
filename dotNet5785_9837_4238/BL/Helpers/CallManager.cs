@@ -82,7 +82,7 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="dal"></param>
     /// <returns></returns>
-    internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
+   /* internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
     {
         return new BO.Call
         {
@@ -96,7 +96,42 @@ internal class CallManager
             Details = call.Details,
             CallStatus = Helpers.CallManager.GetCallStatus(call, dal.Assignment.ReadAll())
         };
-    }
+    }*/
+
+    
+         internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
+    {
+        return new BO.Call
+        {
+            CallId = call.CallId,
+            CallType = (BO.CallType)call.CallType,
+            Address = call.Address,
+            Latitude = call.Latitude,
+            Longitude = call.Longitude,
+            OpenTime = call.OpenTime,
+            MaxTime = call.MaxTime,
+            Details = call.Details,
+            CallStatus = Helpers.CallManager.GetCallStatus(call, dal.Assignment.ReadAll()),
+            callAssignInLists = dal.Assignment.ReadAll()
+        .Where(a => a.CallId == call.CallId)
+        .Select(a =>
+        {
+            var volunteer = dal.Volunteer.ReadAll()
+                .FirstOrDefault(v => v.VolunteerId == a.VolunteerId);
+
+            return new BO.CallAssignInList
+            {
+                VolunteerId = a.VolunteerId,
+                Name = volunteer?.Name, 
+                StartTime = a.StartTime,
+                TypeOfEnd = 0,
+                FinishTime = a.FinishTime
+            };
+        }).ToList()
+        };
+    } 
+      
+   
 
     /// <summary>
     /// Static helper method to update all expired open calls.
