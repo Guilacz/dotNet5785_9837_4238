@@ -5,25 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
     <Grid>
 
         <!--Clock Section-->
 
-        <Button Content="Add One Minute" HorizontalAlignment="Left" Margin="85,75,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
-        <Button Content="Add One Hour" HorizontalAlignment="Left" Margin="85,112,0,0" VerticalAlignment="Top" Height="32" Width="73"/>
-        <Button Content="Add One Day" HorizontalAlignment="Left" Margin="85,149,0,0" VerticalAlignment="Top" Height="32" Width="73"/>
-        <Button Content="Add One Month" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
-        <Button Content="Add One Year" HorizontalAlignment="Left" Margin="84,224,0,0" VerticalAlignment="Top" Height="32" Width="74"/>
+        <Button Content="Add One Minute" HorizontalAlignment="Left" Margin="85,75,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneMinute_Click"/>
 
-        <Label Content="Label" HorizontalAlignment="Left" Margin="100,44,0,0" VerticalAlignment="Top" Height="42" Width="71"/>
+        <Button Content="Add One Hour" HorizontalAlignment="Left" Margin="85,112,0,0" VerticalAlignment="Top" Height="32" Width="73"  Click="btnAddOneHour_Click"/>
+
+        <Button Content="Add One Day" HorizontalAlignment="Left" Margin="85,149,0,0" VerticalAlignment="Top" Height="32" Width="73" Click="btnAddOneDay_Click"/>
+
+        <Button Content="Add One Month" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneMonth_Click"/>
+
+        <Button Content="Add One Year" HorizontalAlignment="Left" Margin="84,224,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneYear_Click"/>
+
+        <Label Content="{Binding CurrentTime}" HorizontalAlignment="Left" Margin="87,28,0,0" VerticalAlignment="Top" Height="42" Width="71" FontWeight="Bold" FontSize="20"/>
+
+
         <!--End of clock section-->
 
         <!--Configuration Section-->
-        <TextBox HorizontalAlignment="Left" Margin="364,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Update" HorizontalAlignment="Left" Margin="515,98,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.036,0.558"/>
-        <TextBox HorizontalAlignment="Left" Margin="364,68,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Update" HorizontalAlignment="Left" Margin="515,66,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="364,98,0,0" TextWrapping="Wrap" Text="{Binding RiskRangeProperty}" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Update" HorizontalAlignment="Left" Margin="515,98,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.036,0.558" Click="UpdateRiskRangeButton_Click"/>
         <!--End of configuration section-->
 
         <!--Initialize Button-->
