@@ -396,7 +396,12 @@ public static class Initialization
 
         //creation of 50 assignments who are CancelledByVolunteer
 
-        for (i = 0; i < 15; i++)
+        for (i = 0; i < 5; i++)
+        {
+            Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
+        }
+        for (i = 5; i < 15; i++)
         {
             Assignment a = new Assignment(assignmentId, callId, s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
             s_dal!.Assignment.Create(a);

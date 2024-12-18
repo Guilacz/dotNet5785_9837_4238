@@ -380,8 +380,9 @@ internal class CallImplementation : ICall
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
-                return status == BO.CallStatus.Open || status == BO.CallStatus.OpenAtRisk;
+                return status == BO.CallStatus.Open || status == BO.CallStatus.OpenAtRisk || status == BO.CallStatus.InCare;
             });
+
 
             if (type.HasValue)
             {
