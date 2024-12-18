@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using PL.Volunteer;
+using System;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,7 +18,9 @@ namespace PL
     /// </summary>
     public partial class MainWindow : Window
     {
+        //access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
 
 
         private void btnAddOneMinute_Click(object sender, RoutedEventArgs e)
@@ -44,15 +48,17 @@ namespace PL
 
 
 
+        /// <summary>
+        /// dependency property of CurrentTime
+        /// </summary>
         public DateTime CurrentTime
         {
             get { return (DateTime)GetValue(CurrentTimeProperty); }
             set { SetValue(CurrentTimeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CurrentTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentTimeProperty =
-            DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow), new PropertyMetadata(0));
+            DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow), new PropertyMetadata(DateTime.Now));
 
 
         /// <summary>
@@ -63,26 +69,23 @@ namespace PL
             get { return (TimeSpan)GetValue(RiskRangePropertyProperty); }
             set { SetValue(RiskRangePropertyProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for RiskRangeProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RiskRangePropertyProperty =
-            DependencyProperty.Register("RiskRangeProperty", typeof(TimeSpan), typeof(MainWindow), new PropertyMetadata(0));
+            DependencyProperty.Register("RiskRangeProperty", typeof(TimeSpan), typeof(MainWindow), new PropertyMetadata(TimeSpan.Zero));
 
        
 
-
-
         /// <summary>
-        /// 
+        /// function to update the riskRange
         /// </summary>
-        private void UpdateRiskRangeButton_Click(object sender, RoutedEventArgs e)
+        private void btnUpdateRiskRange_Click(object sender, RoutedEventArgs e)
         {
             s_bl.Admin.SetMaxRange(RiskRangeProperty);
-
         }
 
-
-        private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// function to initialize data and register observers on load
+        /// </summary>
+        private void OnMainWindow_Loaded(object sender, RoutedEventArgs e)
         {
                 CurrentTime = s_bl.Admin.GetClock();
 
@@ -90,7 +93,26 @@ namespace PL
 
                 s_bl.Admin.AddClockObserver(ClockObserver);    
                 s_bl.Admin.AddConfigObserver(ConfigObserver);  
-            
+        }
+
+
+        /// <summary>
+        /// function to delete ClockObserver and ConfigObserver when we close the window
+        /// </summary>
+        private void OnMainWindow_Closed(object sender, EventArgs e)
+        {
+            s_bl.Admin.RemoveClockObserver(ClockObserver);
+            s_bl.Admin.RemoveConfigObserver(ConfigObserver);
+
+        }
+
+
+        /// <summary>
+        /// function to open a screen of the list of volunteers
+        /// </summary>
+        private void btnVolunteersList_Click(object sender, RoutedEventArgs e)
+        { 
+            new VolunteerListWindow().Show(); 
         }
 
         private void ClockObserver()
@@ -107,9 +129,54 @@ namespace PL
         public MainWindow()
         {
             InitializeComponent();
+            this.Loaded += OnMainWindow_Loaded; 
+           
 
         }
 
+        private void btnResetDB_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Are you sure you want to reset the database ?",
+                "Confirmation",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
 
+            if (result == MessageBoxResult.Yes)
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window != this)
+                        window.Close(); 
+                }
+
+                Mouse.OverrideCursor = Cursors.Wait;
+                s_bl.Admin.ResetDB();
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void btnInit_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+            "Are you sure you want to initialize the database ?",
+            "Confirmation",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window != this)
+                        window.Close();
+                }
+
+                Mouse.OverrideCursor = Cursors.Wait;
+                s_bl.Admin.InitializeDB();
+                Mouse.OverrideCursor = null;
+            }
+
+        }
     }
 }
