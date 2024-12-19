@@ -320,7 +320,7 @@ public static class Tools
         /// <summary>
         /// calculate the distances between coordinates
         /// </summary>
-        private static double CalculateDistanceBetweenCoordinates(double latitude1, double longitude1, double latitude2, double longitude2)
+        public static double CalculateDistanceBetweenCoordinates(double latitude1, double longitude1, double latitude2, double longitude2)
         {
             const double EarthRadiusKm = 6371.0;
 

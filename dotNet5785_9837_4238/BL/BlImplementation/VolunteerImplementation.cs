@@ -252,6 +252,8 @@ internal class VolunteerImplementation : IVolunteer
         {
             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
             IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+
             var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
             {
                 VolunteerId = v.VolunteerId,
@@ -260,8 +262,17 @@ internal class VolunteerImplementation : IVolunteer
                 SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
                 SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
                 SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
-                CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault()
+                CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
+                CallType = _dal.Call.Read(assignment.Where(call => call.VolunteerId == v.VolunteerId)
+                .Select(call => call.CallId).FirstOrDefault()) is DO.Call callId && callId != null ? (BO.CallType) callId.CallType : BO.CallType.None
             });
+
+            //var matchingAssignments = _dal.Assignment.ReadAll(a => a.VolunteerId == convertVolunteer.Id);
+
+            //int finished = matchingAssignments.Count(a => a. == DO.TypeOfEnd.Fulfilled);
+
+            //int canceled = matchingAssignments.Count(a => a.Status == DO.EndType.SelfCancelled);
+            //int expired = matchingAssignments.Count(a => a.Status == DO.EndType.Expired);
 
             if (isActive.HasValue)
             {

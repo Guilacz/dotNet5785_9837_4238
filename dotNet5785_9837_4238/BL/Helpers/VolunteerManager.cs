@@ -3,7 +3,9 @@
 using BO;
 using DalApi;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 
 
 /// <summary>
@@ -81,22 +83,80 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
+        IEnumerable<DO.Volunteer> volunteers = s_dal.Volunteer.ReadAll();
+        IEnumerable<DO.Assignment> assignment = s_dal.Assignment.ReadAll();
+        IEnumerable<DO.Call> calls = s_dal.Call.ReadAll();
+        DO.Assignment assi = assignment.LastOrDefault(a => a.VolunteerId == volunteer.VolunteerId && a.FinishTime == null);
         return new BO.Volunteer
         {
             VolunteerId = volunteer.VolunteerId,
             Name = volunteer.Name,
             Phone = volunteer.Phone,
             Email = volunteer.Email,
+            Latitude = volunteer.Latitude,
+            Longitude = volunteer.Longitude,
             RoleType = (BO.Role)volunteer.RoleType,
             DistanceType = (BO.DistanceType)volunteer.DistanceType,
             Password = DecryptPassword(volunteer.Password),
             Address = volunteer.Address,
-            Distance = volunteer.Distance
+            Distance = volunteer.Distance,
+            SumOfCaredCall = assignment.Count(call => call.VolunteerId == volunteer.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
+            SumOfCancelledCall = assignment.Count(call => call.VolunteerId == volunteer.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
+            SumOfCallExpired = assignment.Count(call => call.VolunteerId == volunteer.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
+            callInCaring = GetCallInProgress(assi, volunteer)
         };
     }
 
 
+    internal static BO.CallInProgress? GetCallInProgress(DO.Assignment assignment, DO.Volunteer DOvoluTemp)
+    {
+        DO.Call call = s_dal.Call.Read(assignment.CallId);
+        IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
 
+        if (call == null)
+            return null;
+        if (assignment == null)
+            return null;
+        //BO.CallStatus status = Helpers.CallManager.GetCallStatus(call, assignmentss);
+        BO.CallInProgressStatus? callInProgressStatus = GetCallInProgressStatus(call, assignmentss);
+
+        if (callInProgressStatus == null)
+            return null;
+        return new BO.CallInProgress
+        {
+            Id = assignment.Id,
+            CallId = assignment.CallId,
+            CallType = (BO.CallType)call.CallType,
+            Details = call.Details ?? string.Empty,
+            Adress = call.Address ?? string.Empty,
+            distance = (double)DOvoluTemp.Distance,
+            StartTime = assignment.StartTime,
+            MaxTime = call.MaxTime,
+            OpenTime = call.OpenTime,
+            CallInProgressStatus = (BO.CallInProgressStatus)callInProgressStatus
+        };
+    }
+    internal static CallInProgressStatus? GetCallInProgressStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    {
+        BO.CallStatus currentStatus = Helpers.CallManager.GetCallStatus(call, assignments);
+
+        switch (currentStatus)
+        {
+            case BO.CallStatus.InCare:
+                return CallInProgressStatus.InCare;
+
+            case BO.CallStatus.OpenAtRisk:
+                var isInCare = assignments.Any(a => a.CallId == call.CallId && a.FinishTime == null);
+                if (isInCare)
+                {
+                    return CallInProgressStatus.InCareAtRisk; 
+                }
+                return null; 
+
+            default:
+                return null;
+        }
+    }
 
     /// <summary>
     /// function wich checks the id according to the formula israelite

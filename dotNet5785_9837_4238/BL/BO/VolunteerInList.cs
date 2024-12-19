@@ -29,7 +29,7 @@ public class VolunteerInList
 
     public int? CallId { get; init; }
 
-    public CallType CallType;
+    public CallType CallType { get; set; }
 
     public override string ToString() => this.ToStringProperty();
 }

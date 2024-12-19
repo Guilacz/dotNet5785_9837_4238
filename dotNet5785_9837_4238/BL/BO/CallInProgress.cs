@@ -19,7 +19,7 @@ namespace BO;
 public class CallInProgress
 {
     public int Id { get; init; }
-    public int CallId { get; init; }
+    public int CallId { get; set; }
     public CallType CallType;
 
     public string Adress { get; set; }
