@@ -397,7 +397,7 @@ internal class CallImplementation : ICall
                 OpenTime = c.OpenTime,
                 MaxTime = c.MaxTime,
                 Details = c.Details,
-                Distance = Helpers.Tools.DistanceCalculator.CalculateDistance(volunteerAddress, c.Address, boVolunteer.DistanceType)
+                Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
             }).ToList();
 
             var result = openCall switch

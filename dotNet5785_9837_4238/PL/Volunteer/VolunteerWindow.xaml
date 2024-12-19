@@ -5,11 +5,89 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Volunteer"
         mc:Ignorable="d"
-        Title="VolunteerWindow" Height="640" Width="800">
+        Title="VolunteerWindow" Height="500" Width="400"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
-    
-    <Grid>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        
+        <Grid.RowDefinitions>
+
+            <!-- Définition of the lines -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- VolunteerId -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Volunteer ID:" VerticalAlignment="Center" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentVolunteer.VolunteerId, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}" IsReadOnly="True" />
+
+        <!-- Name -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Name:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentVolunteer.Name, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- Phone -->
+        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentVolunteer.Phone, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- Email -->
+        <Label Grid.Row="3" Grid.Column="0" Content="Email:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CurrentVolunteer.Email, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- RoleType -->
+        <Label Grid.Row="4" Grid.Column="0" Content="Role:" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource RoleTypeCollectionKey}}" SelectedValue="{Binding Path=RoleTypeSelected, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" SelectedItem="{Binding CurrentVolunteer.RoleType}"/>
+
+        <!-- Password -->
+        <Label Grid.Row="5" Grid.Column="0" Content="Password:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding CurrentVolunteer.Password, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- Address -->
+        <Label Grid.Row="6" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding CurrentVolunteer.Address, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- Distance -->
+        <Label Grid.Row="7" Grid.Column="0" Content="Distance:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding CurrentVolunteer.Distance, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"/>
+
+        <!-- IsActive -->
+        <Label Grid.Row="8" Grid.Column="0" Content="Is Active:" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding CurrentVolunteer.IsActive}"/>
+
+        <!-- SumOfCaredCall -->
+        <Label Grid.Row="9" Grid.Column="0" Content="Sum of Cared Calls:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding CurrentVolunteer.SumOfCaredCall, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}" IsReadOnly="True"/>
+
+        <!-- SumOfCancelledCall -->
+        <Label Grid.Row="10" Grid.Column="0" Content="Sum of Cancelled Calls:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding CurrentVolunteer.SumOfCancelledCall, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}" IsReadOnly="True"/>
+
+        <!-- SumOfCallExpired -->
+        <Label Grid.Row="11" Grid.Column="0" Content="Sum of Expired Calls:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding CurrentVolunteer.SumOfCallExpired, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}" IsReadOnly="True"/>
+
+        <!-- Button AddUpdate -->
+        <Button Grid.Row="12" Grid.ColumnSpan="2" Content="{Binding ButtonText}" HorizontalAlignment="Left" Margin="165,13,0,-3" Click="btnAddUpdate_Click" Width="50" Height="15"/>
+
+
+
+
+
+
     </Grid>
 </Window>

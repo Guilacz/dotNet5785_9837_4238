@@ -56,6 +56,22 @@ namespace PL.Volunteer
             => s_bl.Volunteer.RemoveObserver(VolunteerListObserver);
 
 
+
+
+        /// <summary>
+        /// link between the selected element to its details
+        /// </summary>
+        public BO.VolunteerInList? SelectedVolunteer { get; set; }
+
+        private void lsvVolunteersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SelectedVolunteer != null)
+                new VolunteerWindow(SelectedVolunteer.VolunteerId).Show();
+        }
+
+
+
+
         public VolunteerListWindow()
         {
             InitializeComponent();
@@ -63,6 +79,12 @@ namespace PL.Volunteer
             Closed += Window_Closed;
 
             queryVolunteerList();
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedVolunteer != null)
+                new VolunteerWindow().Show();
         }
     }
 }

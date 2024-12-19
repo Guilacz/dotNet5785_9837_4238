@@ -155,8 +155,7 @@ class Program
                         Console.WriteLine($"Phone: {volunteer.Phone}");
                         Console.WriteLine($"Email: {volunteer.Email}");
                         Console.WriteLine($"Role: {volunteer.RoleType}");
-                        Console.WriteLine($"Distance Type: {volunteer.DistanceType}");
-                        Console.WriteLine($"Password: {volunteer.Password ?? "N/A"}");
+                        //Console.WriteLine($"Password: {volunteer.Password ?? "N/A"}");
                         Console.WriteLine($"Address: {volunteer.Address ?? "N/A"}");
                         Console.WriteLine($"Distance: {volunteer.Distance?.ToString() ?? "N/A"}");
                         Console.WriteLine($"Latitude: {volunteer.Latitude?.ToString() ?? "N/A"}");
@@ -202,7 +201,7 @@ class Program
                         Console.WriteLine($"Phone: {volunteer1.Phone}");
                         Console.WriteLine($"Email: {volunteer1.Email}");
                         Console.WriteLine($"Role: {volunteer1.RoleType}");
-                        Console.WriteLine($"Distance Type: {volunteer1.DistanceType}");
+                        //Console.WriteLine($"Distance Type: {volunteer1.DistanceType}");
                         Console.WriteLine($"Password: {volunteer1.Password ?? "N/A"}");
                         Console.WriteLine($"Address: {volunteer1.Address ?? "N/A"}");
                         Console.WriteLine($"Distance: {volunteer1.Distance?.ToString() ?? "N/A"}");
@@ -589,8 +588,8 @@ class Program
         string email = Console.ReadLine()!;
         Console.Write("Enter 0 for manager and 1 for volunteer: ");
         Role role = (Role)int.Parse(Console.ReadLine()!);
-        Console.Write("Enter 0 forAirDistance, 1 for WalkDistance,and 2 for CarDistance: ");
-        DistanceType distance = (DistanceType)int.Parse(Console.ReadLine()!);
+        //Console.Write("Enter 0 forAirDistance, 1 for WalkDistance,and 2 for CarDistance: ");
+        DistanceType distance = 0;
         string passwords;
 
         Console.Write("Enter 1 if you want to get a password, or 2 to create a password: ");

@@ -28,7 +28,7 @@
         </Grid>
         
         <!--datagrid of the list of the volunteers-->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}" IsReadOnly ="True" AutoGenerateColumns="False"
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}"  SelectedItem="{Binding SelectedVolunteer}" MouseDoubleClick="lsvVolunteersList_MouseDoubleClick" IsReadOnly ="True" AutoGenerateColumns="False"
        	 EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding VolunteerId}" Header="Id of the Volunteer" Width="Auto"/>
@@ -51,7 +51,7 @@
 
         </DataGrid>
         
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100"/>
+        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click"/>
 
     </Grid>
 </Window>
