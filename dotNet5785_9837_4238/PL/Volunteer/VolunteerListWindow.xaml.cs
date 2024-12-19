@@ -31,9 +31,38 @@ namespace PL.Volunteer
         public static readonly DependencyProperty VolunteerListProperty =
             DependencyProperty.Register("VolunteerList", typeof(IEnumerable<BO.VolunteerInList>), typeof(VolunteerListWindow));
 
+
+        public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
+
+       
+
+        private void ComboBoxCallType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VolunteerList = (CallTypeSelected == BO.CallType.None) ?
+            s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+        }
+
+        private void queryVolunteerList()
+            => VolunteerList = (CallTypeSelected == BO.CallType.None) ?
+            s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+
+        private void VolunteerListObserver()
+            => queryVolunteerList();
+ 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+            => s_bl.Volunteer.AddObserver(VolunteerListObserver);
+
+        private void Window_Closed(object sender, EventArgs e)
+            => s_bl.Volunteer.RemoveObserver(VolunteerListObserver);
+
+
         public VolunteerListWindow()
         {
             InitializeComponent();
+            this.Loaded += Window_Loaded; // Charge les données au démarrage
+            Closed += Window_Closed;
+
+            queryVolunteerList();
         }
     }
 }

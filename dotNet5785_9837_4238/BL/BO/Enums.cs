@@ -13,7 +13,8 @@ public enum CallType
     English_High,
     Grammary_Primary,
     Grammary_Middle,
-    Grammary_High
+    Grammary_High,
+    None
 }
 
 /// <summary>
