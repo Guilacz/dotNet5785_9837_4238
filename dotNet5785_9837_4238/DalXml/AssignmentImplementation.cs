@@ -12,7 +12,7 @@ internal class AssignmentImplementation : IAssignment
     private XElement createAssignmentElement(Assignment assignment)
     {
         return new XElement("Assignment",
-            new XElement("Id", assignment.Id),
+            new XElement("Id", Config.NextAssignmentId),
             new XElement("CallId", assignment.CallId),
             new XElement("VolunteerId", assignment.VolunteerId),
             new XElement("StartTime", assignment.StartTime.ToString("o")), 
@@ -26,8 +26,8 @@ internal class AssignmentImplementation : IAssignment
         return new DO.Assignment()
         {
             Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
-            CallId = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
-            VolunteerId = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
+            CallId = a.ToIntNullable("CallId") ?? throw new FormatException("can't convert id"),
+            VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("can't convert id"),
             StartTime = a.ToDateTimeNullable("StartTime") ?? throw new FormatException("can't convert StartTime"),
             TypeOfEnd = a.ToEnumNullable<TypeOfEnd>("TypeOfEnd"),
             FinishTime = a.ToDateTimeNullable("FinishTime")
