@@ -99,20 +99,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>295677710</VolunteerId>
-    <Name>Moshe Cohen</Name>
-    <Phone>022345678</Phone>
-    <Email>Moshe@gmail.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>secure@ok</Password>
-    <Address>Agripas Street 56, Jerusalem</Address>
-    <Distance>5972</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>245657465</VolunteerId>
     <Name>Yael Levy</Name>
     <Phone>045678901</Phone>

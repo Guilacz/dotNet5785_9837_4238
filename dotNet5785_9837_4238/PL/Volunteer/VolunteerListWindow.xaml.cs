@@ -70,6 +70,46 @@ namespace PL.Volunteer
         }
 
 
+        /// <summary>
+        /// delete function
+        /// </summary>
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int volunteerId)
+            {
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete the volunteer with ID {volunteerId}?",
+                    "Confirm Deletion",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        s_bl.Volunteer.Delete(volunteerId);
+
+                        queryVolunteerList();
+
+                        MessageBox.Show($"Volunteer with ID {volunteerId} has been successfully deleted.",
+                                        "Deletion Successful",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Information);
+                    }
+                    catch (BO.BlDeletionImpossible ex)
+                    {
+                        MessageBox.Show(ex.Message, "Deletion Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    catch (BO.BlInvalidValueException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Invalid Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+
+
 
 
         public VolunteerListWindow()

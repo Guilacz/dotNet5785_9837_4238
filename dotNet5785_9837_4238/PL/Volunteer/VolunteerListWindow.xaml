@@ -45,6 +45,13 @@
                 <DataGridTextColumn Binding="{Binding SumOfCallExpired}" Header="Expired Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Volunteer.CallType}" Header="Type of the call" Width="Auto"/>
+                <DataGridTemplateColumn Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding VolunteerId}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
 
             </DataGrid.Columns>

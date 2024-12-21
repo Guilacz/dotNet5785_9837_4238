@@ -84,8 +84,8 @@ internal class VolunteerImplementation : IVolunteer
     {
         BO.Volunteer? vol = Read(volId);
 
-        if (vol.SumOfCaredCall != 0 || vol.callInCaring != null)
-            throw new BO.BlDeletionImpossible("cant delete this volunteer.");
+        //if ( vol.callInCaring != null)
+        //    throw new BO.BlDeletionImpossible("cant delete this volunteer.");
         if (vol.Latitude == null || vol.Longitude == null)
         {
             var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
