@@ -26,15 +26,15 @@
 
         <!--Clock Section-->
 
-        <Button Content="Add One Minute" HorizontalAlignment="Left" Margin="85,75,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneMinute_Click"/>
+        <Button Content="Add One Minute" HorizontalAlignment="Left" Margin="85,75,0,0" VerticalAlignment="Top" Height="32" Width="152" Click="btnAddOneMinute_Click"/>
 
-        <Button Content="Add One Hour" HorizontalAlignment="Left" Margin="85,112,0,0" VerticalAlignment="Top" Height="32" Width="73"  Click="btnAddOneHour_Click"/>
+        <Button Content="Add One Hour" HorizontalAlignment="Left" Margin="85,112,0,0" VerticalAlignment="Top" Height="32" Width="152"  Click="btnAddOneHour_Click"/>
 
-        <Button Content="Add One Day" HorizontalAlignment="Left" Margin="85,149,0,0" VerticalAlignment="Top" Height="32" Width="73" Click="btnAddOneDay_Click"/>
+        <Button Content="Add One Day" HorizontalAlignment="Left" Margin="85,149,0,0" VerticalAlignment="Top" Height="32" Width="152" Click="btnAddOneDay_Click"/>
 
-        <Button Content="Add One Month" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneMonth_Click"/>
+        <Button Content="Add One Month" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Height="32" Width="153" Click="btnAddOneMonth_Click"/>
 
-        <Button Content="Add One Year" HorizontalAlignment="Left" Margin="84,224,0,0" VerticalAlignment="Top" Height="32" Width="74" Click="btnAddOneYear_Click"/>
+        <Button Content="Add One Year" HorizontalAlignment="Left" Margin="84,224,0,0" VerticalAlignment="Top" Height="32" Width="153" Click="btnAddOneYear_Click"/>
 
         <Label Content="{Binding CurrentTime}" HorizontalAlignment="Left" Margin="52,28,0,0" VerticalAlignment="Top" Height="42" Width="267" FontWeight="Bold" FontSize="20"/>
 
