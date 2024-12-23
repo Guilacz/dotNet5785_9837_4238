@@ -20,6 +20,12 @@ internal class RoleTypeCollection : IEnumerable
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
 
+internal class CallStatusCollection : IEnumerable
+{
+    static readonly IEnumerable<BO.CallInProgressStatus> s_enums = (Enum.GetValues(typeof(BO.CallInProgressStatus)) as IEnumerable<BO.CallInProgressStatus>)!;
+
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
 internal class Enums
 {
 

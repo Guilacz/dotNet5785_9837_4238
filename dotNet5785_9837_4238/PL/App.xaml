@@ -6,5 +6,6 @@
     <Application.Resources>
         <local:CallTypeCollection x:Key="CallTypeCollectionKey" />
         <local:RoleTypeCollection x:Key="RoleTypeCollectionKey" />
+        <local:CallStatusCollection x:Key="CallStatusCollectionKey" />
     </Application.Resources>
 </Application>

@@ -8,8 +8,69 @@
         Title="VolunteerListWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
+
+    <Window.Resources>
+        
+        <!--comboBox style-->
+        <Style TargetType="ComboBox" >
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="Beige" />
+            <Setter Property="BorderBrush" Value="#8B4513" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="Background" Value="LightGoldenrodYellow" />
+                        <Setter Property="Padding" Value="5" />
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--TextBox style-->
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="#A9A9A9"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="#FFF8DC"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border 
+                        CornerRadius="{TemplateBinding BorderThickness}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFDAB9"/>
+            <Setter Property="BorderBrush" Value="#8B4513"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+    </Window.Resources>
+
     <!--External Grid-->
-    <Grid>
+    <Grid Background="#F5F5DC">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>

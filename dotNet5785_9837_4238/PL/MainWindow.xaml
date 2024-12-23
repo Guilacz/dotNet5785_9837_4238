@@ -8,7 +8,21 @@
         Title="MainWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
-    <Grid>
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFDAB9"/>
+            <Setter Property="BorderBrush" Value="#8B4513"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Background="#F5F5DC">
 
         <!--Clock Section-->
 
@@ -28,7 +42,7 @@
         <!--End of clock section-->
 
         <!--Configuration Section-->
-        <TextBox HorizontalAlignment="Left" Margin="364,98,0,0" TextWrapping="Wrap" Text="{Binding RiskRangeProperty}" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Margin="346,99,0,0" TextWrapping="Wrap" Text="{Binding RiskRangeProperty}" VerticalAlignment="Top" Width="146" Height="30"/>
         <Button Content="Update" HorizontalAlignment="Left" Margin="515,98,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.036,0.558" Click="btnUpdateRiskRange_Click"/>
         <!--End of configuration section-->
 
@@ -36,7 +50,7 @@
         <Button Content="InitDB" HorizontalAlignment="Left" Margin="652,362,0,0" VerticalAlignment="Top" Click="btnInit_Click"/>
 
         <!--Reset Button-->
-        <Button Content="ResetDB" HorizontalAlignment="Left" Margin="515,362,0,0" VerticalAlignment="Top" Click="btnResetDB_Click"/>
+        <Button Content="ResetDB" HorizontalAlignment="Left" Margin="555,362,0,0" VerticalAlignment="Top" Click="btnResetDB_Click"/>
 
         <!--Handle List of Volunteers-->
         <Button Content="Handle Volunteers" HorizontalAlignment="Left" Margin="323,362,0,0" VerticalAlignment="Top" Click="btnVolunteersList_Click"/>
