@@ -2,7 +2,9 @@
 using BO;
 using DalApi;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
+
 
 /// <summary>
 /// class for the help methods
@@ -366,5 +368,40 @@ public static class Tools
 
         return config.RiskRange;
     }
+
+    public static void SendEmail(string toAddress, string subject, string body)
+    {
+        // כתובת המייל והשדות של השולח
+        string fromAddress = "brachakal2225@gmail.com"; // כתובת המייל שלך
+        string fromPassword = "0542236200";  // הסיסמה שלך (או App Password במקרה של Gmail)
+
+        // יצירת הודעת המייל
+        MailMessage mail = new MailMessage
+        {
+            From = new MailAddress(fromAddress),
+            Subject = subject,
+            Body = body,
+            IsBodyHtml = false // אם את רוצה HTML, שימי true
+        };
+        mail.To.Add(toAddress);
+
+        // הגדרת שרת ה-SMTP
+        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587) // יש להחליף את שם שרת ה-SMTP
+        {
+            Credentials = new NetworkCredential(fromAddress, fromPassword),
+            EnableSsl = true // אם נדרש SSL (ב-Gmail, למשל)
+        };
+
+        try
+        {
+            smtp.Send(mail); // שליחת המייל
+            Console.WriteLine($"Email was sended to: {toAddress}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error {toAddress}: {ex.Message}");
+        }
+    }
+
 
 }

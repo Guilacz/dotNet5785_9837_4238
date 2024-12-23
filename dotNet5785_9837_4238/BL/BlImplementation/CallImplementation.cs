@@ -2,6 +2,8 @@
 using BlApi;
 using BO;
 using Helpers;
+
+
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Text;
@@ -126,8 +128,23 @@ internal class CallImplementation : ICall
                 MaxTime = c.MaxTime,
                 Details = c.Details,
             });
-            CallManager.Observers.NotifyListUpdated(); 
+            CallManager.Observers.NotifyListUpdated();
+            _dal.Volunteer.ReadAll()
+                .Where(vol =>
+                    !string.IsNullOrEmpty(vol.Email) &&
+                    !string.IsNullOrEmpty(vol.Address) &&
+                    Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
+                .ToList()
+                .ForEach(vol => Helpers.Tools.SendEmail(
+                    toAddress: vol.Email,
+                    subject: "new call in your area",
+                    body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
+                ));
+
         }
+
+
+
         catch (DO.DalInvalidValueException ex)
         {
             throw new BO.BlInvalidValueException(ex.Message);
