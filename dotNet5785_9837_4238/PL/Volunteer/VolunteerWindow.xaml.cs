@@ -99,12 +99,12 @@ namespace PL.Volunteer
                 try
                 {
                     s_bl.Volunteer.Create(CurrentVolunteer!);
-                    MessageBox.Show("The volunteer has been successfully added .");
+                    MessageBox.Show("The volunteer has been successfully added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error : " + ex.Message);
+                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else if (ButtonText == "Update")
@@ -113,11 +113,11 @@ namespace PL.Volunteer
                 {
                     // Appel à la méthode de mise à jour de l'entité
                     s_bl.Volunteer.Update(CurrentVolunteer.VolunteerId, CurrentVolunteer!);
-                    MessageBox.Show("The volunteer has been successfully updated ");
+                    MessageBox.Show("The volunteer has been successfully updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error : " + ex.Message);
+                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             this.Close(); 
