@@ -118,7 +118,7 @@
 
         <Label Grid.Row="2" Grid.Column="2" Content="Type of the Call:" VerticalAlignment="Center" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
         <ComboBox Grid.Row="2" Grid.Column="3" ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
-                  SelectedValue="{Binding CurrentVolunteer.callInCaring.CallType}"  IsReadOnly="True" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
+                  SelectedValue="{Binding CurrentVolunteer.callInCaring.CallType}" IsEnabled="False" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
         <Label Grid.Row="3" Grid.Column="2" Content="Call details:" VerticalAlignment="Center" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding CurrentVolunteer.callInCaring.Details}" IsReadOnly="True" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
@@ -140,7 +140,7 @@
 
         <Label Grid.Row="9" Grid.Column="2" Content="Call Status:" VerticalAlignment="Center" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
         <ComboBox Grid.Row="9" Grid.Column="3" ItemsSource="{Binding Source={StaticResource CallStatusCollectionKey}}" 
-                  SelectedValue="{Binding CurrentVolunteer.callInCaring.CallInProgressStatus}"  IsReadOnly="True" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
+                  SelectedValue="{Binding CurrentVolunteer.callInCaring.CallInProgressStatus}" IsEnabled="False" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
         <!-- Add/Update Button -->
         <Button Grid.Row="11" Content="{Binding ButtonText}" HorizontalAlignment="Left" Margin="52,83,0,-73" 

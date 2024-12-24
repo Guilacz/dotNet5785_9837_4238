@@ -10,7 +10,7 @@
 
 
     <Window.Resources>
-        
+
         <!--comboBox style-->
         <Style TargetType="ComboBox" >
             <Setter Property="Foreground" Value="Black" />
@@ -84,10 +84,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Label" HorizontalAlignment="Left" Margin="161,0,0,0" VerticalAlignment="Center"/>
+            <Label Grid.Column="0" Content="Choose a type of call :" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxCallType_SelectionChanged"/>
         </Grid>
-        
+
         <!--datagrid of the list of the volunteers-->
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}"  SelectedItem="{Binding SelectedVolunteer}" MouseDoubleClick="lsvVolunteersList_MouseDoubleClick" IsReadOnly ="True" AutoGenerateColumns="False"
        	 EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="DataGrid_SelectionChanged">
@@ -104,6 +104,9 @@
                 <DataGridTextColumn Binding="{Binding SumOfCaredCall}" Header="Cared Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding SumOfCancelledCall}" Header="Cancelled Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding SumOfCallExpired}" Header="Expired Calls" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the current call" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding CallType}" Header="Type of the current call" Width="Auto"/>
+
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -116,7 +119,7 @@
             </DataGrid.Columns>
 
         </DataGrid>
-        
+
         <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click"/>
 
     </Grid>

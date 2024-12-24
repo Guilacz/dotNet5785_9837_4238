@@ -55,14 +55,38 @@ namespace PL.Volunteer
         public BO.Role RoleTypeSelected { get; set; } = BO.Role.Volunteer;
 
 
-        public VolunteerWindow(int id=0)
+        public VolunteerWindow(int volunteerId = 0)
         {
-            ButtonText = id == 0 ? "Add" : "Update";
+            ButtonText = volunteerId == 0 ? "Add" : "Update";
 
             InitializeComponent();
 
+            if (volunteerId != 0)
+            {
+                try
+                {
+                    CurrentVolunteer = s_bl.Volunteer.Read(volunteerId);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while fetching volunteer data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Close();
+                }
+            }
+            else
+            {
+                CurrentVolunteer = new BO.Volunteer();
+            }
+
+            DataContext = this;
+
 
         }
+
+
+
+
+
 
 
         /// <summary>
@@ -98,5 +122,7 @@ namespace PL.Volunteer
             }
             this.Close(); 
         }
+
+      
     }
 }
