@@ -370,7 +370,7 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} was not found.");
             }
-            var coordinates = Helpers.Tools.GetAddressCoordinates(volu.Address);
+        //    var coordinates = Helpers.Tools.GetAddressCoordinates(volu.Address);
 
             BO.Volunteer vol = new BO.Volunteer
             {
@@ -383,11 +383,11 @@ internal class VolunteerImplementation : IVolunteer
                 Password = volunteer.Password,
                 Address = volunteer.Address,
                 Distance = volunteer.Distance,
-              //  Latitude = volunteer.Latitude,
+                Latitude = volunteer.Latitude,
 
-               Latitude = coordinates.Latitude,
-                Longitude = coordinates.Longitude,
-              //  Longitude = volunteer.Longitude,
+               //Latitude = coordinates.Latitude,
+               // Longitude = coordinates.Longitude,
+                Longitude = volunteer.Longitude,
                 IsActive = volunteer.IsActive,
                 SumOfCaredCall = volunteer.SumOfCaredCall,
                 SumOfCancelledCall = volunteer.SumOfCancelledCall,
