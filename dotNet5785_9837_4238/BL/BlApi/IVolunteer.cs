@@ -1,4 +1,6 @@
-﻿namespace BlApi;
+﻿using BO;
+
+namespace BlApi;
 
 /// <summary>
 /// Volunteer Interface
@@ -9,6 +11,9 @@ public interface IVolunteer : IObservable
     BO.Role EnterSystem(string name, string password);
 
     IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null);
+
+    IEnumerable<VolunteerInList> GetVolunteersListByCallType(BO.CallType callType);
+
 
     BO.Volunteer GetVolunteerDetails(int volId);
 

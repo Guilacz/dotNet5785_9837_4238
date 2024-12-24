@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Volunteer"
         mc:Ignorable="d"
-        Title="VolunteerListWindow" Height="450" Width="800"
+        Title="VolunteerListWindow" Height="450" Width="500"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
 
@@ -90,7 +90,7 @@
         
         <!--datagrid of the list of the volunteers-->
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}"  SelectedItem="{Binding SelectedVolunteer}" MouseDoubleClick="lsvVolunteersList_MouseDoubleClick" IsReadOnly ="True" AutoGenerateColumns="False"
-       	 EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected">
+       	 EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding VolunteerId}" Header="Id of the Volunteer" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="Auto"/>
@@ -104,8 +104,6 @@
                 <DataGridTextColumn Binding="{Binding SumOfCaredCall}" Header="Cared Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding SumOfCancelledCall}" Header="Cancelled Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding SumOfCallExpired}" Header="Expired Calls" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Volunteer.CallType}" Header="Type of the call" Width="Auto"/>
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

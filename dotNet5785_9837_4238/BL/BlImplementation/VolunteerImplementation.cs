@@ -302,6 +302,52 @@ internal class VolunteerImplementation : IVolunteer
 
 
     /// <summary>
+    /// Function to retrieve and sort volunteers based on their current call's CallType.
+    /// </summary>
+    /// <param name="callType">The CallType to filter and sort by.</param>
+    public IEnumerable<VolunteerInList> GetVolunteersListByCallType(BO.CallType callType)
+    {
+        var allVolunteers = _dal.Volunteer.ReadAll();
+
+        return allVolunteers
+            .Where(v =>
+            {
+                var currentAssignment = _dal.Assignment.ReadAll()
+                    .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
+
+                if (currentAssignment == null) return false;
+
+                var currentCall = _dal.Call.ReadAll()
+                    .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
+
+                return currentCall != null && (BO.CallType)currentCall.CallType == callType;
+            })
+            .Select(v =>
+            {
+                var currentAssignment = _dal.Assignment.ReadAll()
+                    .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
+
+                var currentCall = _dal.Call.ReadAll()
+                    .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
+
+                return new BO.VolunteerInList
+                {
+                    VolunteerId = v.VolunteerId,
+                    Name = v.Name,
+                    IsActive = v.IsActive,
+                    CallType = currentCall != null ? (BO.CallType)currentCall.CallType : BO.CallType.None
+                };
+            })
+            .OrderBy(v => v.CallType) // Sort by CallType
+            .ToList();
+    }
+
+
+
+
+
+
+    /// <summary>
     /// Reads a volunteer by ID.
     /// Steps:
     /// 1. Retrieve the volunteer from the DAL.

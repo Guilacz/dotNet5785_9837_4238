@@ -38,8 +38,17 @@ namespace PL.Volunteer
 
         private void ComboBoxCallType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            VolunteerList = (CallTypeSelected == BO.CallType.None) ?
-            s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+            //VolunteerList = (CallTypeSelected == BO.CallType.None) ?
+            //s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+            if (CallTypeSelected == BO.CallType.None)
+            {
+                VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
+            }
+            else
+            {
+                // Appel de la méthode pour filtrer les volontaires par CallType
+                VolunteerList = s_bl?.Volunteer.GetVolunteersListByCallType(CallTypeSelected)!;
+            }
         }
 
         private void queryVolunteerList()
@@ -123,8 +132,18 @@ namespace PL.Volunteer
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedVolunteer != null)
                 new VolunteerWindow().Show();
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is DataGrid dataGrid && dataGrid.SelectedItem is BO.VolunteerInList selectedVolunteer)
+            {
+                SelectedVolunteer = selectedVolunteer;
+            }
+        }
+
+
+
     }
 }
