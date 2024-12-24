@@ -38,15 +38,12 @@ namespace PL.Volunteer
 
         private void ComboBoxCallType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //VolunteerList = (CallTypeSelected == BO.CallType.None) ?
-            //s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
             if (CallTypeSelected == BO.CallType.None)
             {
                 VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
             }
             else
             {
-                // Appel de la méthode pour filtrer les volontaires par CallType
                 VolunteerList = s_bl?.Volunteer.GetVolunteersListByCallType(CallTypeSelected)!;
             }
         }
