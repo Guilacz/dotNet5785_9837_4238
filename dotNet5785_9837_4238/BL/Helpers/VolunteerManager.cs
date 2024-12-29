@@ -58,7 +58,7 @@ internal class VolunteerManager
             return false;
 
 
-        string[] validDomains = { ".com", ".il", ".net", ".org" };
+        string[] validDomains = { ".com", ".il", ".net", ".org", ".blablabla" };
         bool hasValidDomain = validDomains.Any(domain => email.EndsWith(domain));
         if (!hasValidDomain)
             return false;

@@ -23,6 +23,7 @@ namespace PL.Volunteer
         //access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+        //DependencyProperty of the Volunteer list
         public IEnumerable<BO.VolunteerInList> VolunteerList
         {
             get { return (IEnumerable<BO.VolunteerInList>)GetValue(VolunteerListProperty); }
@@ -34,20 +35,7 @@ namespace PL.Volunteer
 
         public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
 
-       
-
-        private void ComboBoxCallType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CallTypeSelected == BO.CallType.None)
-            {
-                IEnumerable<VolunteerInList> VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
-            }
-            else
-            {
-                VolunteerList = s_bl?.Volunteer.GetVolunteersListByCallType(CallTypeSelected)!;
-            }
-        }
-
+ 
         private void queryVolunteerList()
             => VolunteerList = (CallTypeSelected == BO.CallType.None) ?
             s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
@@ -69,12 +57,27 @@ namespace PL.Volunteer
         /// </summary>
         public BO.VolunteerInList? SelectedVolunteer { get; set; }
 
-        private void lsvVolunteersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+
+
+        /// <summary>
+        /// constructor of the volunteer list window
+        /// </summary>
+        public VolunteerListWindow()
         {
-            if (SelectedVolunteer != null)
-                new VolunteerWindow(SelectedVolunteer.VolunteerId).Show();
+            InitializeComponent();
+            queryVolunteerList();
+            Loaded += Window_Loaded;
+            Closed += Window_Closed;
+
         }
 
+
+
+
+
+
+
+        ///-----------------------------------------BUTTONS------------------------------------
 
         /// <summary>
         /// delete function
@@ -114,31 +117,49 @@ namespace PL.Volunteer
             }
         }
 
-
-
-
-
-        public VolunteerListWindow()
+        /// <summary>
+        /// FUNCTION of when we change the selection in the combobox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxCallType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            InitializeComponent();
-            this.Loaded += Window_Loaded; // Charge les données au démarrage
-            Closed += Window_Closed;
-
-            queryVolunteerList();
+            if (CallTypeSelected == BO.CallType.None)
+            {
+                IEnumerable<VolunteerInList> VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
+            }
+            else
+            {
+                VolunteerList = s_bl?.Volunteer.GetVolunteersListByCallType(CallTypeSelected)!;
+            }
         }
 
+        /// <summary>
+        /// function of when we double click on a volunteer
+        /// </summary>
+        private void lsvVolunteersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SelectedVolunteer != null)
+                new VolunteerWindow(SelectedVolunteer.VolunteerId).Show();
+        }
+
+
+    
+        /// <summary>
+        /// add  button
+        /// </summary>
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
                 new VolunteerWindow().Show();
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is DataGrid dataGrid && dataGrid.SelectedItem is BO.VolunteerInList selectedVolunteer)
-            {
-                SelectedVolunteer = selectedVolunteer;
-            }
-        }
+        //private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (sender is DataGrid dataGrid && dataGrid.SelectedItem is BO.VolunteerInList selectedVolunteer)
+        //    {
+        //        SelectedVolunteer = selectedVolunteer;
+        //    }
+        //}
 
 
 

@@ -1,0 +1,88 @@
+﻿<Window x:Class="PL.Call.CallListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL.Call"
+        mc:Ignorable="d"
+        Title="CallListWindow" Height="450" Width="800"
+    DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
+
+    <!--External Grid-->
+    <Grid Background="#F5F5DC">
+
+        <!--Call List Lines-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="500*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!--Line of the combobox-->
+        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- first Label -->
+            <Label Grid.Column="0" Content="Sort By :" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <!-- first ComboBox -->
+            <ComboBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" />
+            <!-- second Label -->
+            <Label Grid.Column="1" Content="Filter By :" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="215,0,0,0" Grid.ColumnSpan="2" />
+            <!-- second ComboBox -->
+            <ComboBox Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Grid.ColumnSpan="2" Margin="11,0,0,0" />
+            <!-- Filter Value-->
+            <TextBox HorizontalAlignment="Left" Margin="187,0,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Center" Width="70" Grid.Column="3"/>
+            <Label Grid.Column="3" Content="Enter your Filter value:" HorizontalAlignment="Left" Margin="51,0,0,0" VerticalAlignment="Center" Width="131"/>
+        </Grid>
+
+
+        <!--datagrid of the list of the calls-->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding CallList}" SelectedItem="{Binding SelectedCall}" 
+          AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True" MouseDoubleClick="lsvCallList_MouseDoubleClick" 
+          RowDetailsVisibilityMode="VisibleWhenSelected" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
+
+                <!-- Column for CallType -->
+                <DataGridTextColumn Binding="{Binding CallType}" Header=" Type of the call" Width="Auto"/>
+
+                <!-- Column for CallStatus -->
+                <DataGridTextColumn Binding="{Binding CallInListStatus}" Header="Status of the call" Width="Auto"/>
+
+                <!-- Column for OpenTime -->
+                <DataGridTextColumn Binding="{Binding OpenTime}" Header="Opening time" Width="Auto"/>
+
+                <!-- Column for TimeToEnd -->
+                <DataGridTextColumn Binding="{Binding TimeToEnd}" Header="Remaining time" Width="Auto"/>
+
+                <!-- Column for LastName -->
+                <DataGridTextColumn Binding="{Binding LastName}" Header="Name of the last volunteer" Width="Auto"/>
+
+                <!-- Column for TimeToCare -->
+                <DataGridTextColumn Binding="{Binding TimeToCare}" Header="Time to care" Width="Auto"/>
+
+                <!-- Column for sum of assignments -->
+                <DataGridTextColumn Binding="{Binding NumberOfAssignment}" Header="Total of assignements" Width="Auto"/>
+
+
+            </DataGrid.Columns>
+
+
+
+        </DataGrid>
+
+        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click"/>
+
+
+
+
+
+    </Grid>
+</Window>

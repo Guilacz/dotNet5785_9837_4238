@@ -107,14 +107,14 @@ public enum VolunteerSortField
 }
 public enum CallInListSort
 {
-    Id,
+    //Id,
     CallId,
     CallType,
     OpenTime,
-    TimeToEnd,
     LastName, 
     TimeToCare,
-    CallInListStatus
+    CallInListStatus,
+    None
 
 }
 public enum CloseCallInListSort

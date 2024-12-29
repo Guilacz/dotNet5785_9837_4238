@@ -55,5 +55,8 @@
         <!--Handle List of Volunteers-->
         <Button Content="Handle Volunteers" HorizontalAlignment="Left" Margin="323,362,0,0" VerticalAlignment="Top" Click="btnVolunteersList_Click"/>
 
+        <!--Handle List of Calls-->
+        <Button Content="Handle Calls" HorizontalAlignment="Left" Margin="186,362,0,0" VerticalAlignment="Top" Click="btnCallsList_Click"/>
+
     </Grid>
 </Window>

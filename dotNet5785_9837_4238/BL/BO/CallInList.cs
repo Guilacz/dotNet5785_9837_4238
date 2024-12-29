@@ -22,7 +22,7 @@ public class CallInList
 
     public int CallId { get; init; }
 
-    public CallType CallType;
+    public CallType CallType { get; init; }
 
     public DateTime OpenTime { get; init; }
 
@@ -32,7 +32,7 @@ public class CallInList
 
     public TimeSpan? TimeToCare { get; set; }
 
-    public CallInListStatus CallInListStatus;
+    public CallInListStatus CallInListStatus { get; init; }
 
     public int NumberOfAssignment { get; set; }
 

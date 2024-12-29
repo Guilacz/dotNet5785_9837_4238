@@ -39,22 +39,22 @@ public static class Initialization
 
 
         string[] volunteersMails = {
-    "Efrati@gmail.com",
-    "Chani@gmail.com",
-    "Shulamit@gmail.com",
-    "Ivy@gmail.com",
-    "Esteria@gmail.com",
-    "Yafit@gmail.com",
-    "Dan@gmail.com",
-    "Moshe@gmail.com",
-    "Yael@gmail.com",
-    "Noa@gmail.com",
-    "Avi@gmail.com",
-    "Talia@gmail.com",
-    "Ronen@gmail.com",
-    "Maya@gmail.com",
-    "Doron@gmail.com",
-    "Sarah@gmail.com"
+    "Efrati@blablabla.com",
+    "Chani@blablabla.com",
+    "Shulamit@blablabla.com",
+    "Ivy@blablabla.com",
+    "Esteria@blablabla.com",
+    "Yafit@blablabla.com",
+    "Dan@blablabla.com",
+    "Moshe@blablabla.com",
+    "Yael@blablabla.com",
+    "Noa@blablabla.com",
+    "Avi@blablabla.com",
+    "Talia@blablabla.com",
+    "Ronen@blablabla.com",
+    "Maya@blablabla.com",
+    "Doron@blablabla.com",
+    "Sarah@blablabla.com"
 };
         string[] volunteersAdress = {
     "Yaffo Street 123, Jerusalem",

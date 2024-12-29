@@ -1,4 +1,5 @@
-﻿using PL.Volunteer;
+﻿using PL.Call;
+using PL.Volunteer;
 using System;
 using System.Text;
 using System.Windows;
@@ -115,6 +116,19 @@ namespace PL
             new VolunteerListWindow().Show(); 
         }
 
+
+
+        /// <summary>
+        /// function to open a screen of the list of calls
+        /// </summary>
+        private void btnCallsList_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow().Show();
+        }
+
+
+
+
         private void ClockObserver()
         {
             CurrentTime = s_bl.Admin.GetClock();
@@ -178,5 +192,6 @@ namespace PL
             }
 
         }
+
     }
 }

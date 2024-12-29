@@ -78,8 +78,6 @@ namespace PL.Volunteer
                 CurrentVolunteer = new BO.Volunteer();
             }
 
-            DataContext = this;
-
 
         }
 
@@ -111,7 +109,6 @@ namespace PL.Volunteer
             {
                 try
                 {
-                    // Appel à la méthode de mise à jour de l'entité
                     s_bl.Volunteer.Update(CurrentVolunteer.VolunteerId, CurrentVolunteer!);
                     MessageBox.Show("The volunteer has been successfully updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
