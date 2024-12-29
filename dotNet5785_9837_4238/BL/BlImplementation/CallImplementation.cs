@@ -255,6 +255,7 @@ internal class CallImplementation : ICall
     /// <param name="sortType">Optional: The type of sorting to apply .</param>
     /// <returns>A sorted and filtered list of calls as BO.CallInList objects.</returns>
     /// <exception cref="BO.BlDoesNotExistException"></exception>
+    /// 
 
     public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     {
@@ -315,21 +316,78 @@ internal class CallImplementation : ICall
                 };
             }
 
-
-
-
-
-            var callInList = calls.Select(c => new BO.CallInList
+            var callInList = calls.Select(c =>
             {
-                CallId = c.CallId,
-                CallType = (BO.CallType)c.CallType,
-                OpenTime = c.OpenTime,
-                LastName = null,
-                TimeToEnd = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(c.OpenTime) : (TimeSpan?)null,
-                TimeToCare = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
-                CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
-            }).ToList();
+                var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal); // המרה מ-DO ל-BO
 
+                // חיפוש ההקצאה האחרונה של הקריאה
+                var lastAssignment = assignments
+                    .Where(a => a.CallId == c.CallId)
+                    .OrderByDescending(a => a.FinishTime ?? a.StartTime) // מסדר לפי FinishTime אם קיים, אחרת לפי StartTime
+                    .FirstOrDefault();
+
+                // אם מצאנו הקצאה אחרונה, נחפש את המתנדב שקשור לה
+                var lastVolunteerName = lastAssignment != null
+                    ? _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == lastAssignment.VolunteerId)?.Name
+                    : null;
+
+                // חישוב TimeToCare
+                var timeToCare = boCall.MaxTime.HasValue
+                    ? boCall.MaxTime.Value.Subtract(DateTime.Now) // אם יש MaxTime, מחשבים את הזמן שנותר עד לסיום הקריאה
+                    : (TimeSpan?)null; // אם אין MaxTime, משאירים כ-null
+
+                return new BO.CallInList
+                {
+                    CallId = boCall.CallId,
+                    CallType = boCall.CallType,
+                    OpenTime = boCall.OpenTime,
+                    LastName = lastVolunteerName, // שם המתנדב שטיפל בקריאה
+                    TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
+                    TimeToCare = timeToCare, // חישוב הזמן שנותר עד לסיום הקריאה
+                    CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+                };
+            }).ToList();
+            //var callInList = calls.Select(c =>
+            //{
+            //    var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal); // המרה מ-DO ל-BO
+
+            //    // חיפוש ההקצאה האחרונה של הקריאה
+            //    var lastAssignment = assignments
+            //        .Where(a => a.CallId == c.CallId)
+            //        .OrderByDescending(a => a.FinishTime ?? a.StartTime) // מסדר לפי FinishTime אם קיים, אחרת לפי StartTime
+            //        .FirstOrDefault();
+
+            //    // אם מצאנו הקצאה אחרונה, נחפש את המתנדב שקשור לה
+            //    var lastVolunteerName = lastAssignment != null
+            //        ? _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == lastAssignment.VolunteerId)?.Name
+            //        : null;
+
+            //    return new BO.CallInList
+            //    {
+            //        CallId = boCall.CallId,
+            //        CallType = boCall.CallType,
+            //        OpenTime = boCall.OpenTime,
+            //        LastName = lastVolunteerName, // שמו של המתנדב שטיפל בקריאה
+            //        TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
+            //        TimeToCare = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
+            //        CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+            //    };
+            //}).ToList();
+
+            //var callInList = calls.Select(c =>
+            //{
+            //    var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal); // המרה מ-DO ל-BO
+            //    return new BO.CallInList
+            //    {
+            //        CallId = boCall.CallId,
+            //        CallType = boCall.CallType,
+            //        OpenTime = boCall.OpenTime,
+            //        LastName = null,  // אם אתה רוצה להוסיף שם מתנדב, תוכל לעדכן כאן
+            //        TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
+            //        TimeToCare = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
+            //        CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+            //    };
+            //}).ToList();
             if (sortType != null)
             {
                 callInList = sortType switch
@@ -354,6 +412,105 @@ internal class CallImplementation : ICall
             throw new BO.BlDoesNotExistException(ex.Message);
         }
     }
+
+    //public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
+    //{
+    //    try
+    //    {
+    //        IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+    //        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+    //        IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+
+
+    //        if (calls == null || !calls.Any())
+    //        {
+    //            return Enumerable.Empty<BO.CallInList>();
+    //        }
+
+    //        if (assignments == null)
+    //        {
+    //            assignments = Enumerable.Empty<DO.Assignment>();
+    //        }
+
+    //        if (filterType != null && filterValue != null)
+    //        {
+    //            calls = filterType switch
+    //            {
+    //                BO.CallInListSort.CallId =>
+    //                    int.TryParse(filterValue.ToString(), out int filterId) ?
+    //                    calls.Where(c => c.CallId == filterId) : calls,
+
+    //                BO.CallInListSort.CallType =>
+    //                    Enum.TryParse(typeof(DO.CallType), filterValue.ToString(), out var callType) ?
+    //                    calls.Where(c => c.CallType == (DO.CallType)callType) : calls,
+
+    //                BO.CallInListSort.OpenTime =>
+    //                    filterValue is DateTime filterDate ?
+    //                    calls.Where(c => c.OpenTime.Date == filterDate.Date) : calls,
+
+    //                BO.CallInListSort.LastName =>
+    //                    filterValue is string volunteerName ?
+    //                    calls.Where(c =>
+    //                        assignments.Any(a => a.CallId == c.CallId &&
+    //                                             volunteers.Any(v => v.VolunteerId == a.VolunteerId &&
+    //                                                                 v.Name.Contains(volunteerName, StringComparison.OrdinalIgnoreCase)))) :
+    //                    calls,
+
+    //                BO.CallInListSort.CallInListStatus =>
+    //                    Enum.TryParse(typeof(BO.CallInListStatus), filterValue.ToString(), out var status) ?
+    //                    calls.Where(c =>
+    //                    {
+    //                        // קבלת סטטוס הקריאה לפי ההמרה
+    //                        var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal);
+    //                        var isAtRisk = boCall.CallStatus == BO.CallStatus.Open && boCall.MaxTime.HasValue && boCall.MaxTime.Value < DateTime.Now;
+    //                        var convertedStatus = ConvertCallStatusToCallInListStatus(boCall.CallStatus, isAtRisk);
+    //                        return convertedStatus == (BO.CallInListStatus)status;
+    //                    }) :
+    //                    calls,
+
+    //                _ => calls
+    //            };
+    //        }
+
+
+
+
+
+    //        var callInList = calls.Select(c => new BO.CallInList
+    //        {
+    //            CallId = c.CallId,
+    //            CallType = (BO.CallType)c.CallType,
+    //            OpenTime = c.OpenTime,
+    //            LastName = null,
+    //            TimeToEnd = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(c.OpenTime) : (TimeSpan?)null,
+    //            TimeToCare = c.MaxTime.HasValue ? c.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
+    //            CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+    //        }).ToList();
+
+    //        if (sortType != null)
+    //        {
+    //            callInList = sortType switch
+    //            {
+    //                BO.CallInListSort.CallType => callInList.OrderBy(c => c.CallType).ToList(),
+    //                BO.CallInListSort.OpenTime => callInList.OrderBy(c => c.OpenTime).ToList(),
+    //                BO.CallInListSort.TimeToCare => callInList.OrderBy(c => c.TimeToCare ?? TimeSpan.MaxValue).ToList(),
+    //                BO.CallInListSort.CallInListStatus => callInList.OrderBy(c => c.CallInListStatus).ToList(),
+    //                BO.CallInListSort.LastName => callInList.OrderBy(c => c.LastName).ToList(),
+    //                _ => callInList.OrderBy(c => c.CallId).ToList()
+    //            };
+    //        }
+    //        else
+    //        {
+    //            callInList = callInList.OrderBy(c => c.CallId).ToList();
+    //        }
+
+    //        return callInList;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new BO.BlDoesNotExistException(ex.Message);
+    //    }
+    //}
     //public IEnumerable<BO.CallInList> GetListOfCalls(BO.CallInListSort? filterType = null, object? filterValue = null, BO.CallInListSort? sortType = null)
     //{
     //    try

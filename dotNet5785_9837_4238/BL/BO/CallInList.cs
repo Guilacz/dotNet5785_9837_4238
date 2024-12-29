@@ -28,7 +28,7 @@ public class CallInList
 
     public TimeSpan? TimeToEnd { get; set; }
 
-    public string? LastName { get; set; }
+    public string? LastName { get; init; }
 
     public TimeSpan? TimeToCare { get; set; }
 

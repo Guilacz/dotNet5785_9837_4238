@@ -1,0 +1,23 @@
+﻿<Window x:Class="PL.EnterSystemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL"
+        mc:Ignorable="d"
+        Title="EnterSystemWindow" Height="450" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
+    <Grid>
+
+
+        <Label Content="Enter your T.Z :" HorizontalAlignment="Left" Margin="256,174,0,0" VerticalAlignment="Top"/>
+        <Label Content="Enter your password :" HorizontalAlignment="Left" Margin="256,230,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="400,178,0,0" TextWrapping="Wrap" Text="{Binding TzValue}" VerticalAlignment="Top" Width="120" />
+        <PasswordBox HorizontalAlignment="Left" Margin="400,234,0,0" VerticalAlignment="Top" Width="120" />
+        
+        <Button Content="Login" HorizontalAlignment="Left" Margin="318,287,0,0" VerticalAlignment="Top" Width="120" Click="LoginButton_Click"/>
+
+
+    </Grid>
+</Window>
