@@ -267,12 +267,6 @@ internal class VolunteerImplementation : IVolunteer
                 .Select(call => call.CallId).FirstOrDefault()) is DO.Call callId && callId != null ? (BO.CallType) callId.CallType : BO.CallType.None
             });
 
-            //var matchingAssignments = _dal.Assignment.ReadAll(a => a.VolunteerId == convertVolunteer.Id);
-
-            //int finished = matchingAssignments.Count(a => a. == DO.TypeOfEnd.Fulfilled);
-
-            //int canceled = matchingAssignments.Count(a => a.Status == DO.EndType.SelfCancelled);
-            //int expired = matchingAssignments.Count(a => a.Status == DO.EndType.Expired);
 
             if (isActive.HasValue)
             {

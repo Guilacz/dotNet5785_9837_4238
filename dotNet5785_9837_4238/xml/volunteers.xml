@@ -43,20 +43,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>327598595</VolunteerId>
-    <Name>Ivy Kidron</Name>
-    <Phone>0535678901</Phone>
-    <Email>Ivy@gmail.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>AirDistance</DistanceType>
-    <Password>strong@pw</Password>
-    <Address>Herzl Boulevard 89, Jerusalem</Address>
-    <Distance>25272</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>565353679</VolunteerId>
     <Name>Esteria Eisenberg</Name>
     <Phone>0771234567</Phone>
@@ -94,20 +80,6 @@
     <Password>data@save</Password>
     <Address>Hebron Road 34, Jerusalem</Address>
     <Distance>9018</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
-    <VolunteerId>245657465</VolunteerId>
-    <Name>Yael Levy</Name>
-    <Phone>045678901</Phone>
-    <Email>Yael@gmail.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>simple@me</Password>
-    <Address>Ben Yehuda Street 78, Jerusalem</Address>
-    <Distance>15057</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -208,6 +180,48 @@
     <Distance>9037</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>327598595</VolunteerId>
+    <Name>Ivy Kidron</Name>
+    <Phone>0535678901</Phone>
+    <Email>Ivy@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>jiknov@mf</Password>
+    <Address>Herzl Boulevard 89, Jerusalem</Address>
+    <Distance>252</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>325464238</VolunteerId>
+    <Name>bracha k</Name>
+    <Phone>0533437353</Phone>
+    <Email>bracha@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>bjywvu@ywvu</Password>
+    <Address>Herzl St 10, Jerusalem, Israel</Address>
+    <Distance>6666</Distance>
+    <Latitude>31.7873786</Latitude>
+    <Longitude>35.1996734</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>245657465</VolunteerId>
+    <Name>Yael Levy</Name>
+    <Phone>045678901</Phone>
+    <Email>Yael@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>CarDistance</DistanceType>
+    <Password>jtpmqx@px</Password>
+    <Address>Ben Yehuda Street 78, Jerusalem</Address>
+    <Distance>150</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
 </ArrayOfVolunteer>
