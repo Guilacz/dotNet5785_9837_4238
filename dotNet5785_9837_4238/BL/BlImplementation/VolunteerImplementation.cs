@@ -173,6 +173,58 @@ internal class VolunteerImplementation : IVolunteer
         }
     }
 
+    public BO.Role EnterSystemWithId(int id, string password)
+    {
+        try
+        {
+            var volunteersFromDal = _dal.Volunteer.ReadAll();
+            string passwordAsString = password.ToString();
+
+            var vol = volunteersFromDal.FirstOrDefault(v => v.VolunteerId == id && v.Password == passwordAsString);
+
+            if (vol == null)
+            {
+                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            }
+            if (vol.Latitude == null || vol.Longitude == null)
+            {
+                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+                vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+            }
+
+            if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
+            {
+                VolunteerId = vol.VolunteerId,
+                Name = vol.Name,
+                Phone = vol.Phone,
+                Email = vol.Email,
+                RoleType = (BO.Role)vol.RoleType,
+                DistanceType = (BO.DistanceType)vol.DistanceType,
+                Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+                //Password = vol.Password,
+                Address = vol.Address,
+                Distance = vol.Distance,
+                Latitude = vol.Latitude,
+                Longitude = vol.Longitude,
+                IsActive = vol.IsActive,
+            }))
+            {
+                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+            }
+            return (BO.Role)vol.RoleType;
+        }
+        catch (DO.DalArgumentNullException ex)
+        {
+            // This handles the specific case where the volunteer is not found or password is incorrect
+            throw new BO.BlArgumentNullException(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            // This handles the specific case where the volunteer data is invalid
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+    }
+
 
     /// <summary>
     /// function to get the details of a volunteer from his id : 
