@@ -40,7 +40,7 @@ namespace PL.Volunteer
         {
             if (CallTypeSelected == BO.CallType.None)
             {
-                VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
+                IEnumerable<VolunteerInList> VolunteerList = s_bl?.Volunteer.GetVolunteerInLists()!;
             }
             else
             {

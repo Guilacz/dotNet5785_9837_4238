@@ -14,7 +14,6 @@ public interface IVolunteer : IObservable
 
     IEnumerable<VolunteerInList> GetVolunteersListByCallType(BO.CallType callType);
 
-
     BO.Volunteer GetVolunteerDetails(int volId);
 
     void Update(int volId, BO.Volunteer vol);
