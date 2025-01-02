@@ -1,6 +1,7 @@
 ﻿namespace BlImplementation;
 using BlApi;
 using BO;
+
 using Helpers;
 
 
@@ -332,19 +333,22 @@ internal class CallImplementation : ICall
                     : null;
 
                 // חישוב TimeToCare
-                var timeToCare = boCall.MaxTime.HasValue
-                    ? boCall.MaxTime.Value.Subtract(DateTime.Now) // אם יש MaxTime, מחשבים את הזמן שנותר עד לסיום הקריאה
-                    : (TimeSpan?)null; // אם אין MaxTime, משאירים כ-null
-
+                var timeToCare = boCall.MaxTime.HasValue && lastAssignment?.StartTime != null
+      ? boCall.MaxTime.Value.Subtract(lastAssignment.StartTime) // חישוב MaxTime פחות StartTime
+      : (TimeSpan?)null; // אם אחד מהם חסר, משאירים null
+               // var timeToCare = boCall.MaxTime.Value.Subtract(lastAssignment.StartTime);
                 return new BO.CallInList
                 {
                     CallId = boCall.CallId,
                     CallType = boCall.CallType,
                     OpenTime = boCall.OpenTime,
                     LastName = lastVolunteerName, // שם המתנדב שטיפל בקריאה
-                    TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
+                    TimeToEnd = boCall.MaxTime.HasValue
+                                 ? boCall.MaxTime.Value.Subtract(DateTime.Now) // MaxTime פחות השעה הנוכחית
+                             : (TimeSpan?)null, // אם אין MaxTime, משאירים null
                     TimeToCare = timeToCare, // חישוב הזמן שנותר עד לסיום הקריאה
-                    CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
+                    CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments),
+                    NumberOfAssignment = assignments.Count(a => a.CallId == boCall.CallId)
                 };
             }).ToList();
             //var callInList = calls.Select(c =>

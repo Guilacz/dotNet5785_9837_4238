@@ -11,6 +11,10 @@
 
     <!--External Grid-->
     <Grid Background="#F5F5DC">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
         <!--Call List Lines-->
         <Grid.RowDefinitions>
@@ -21,7 +25,7 @@
 
 
         <!--Line of the combobox-->
-        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
+        <Grid Height="auto" Grid.Row="0" Width="auto" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="2*" />
@@ -44,9 +48,9 @@
 
 
         <!--datagrid of the list of the calls-->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding CallList}" SelectedItem="{Binding SelectedCall}" 
+        <DataGrid ItemsSource="{Binding CallList}" SelectedItem="{Binding SelectedCall}" 
           AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True" MouseDoubleClick="lsvCallList_MouseDoubleClick" 
-          RowDetailsVisibilityMode="VisibleWhenSelected" >
+          RowDetailsVisibilityMode="VisibleWhenSelected" Grid.ColumnSpan="2" Margin="0,28,0,0" Grid.RowSpan="2" >
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
 
@@ -71,6 +75,14 @@
                 <!-- Column for sum of assignments -->
                 <DataGridTextColumn Binding="{Binding NumberOfAssignment}" Header="Total of assignements" Width="Auto"/>
 
+                <!--<DataGridTemplateColumn Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding CallId}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+
 
             </DataGrid.Columns>
 
@@ -78,7 +90,7 @@
 
         </DataGrid>
 
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click"/>
+        <Button Content="Add" Grid.Row="1" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click" Grid.Column="1" Margin="0,356,0,0" Grid.RowSpan="2"/>
 
 
 
