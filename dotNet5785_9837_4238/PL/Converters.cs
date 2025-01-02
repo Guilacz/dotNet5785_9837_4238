@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows;
+using DalApi;
 
 namespace PL
 {
@@ -14,6 +15,15 @@ namespace PL
     /// </summary>
     public  class ConverterAddUpdate : IValueConverter
     {
+
+        private IEnumerable<DO.Assignment> _assignments;
+
+        // Add this property to the class
+        public IEnumerable<DO.Assignment> Assignments
+        {
+            get => _assignments;
+            set => _assignments = value;
+        }
         /// <summary>
         /// Converts a single value to a Visibility  or bool value.
         /// </summary>
@@ -24,6 +34,15 @@ namespace PL
         /// <returns>A converted value based on the input value and target type.</returns>
         public object Convert(object values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (parameter as string == "Delete" && values is BO.Call call)
+            {
+                int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
+                if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
             if (values is string add && add == "Add")
             {
                 if (targetType == typeof(Visibility))
@@ -55,5 +74,28 @@ namespace PL
         {
             throw new NotImplementedException();
         }
+
+
+
+        //public object ConvertToDelete(object value, Type targetType, object parameter, CultureInfo culture)
+        //{
+
+
+
+        //    if (value is BO.Call call)
+        //    {
+        //        //IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+        //        int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
+
+        //        // תנאי: קריאה בסטטוס פתוח והקצאות שוות לאפס
+        //        if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
+        //        {
+        //            return Visibility.Visible;
+        //        }
+        //    }
+
+        //    return Visibility.Collapsed;
+        //}
     }
 }

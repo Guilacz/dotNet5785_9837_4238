@@ -184,10 +184,10 @@ internal class CallImplementation : ICall
                 throw new BO.BlDeletionImpossible("Can't delete this call.");
             }
 
-            if (!Helpers.CallManager.CheckCall(c))
-            {
-                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-            }
+            //if (!Helpers.CallManager.CheckCall(c))
+            //{
+            //    throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+            //}
 
             _dal.Call.Delete(callId);
             CallManager.Observers.NotifyListUpdated();

@@ -289,15 +289,6 @@
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
-    <CallId>34</CallId>
-    <CallType>English_High</CallType>
-    <Address>7 Greenberg Street, Jerusalem</Address>
-    <Latitude>35.192176</Latitude>
-    <Longitude>31.81637</Longitude>
-    <OpenTime>2024-12-19T23:33:11</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
     <CallId>35</CallId>
     <CallType>Math_Primary</CallType>
     <Address>6 Henrietta Szold Street, Jerusalem</Address>

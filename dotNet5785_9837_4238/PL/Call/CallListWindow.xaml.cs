@@ -94,5 +94,41 @@ namespace PL.Call
             if (SelectedCall != null)
                 new CallWindow(SelectedCall.CallId).Show();
         }
+
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int callId)
+            {
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete the call with ID {callId}?",
+                    "Confirm Deletion",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        s_bl.Call.Delete(callId);
+
+                        queryCallList();
+
+                        MessageBox.Show($"call with ID {callId} has been successfully deleted.",
+                                        "Deletion Successful",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Information);
+                    }
+                    catch (BO.BlDeletionImpossible ex)
+                    {
+                        MessageBox.Show(ex.Message, "Deletion Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    catch (BO.BlInvalidValueException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Invalid Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
     }
 }
