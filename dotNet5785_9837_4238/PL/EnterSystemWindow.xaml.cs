@@ -1,6 +1,8 @@
-﻿using System;
+﻿using PL.Volunteer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,25 +39,93 @@ namespace PL
 
 
 
+        public string PasswordValue
+        {
+            get { return (string)GetValue(PasswordValueProperty); }
+            set { SetValue(PasswordValueProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PasswordValue.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PasswordValueProperty =
+            DependencyProperty.Register("PasswordValue", typeof(string), typeof(EnterSystemWindow));
+
+
+
+
+
 
         public EnterSystemWindow()
         {
             InitializeComponent();
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            // Vérifiez si TzValue contient une valeur
-            if (!string.IsNullOrWhiteSpace(TzValue))
+            if (sender is PasswordBox passwordBox)
             {
-                // Affichez la valeur dans une boîte de dialogue
-                MessageBox.Show($"La valeur de T.Z est : {TzValue}", "Valeur T.Z", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                // Affichez une boîte de dialogue indiquant que la valeur est vide
-                MessageBox.Show("La valeur de T.Z est vide.", "Valeur T.Z", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                PasswordValue = passwordBox.Password;
             }
         }
+
+       
+
+        /// <summary>
+        /// login function : checks the role and open the right window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TzValue) || string.IsNullOrWhiteSpace(PasswordValue))
+            {
+                MessageBox.Show("Please fill all the required fields.", "Missing Values", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                if (!int.TryParse(TzValue, out int userId))
+                {
+                    MessageBox.Show("Invalid ID format. Please enter numeric ID.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var role = s_bl.Volunteer.EnterSystemWithId(userId, PasswordValue);
+
+                switch (role)
+                {
+                    case BO.Role.Volunteer:
+                        var volunteerWindow = new VolunteerWindow();
+                        volunteerWindow.Show();
+                        this.Close();
+                        break;
+
+                    case BO.Role.Manager:
+                        var managerWindow = new MainWindow();
+                        managerWindow.Show();
+                        this.Close();
+                        break;
+
+                    default:
+                        MessageBox.Show("Unknown role. Please contact support.", "Unknown Role", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        break;
+                }
+            }
+            catch (BO.BlArgumentNullException ex)
+            {
+                MessageBox.Show(ex.Message, "Login Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (BO.BlInvalidValueException ex)
+            {
+                MessageBox.Show(ex.Message, "Login Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
     }
 }

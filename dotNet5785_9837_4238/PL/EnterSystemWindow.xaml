@@ -14,7 +14,7 @@
         <Label Content="Enter your T.Z :" HorizontalAlignment="Left" Margin="256,174,0,0" VerticalAlignment="Top"/>
         <Label Content="Enter your password :" HorizontalAlignment="Left" Margin="256,230,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="400,178,0,0" TextWrapping="Wrap" Text="{Binding TzValue}" VerticalAlignment="Top" Width="120" />
-        <PasswordBox HorizontalAlignment="Left" Margin="400,234,0,0" VerticalAlignment="Top" Width="120" />
+        <PasswordBox HorizontalAlignment="Left" Margin="400,234,0,0" VerticalAlignment="Top" Width="120"  PasswordChanged="PasswordBox_PasswordChanged" />
         
         <Button Content="Login" HorizontalAlignment="Left" Margin="318,287,0,0" VerticalAlignment="Top" Width="120" Click="LoginButton_Click"/>
 
