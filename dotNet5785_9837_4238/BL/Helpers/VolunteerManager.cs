@@ -267,7 +267,7 @@ internal class VolunteerManager
     {
         if (password == null) 
             return false;
-        if (password.Length <8)
+        if (password.Length <=8)
             return false;
        if (!Regex.IsMatch(password, @"^[a-z@]+$"))
            return false;

@@ -182,16 +182,19 @@ internal class VolunteerImplementation : IVolunteer
 
             var vol = volunteersFromDal.FirstOrDefault(v => v.VolunteerId == id && v.Password == passwordAsString);
 
-            if (vol == null)
-            {
-                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
-            }
+            //if (vol == null)
+            //{
+            //    throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            //}
             if (vol.Latitude == null || vol.Longitude == null)
             {
                 var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
                 vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
             }
-
+            if (vol == null)
+            {
+                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+            }
             if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
             {
                 VolunteerId = vol.VolunteerId,
