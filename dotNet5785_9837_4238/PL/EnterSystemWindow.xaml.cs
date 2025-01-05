@@ -97,16 +97,32 @@ namespace PL
                 switch (role)
                 {
                     case BO.Role.Volunteer:
-                        var volunteerWindow = new VolunteerWindow();
+                        var volunteerWindow = new MainVolunteerWindow(userId);
                         volunteerWindow.Show();
                         this.Close();
                         break;
 
                     case BO.Role.Manager:
-                        var managerWindow = new MainWindow();
-                        managerWindow.Show();
+                        var result = MessageBox.Show("Which screen do you want to open ?\n" +
+                                 " 'Yes' for Manager or 'No' for Volunteer.",
+                                 "Choice of  screen",
+                                 MessageBoxButton.YesNo,
+                                 MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            var managerWindow = new MainWindow();
+                            managerWindow.Show();
+                        }
+                        else if (result == MessageBoxResult.No)
+                        {
+                            var volunteer2Window = new MainVolunteerWindow(userId);
+                            volunteer2Window.Show();
+                        }
+
                         this.Close();
                         break;
+
 
                     default:
                         MessageBox.Show("Unknown role. Please contact support.", "Unknown Role", MessageBoxButton.OK, MessageBoxImage.Warning);

@@ -76,10 +76,9 @@ namespace PL
         public MainVolunteerWindow(int id)
         {
             InitializeComponent();
-            CurrentVolunteer = s_bl.Volunteer.GetVolunteerDetails(id);
+            CurrentVolunteer = s_bl.Volunteer.Read(id);
             Loaded += Window_Loaded;
             Closed += Window_Closed;
-
 
         }
 

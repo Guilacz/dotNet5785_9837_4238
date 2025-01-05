@@ -104,8 +104,18 @@ public static class Tools
             var coordinates = locationData[0];
 
 
-            bool isLatValid = double.TryParse(coordinates.lat, out double latitude);
-            bool isLonValid = double.TryParse(coordinates.lon, out double longitude);
+            //bool isLatValid = double.TryParse(coordinates.lat, out double latitude);
+            //bool isLonValid = double.TryParse(coordinates.lon, out double longitude);
+
+            bool isLonValid = double.TryParse(coordinates.lon,
+                                  System.Globalization.NumberStyles.Float,
+                                  System.Globalization.CultureInfo.InvariantCulture,
+                                  out double longitude);
+            bool isLatValid = double.TryParse(coordinates.lat,
+                                              System.Globalization.NumberStyles.Float,
+                                              System.Globalization.CultureInfo.InvariantCulture,
+                                              out double latitude);
+
 
 
 
