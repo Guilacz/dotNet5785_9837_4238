@@ -8,16 +8,140 @@
         Title="CallWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
-    <Grid>
+        <Window.Resources>
+            <!-- TextBox style -->
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="BorderBrush" Value="#A9A9A9"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="Background" Value="#FFF8DC"/>
+            </Style>
+
+            <!-- ComboBox style -->
+            <Style TargetType="ComboBox">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="Beige"/>
+                <Setter Property="BorderBrush" Value="#8B4513"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+
+            <!-- Button style -->
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="#FFDAB9"/>
+                <Setter Property="BorderBrush" Value="#8B4513"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+        <DataTemplate x:Key="AssignmentTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding AssignmentId}" Margin="5,0"/>
+                <TextBlock Text="{Binding Name}" Margin="5,0"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+        <Grid Margin="10" Background="#F5F5DC">
+            <!-- Define a grid with 4 columns -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <!-- Label (left column) -->
+                <ColumnDefinition Width="*"/>
+                <!-- Element (left column) -->
+                <ColumnDefinition Width="Auto"/>
+                <!-- Label (right column) -->
+                <ColumnDefinition Width="*"/>
+                <!-- Element (right column) -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Add dynamic rows -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+
+
+            <!-- Add more rows if needed -->
+            </Grid.RowDefinitions>
+
+            <!-- Left column (Label and element) -->
+            <Label Grid.Row="0" Grid.Column="0" Content="Call ID:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCall.CallId}" IsReadOnly="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Details:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCall.Details}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentCall.Address}"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Type of call:" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
+               SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="Status:" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallStatusCollectionKey}}" 
+               SelectedValue="{Binding CurrentCall.CallStatus}"/>
+
+
+            <Label Grid.Row="5" Grid.Column="0" Content="Opening Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+            <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding CurrentCall.OpenTime}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+
+            <Label Grid.Row="6" Grid.Column="0" Content="Maximum Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
+            <DatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="True" Visibility ="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+
+            <Label Grid.Row="7" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding CurrentCall.Address}"/>
 
 
 
+        <!-- Right column (Label and element) -->
+        <Label Grid.Row="0" Grid.Column="2" Content="Volunteer name:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <ComboBox Grid.Row="0" Grid.Column="3"
+    ItemsSource="{Binding CurrentCall.callAssignInLists}" 
+    SelectedItem="{Binding SelectedAssignment}" 
+    ItemTemplate="{StaticResource AssignmentTemplate}"
+    Width="150" HorizontalAlignment="Left" IsReadOnly="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
+        <!-- Volunteer Id -->
+        <Label Grid.Row="1" Grid.Column="2" Content="Volunteer Id:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectedAssignment.VolunteerId}" IsReadOnly="True" Width="150" HorizontalAlignment="Left" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
+        <!-- Start Time -->
+        <Label Grid.Row="2" Grid.Column="2" Content="Start Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <DatePicker Grid.Row="2" Grid.Column="3" SelectedDate="{Binding SelectedAssignment.StartTime}" IsEnabled="False" Width="150" HorizontalAlignment="Left" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
+        <!-- End of the Call -->
+        <Label Grid.Row="3" Grid.Column="2" Content="End of the Call:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <ComboBox Grid.Row="3" Grid.Column="3" 
+    ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
+    SelectedValue="{Binding SelectedAssignment.TypeOfEnd}" 
+    IsEnabled="False" Width="150" HorizontalAlignment="Left" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+
+       
+        <!-- Finish Time -->
+        <Label Grid.Row="4" Grid.Column="2" Content="Finish Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <DatePicker Grid.Row="4" Grid.Column="3" SelectedDate="{Binding SelectedAssignment.FinishTime}" IsEnabled="False" Width="150" HorizontalAlignment="Left" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
         <!-- Add/Update Button -->
-        <Button Content="{Binding ButtonText2}" HorizontalAlignment="Left" Margin="53,364,0,26" 
-             Click="btnAddUpdate_Click" Width="113"/>
+
+        <!-- ובתחתית ה-Grid, שים את הכפתור -->
+        <Button Grid.Row="12" 
+        Content="{Binding ButtonText2}" 
+        HorizontalAlignment="Left"
+        Margin="53,10,0,10"
+        Click="btnAddUpdate_Click" 
+        Width="113"/>
     </Grid>
 </Window>

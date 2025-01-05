@@ -33,8 +33,8 @@ internal class VolunteerManager
             return false;
         if (!Tools.CheckAddressVolunteer(vol))
             return false;
-        if(!CheckValidityOfPassword(vol.Password))
-            return false;
+    //    if(!CheckValidityOfPassword(vol.Password))
+     //       return false;
   
         return true;
     }
@@ -269,10 +269,10 @@ internal class VolunteerManager
             return false;
         if (password.Length <=8)
             return false;
-       if (!Regex.IsMatch(password, @"^[a-z@]+$"))
-           return false;
-        if (!(password.Contains('@') || password.Contains('.')))
-            return false;
+     //  if (!Regex.IsMatch(password, @"^[a-z@]+$"))
+     //      return false;
+     //   if (!(password.Contains('@') || password.Contains('.')))
+      //      return false;
         return true;
     }
 

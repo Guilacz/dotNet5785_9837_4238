@@ -32,26 +32,38 @@ namespace PL
         /// <param name="parameter">An optional parameter for the conversion.</param>
         /// <param name="culture">The culture to be used in the converter.</param>
         /// <returns>A converted value based on the input value and target type.</returns>
+        /// 
         public object Convert(object values, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter as string == "Delete" && values is BO.Call call)
             {
+                // וודא של `_assignments` לא יהיה `null`
+                if (_assignments == null)
+                {
+                    return Visibility.Collapsed;
+                }
+
                 int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
+
+                // התנאי לא לפיה אם קריאה פתוחה ואין הקצאות
                 if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
                 {
                     return Visibility.Visible;
                 }
+
                 return Visibility.Collapsed;
             }
+
             if (values is string add && add == "Add")
             {
                 if (targetType == typeof(Visibility))
                     return Visibility.Collapsed;
-           
-                if (targetType == typeof(bool))//to id isRead
+
+                if (targetType == typeof(bool))
                     return false;
             }
 
+            // אם הסטטוס הוא עדכון, היכולת תישאר גלויה
             if (targetType == typeof(Visibility))
                 return Visibility.Visible;
 
@@ -60,6 +72,40 @@ namespace PL
 
             throw new NotImplementedException();
         }
+
+
+        //public object Convert(object values, Type targetType, object parameter, CultureInfo culture)
+        //{
+        //    if (parameter as string == "Delete" && values is BO.Call call)
+        //    {
+        //        int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
+        //        if (_assignments == null)
+        //        {
+        //            return Visibility.Collapsed;
+        //        }
+        //        if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
+        //        {
+        //            return Visibility.Visible;
+        //        }
+        //        return Visibility.Collapsed;
+        //    }
+        //    if (values is string add && add == "Add")
+        //    {
+        //        if (targetType == typeof(Visibility))
+        //            return Visibility.Collapsed;
+
+        //        if (targetType == typeof(bool))//to id isRead
+        //            return false;
+        //    }
+
+        //    if (targetType == typeof(Visibility))
+        //        return Visibility.Visible;
+
+        //    if (targetType == typeof(bool))
+        //        return true;
+
+        //    throw new NotImplementedException();
+        //}
 
         /// <summary>
         /// Converts a value back to the original value.
