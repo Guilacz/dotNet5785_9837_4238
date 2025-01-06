@@ -67,9 +67,9 @@ public static class Tools
         }
 
         //braha
-        ////const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+        const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
         ///guila
-        const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
+        //const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
         const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
 
         string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";

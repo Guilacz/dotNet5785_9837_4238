@@ -10,6 +10,8 @@
 
     <Window.Resources>
         <local:ConverterAddUpdate x:Key="ConverterAddUpdateKey"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
     </Window.Resources>
 
 
@@ -28,7 +30,7 @@
         </Grid.RowDefinitions>
 
 
-        <!--Line of the combobox-->
+        <!--Line of the combobox--><!--
         <Grid Height="auto" Grid.Row="0" Width="auto" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -37,23 +39,106 @@
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
 
-            <!-- first Label -->
+            --><!-- first Label --><!--
             <Label Grid.Column="0" Content="Sort By :" HorizontalAlignment="Right" VerticalAlignment="Center" />
-            <!-- first ComboBox -->
+            --><!-- first ComboBox --><!--
             <ComboBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" />
-            <!-- second Label -->
+            --><!-- second Label --><!--
             <Label Grid.Column="1" Content="Filter By :" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="215,0,0,0" Grid.ColumnSpan="2" />
-            <!-- second ComboBox -->
+            --><!-- second ComboBox --><!--
             <ComboBox Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Grid.ColumnSpan="2" Margin="11,0,0,0" />
-            <!-- Filter Value-->
+            --><!-- Filter Value--><!--
             <TextBox HorizontalAlignment="Left" Margin="187,0,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Center" Width="70" Grid.Column="3"/>
             <Label Grid.Column="3" Content="Enter your Filter value:" HorizontalAlignment="Left" Margin="51,0,0,0" VerticalAlignment="Center" Width="131"/>
+        </Grid>-->
+        <!--<Grid Height="auto" Grid.Row="0" Width="auto" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            --><!-- Label for Sort By --><!--
+            <Label Grid.Column="0" Content="Sort By:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            --><!-- ComboBox for Sorting --><!--
+            <ComboBox x:Name="cmbSortBy" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"
+      SelectionChanged="cmbSortBy_SelectionChanged">
+                <ComboBoxItem Content="Open Time" Tag="OpenTime" />
+                <ComboBoxItem Content="Last Name" Tag="LastName" />
+                <ComboBoxItem Content="Call ID" Tag="CallId" />
+            </ComboBox>
+
+            --><!-- Label for Filter By --><!--
+            <Label Grid.Column="2" Content="Filter By:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            --><!-- ComboBox for Filtering --><!--
+            <ComboBox x:Name="cmbFilterBy" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"
+      SelectionChanged="cmbFilterBy_SelectionChanged">
+                <ComboBoxItem Content="Call Type" Tag="CallType" />
+                <ComboBoxItem Content="Call Status" Tag="CallInListStatus" />
+            </ComboBox>
+
+            --><!-- Label for Filter Value --><!--
+            <Label Grid.Column="4" Content="Enter your Filter Value:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+            --><!-- Filter Value TextBox --><!--
+            <TextBox x:Name="txtFilterValue" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Visibility="Visible" />
+
+            --><!-- Filter Value ComboBox --><!--
+            <ComboBox x:Name="cmbFilterValue" Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Visibility="Collapsed" />
+        </Grid>-->
+
+
+        <Grid Height="auto" Grid.Row="0" Width="auto" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Label for Sort By -->
+            <Label Grid.Column="0" Content="Sort By:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <!-- ComboBox for Sorting -->
+            <ComboBox Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"
+          SelectedItem="{Binding SelectedSortBy}"
+          SelectionChanged="cmbSortBy_SelectionChanged">
+                <ComboBoxItem Content="Open Time" Tag="OpenTime" />
+                <ComboBoxItem Content="Last Name" Tag="LastName" />
+                <ComboBoxItem Content="Call ID" Tag="CallId" />
+            </ComboBox>
+
+            <!-- Label for Filter By -->
+            <Label Grid.Column="2" Content="Filter By:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <!-- ComboBox for Filtering -->
+            <ComboBox Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"
+          SelectedItem="{Binding SelectedFilterBy}"
+          SelectionChanged="cmbFilterBy_SelectionChanged">
+                <ComboBoxItem Content="Call Type" Tag="CallType" />
+                <ComboBoxItem Content="Call Status" Tag="CallInListStatus" />
+            </ComboBox>
+
+            <!-- Label for Filter Value -->
+            <Label Grid.Column="4" Content="Enter your Filter Value:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+            <!-- Filter Value TextBox -->
+            <TextBox Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" 
+             Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" 
+             Visibility="{Binding IsFilterTextBoxVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+            <!-- Filter Value ComboBox -->
+            <ComboBox Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"
+          ItemsSource="{Binding FilterValueOptions}"
+          SelectedItem="{Binding SelectedFilterValue}"
+          SelectionChanged="cmbFilterValue_SelectionChanged"/>
         </Grid>
 
 
         <!--datagrid of the list of the calls-->
         <DataGrid ItemsSource="{Binding CallList}" SelectedItem="{Binding SelectedCall}" 
-          AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True" MouseDoubleClick="lsvCallList_MouseDoubleClick" 
+          AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True"
           RowDetailsVisibilityMode="VisibleWhenSelected" Grid.ColumnSpan="2" Margin="0,28,0,0" Grid.RowSpan="2" >
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
