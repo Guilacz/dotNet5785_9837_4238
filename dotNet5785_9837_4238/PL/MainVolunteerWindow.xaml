@@ -4,6 +4,8 @@
         Title="Volunteer Management" Height="600" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
+
+
     <Grid Margin="10">
 
         <Grid.ColumnDefinitions>
@@ -67,8 +69,10 @@
 
 
 
-        <StackPanel Grid.Column="1"  Margin="10" Grid.RowSpan="2">
-            <TextBlock Text="Call in care Details" FontWeight="Bold" FontSize="16" Width="150"/>
+        <StackPanel Grid.Column="1"  Margin="10" Grid.RowSpan="2" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}}">
+            
+
+            <TextBlock Text="Call in care Details"   FontWeight="Bold" FontSize="16" Width="150"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -93,7 +97,7 @@
 
                 <!-- Id (int) -->
                 <TextBlock Text="Id:" Grid.Row="0" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentCall.Id}" IsReadOnly="True"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Id}" IsReadOnly="True"/>
 
                 <!-- Type (ENUM) -->
                 <TextBlock Text="Type:" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
@@ -101,28 +105,28 @@
 
                 <!-- Description (string) -->
                 <TextBlock Text="Description:" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding CurrentCall.Description}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Details}"/>
 
                 <!-- adress -->
                 <TextBlock Text="Address:" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding CurrentCall.adress}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Adress}"/>
 
 
 
                 <!-- Start Time (DateTime) -->
                 <TextBlock Text="Start Time:" Grid.Row="4" VerticalAlignment="Center" Margin="5"/>
-                <DatePicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentCall.StartTime}"/>
+                <DatePicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentVolunteer.callInCaring.StartTime}"/>
 
                 <!-- End Time (DateTime) -->
                 <TextBlock Text="End Time:" Grid.Row="5" VerticalAlignment="Center" Margin="5"/>
-                <DatePicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentCall.EndTime}"/>
+                <DatePicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentVolunteer.callInCaring.MaxTime}"/>
 
                 <!-- Status (ENUM) -->
                 <TextBlock Text="Status:" Grid.Row="6" VerticalAlignment="Center" Margin="5"/>
                 <ComboBox Grid.Row="6" Grid.Column="1" Margin="5" ItemsSource="{Binding StatusTypes}" SelectedItem="{Binding CurrentCall.Status}"/>
 
-                <Button Grid.Row="9"  Grid.Column="0" Content="Cancel Call" Width="100" Click="CancellCall_Click" IsEnabled="{Binding HasActiveCall}" Height="60" Margin="0,62,0,-62"/>
-                <Button Grid.Row="9" Grid.Column="1" Content="Finish Call" Width="100" Click="FinishCall_Click" IsEnabled="{Binding HasActiveCall}" Height="60" Margin="20,62,20,-62"/>
+                <Button Grid.Row="9"  Grid.Column="0" Content="Cancel Call" Width="100" Click="CancellCall_Click"  Height="60" Margin="0,62,0,-62"/>
+                <Button Grid.Row="9" Grid.Column="1" Content="Finish Call" Width="100" Click="FinishCall_Click"  Height="60" Margin="20,62,20,-62"/>
             </Grid>
 
 

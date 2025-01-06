@@ -135,6 +135,13 @@
           SelectionChanged="cmbFilterValue_SelectionChanged"/>
         </Grid>
 
+        
+        <!--new combobox-->
+        <ComboBox x:Name="cmbFilterValue" 
+          SelectionChanged="cmbFilterValue_SelectionChanged" 
+          Width="150" Height="30" 
+          Margin="10" />
+
 
         <!--datagrid of the list of the calls-->
         <DataGrid ItemsSource="{Binding CallList}" SelectedItem="{Binding SelectedCall}" 

@@ -144,4 +144,24 @@ namespace PL
         //    return Visibility.Collapsed;
         //}
     }
+
+
+
+
+
+
+    public class CallInProgressVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var callInProgress = value as BO.CallInProgress;
+            // Return Visibility.Visible if there's a call in progress, otherwise Collapsed
+            return callInProgress != null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
