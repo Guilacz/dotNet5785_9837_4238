@@ -1,6 +1,8 @@
 ﻿using BO;
+using PL.Volunteer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,285 +17,189 @@ using System.Windows.Shapes;
 
 namespace PL.Call
 {
-    /// <summary>
-    /// Interaction logic for CallListWindow.xaml
-    /// </summary>
-    //public partial class CallListWindow : Window
-    //{
-    //    // Access to the BL
-    //    static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-
-    //    // DependencyProperty for the Call list
-    //    public IEnumerable<BO.CallInList> CallList
-    //    {
-    //        get { return (IEnumerable<BO.CallInList>)GetValue(CallListProperty); }
-    //        set { SetValue(CallListProperty, value); }
-    //    }
-    //    public static readonly DependencyProperty CallListProperty =
-    //        DependencyProperty.Register("CallList", typeof(IEnumerable<BO.CallInList>), typeof(CallListWindow));
-
-    //    // DependencyProperty for the selected call
-    //    public BO.CallInList? SelectedCall { get; set; }
-
-    //    // DependencyProperty for selected sort type
-    //    public string SelectedSortBy { get; set; } = "OpenTime";
-
-    //    // DependencyProperty for selected filter type
-    //    public string SelectedFilterBy { get; set; } = "CallType";
-
-    //    // DependencyProperty for filter value
-    //    public string FilterValue { get; set; } = string.Empty;
-
-    //    // DependencyProperty for filter value visibility
-    //    public bool IsFilterTextBoxVisible { get; set; } = true;
-
-    //    private void cmbFilterBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    //    {
-    //        // קבלת הערך הנבחר מתוך ה-ComboBox
-    //        var selectedItem = ((ComboBox)sender).SelectedItem as ComboBoxItem;
-
-    //        if (selectedItem != null)
-    //        {
-    //            // אם הפריט הנבחר הוא ComboBoxItem, קבלת ה-Tag שלו
-    //            SelectedFilterBy = selectedItem.Tag.ToString();
-    //        }
-    //        else
-    //        {
-    //            // אם נבחר ערך אחר, ניתן לשנות את הלוגיקה בהתאם, למשל אם מדובר במחרוזת:
-    //            SelectedFilterBy = ((ComboBox)sender).SelectedItem.ToString();
-    //        }
-
-    //        // קריאה לפונקציה שמספקת את רשימת הקריאות לפי הסינון
-    //        queryCallList();
-    //    }
-
-    //    private void cmbSortBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    //    {
-    //        // קבלת הערך שנבחר מה-ComboBox (נניח אתה רוצה את ה-Tag)
-    //        var selectedItem = ((ComboBox)sender).SelectedItem as ComboBoxItem;
-
-    //        if (selectedItem != null)
-    //        {
-    //            // עדכון ערך המשתנה SelectedSortBy מה-Tag של הפריט
-    //            SelectedSortBy = selectedItem.Tag.ToString();
-    //        }
-
-    //        // קריאה לפונקציה שמספקת את רשימת הקריאות לפי הסינון
-    //        queryCallList();
-    //    }
-
-
-    //    private void lsvCallList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    //    {
-    //        // קבלת הקריאה שנבחרה
-    //        var selectedCall = SelectedCall; // או אם צריך: (DataGrid)sender).SelectedItem;
-
-    //        // פעולה שתתבצע כאשר יש לחיצה כפולה על שורה
-    //        if (selectedCall != null)
-    //        {
-    //            // לדוגמה, פתיחת פרטי הקריאה או פעולה אחרת
-    //            // תוכל להוסיף את הלוגיקה המתאימה כאן
-    //        }
-    //    }
-
-    //    // DependencyProperty for combo box visibility
-    //    private void queryCallList()
-    //    {
-    //        if (SelectedFilterBy == "CallType" && !string.IsNullOrEmpty(FilterValue))
-    //        {
-    //            // המרת המחרוזת לערך Enum מתאים
-    //            BO.CallInListSort? sortType = Enum.TryParse<BO.CallInListSort>(SelectedSortBy, out var result) ? result : (BO.CallInListSort?)null;
-
-    //            CallList = s_bl?.Call.GetListOfCalls(
-    //                BO.CallInListSort.CallType, FilterValue, sortType);
-    //        }
-    //        else if (SelectedFilterBy == "CallStatus" && !string.IsNullOrEmpty(FilterValue))
-    //        {
-    //            // המרת המחרוזת לערך Enum מתאים
-    //            BO.CallInListSort? sortType = Enum.TryParse<BO.CallInListSort>(SelectedSortBy, out var result) ? result : (BO.CallInListSort?)null;
-
-    //            CallList = s_bl?.Call.GetListOfCalls(
-    //                BO.CallInListSort.CallInListStatus, FilterValue, sortType);
-    //        }
-    //        else
-    //        {
-    //            // המרת המחרוזת לערך Enum מתאים
-    //            BO.CallInListSort? sortType = Enum.TryParse<BO.CallInListSort>(SelectedSortBy, out var result) ? result : (BO.CallInListSort?)null;
-
-    //            CallList = s_bl?.Call.GetListOfCalls(sortType);
-    //        }
-    //    }
-
-
-
-    //    // Function to be called whenever the filter or sort option changes
-    //    private void CallListObserver()
-    //    {
-    //        queryCallList();
-    //    }
-
-    //    // Window Loaded event handler
-    //    private void Window_Loaded(object sender, RoutedEventArgs e)
-    //    {
-    //        s_bl.Call.AddObserver(CallListObserver);
-    //    }
-
-    //    // Window Closed event handler
-    //    private void Window_Closed(object sender, EventArgs e)
-    //    {
-    //        s_bl.Call.RemoveObserver(CallListObserver);
-    //    }
-
-    //    // Constructor for the call list window
-    //    public CallListWindow()
-    //    {
-    //        InitializeComponent();
-    //        queryCallList();
-    //        Loaded += Window_Loaded;
-    //        Closed += Window_Closed;
-    //    }
-    public partial class CallListWindow : Window
+    public partial class CallListWindow : Window, INotifyPropertyChanged
     {
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-        // DependencyProperty for the Call list
-        public IEnumerable<BO.CallInList> CallList
-        {
-            get { return (IEnumerable<BO.CallInList>)GetValue(CallListProperty); }
-            set { SetValue(CallListProperty, value); }
-        }
-        public static readonly DependencyProperty CallListProperty =
-            DependencyProperty.Register("CallList", typeof(IEnumerable<BO.CallInList>), typeof(CallListWindow));
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        // DependencyProperty for the selected call
-        public BO.CallInList? SelectedCall { get; set; }
-
-        // Properties for sorting, filtering and values
-        public static readonly DependencyProperty SelectedSortByProperty =
-            DependencyProperty.Register("SelectedSortBy", typeof(string), typeof(CallListWindow),
-            new PropertyMetadata("OpenTime"));
-
-        public static readonly DependencyProperty SelectedFilterByProperty =
-            DependencyProperty.Register("SelectedFilterBy", typeof(string), typeof(CallListWindow),
-            new PropertyMetadata("CallType"));
-
-        public static readonly DependencyProperty FilterValueOptionsProperty =
-            DependencyProperty.Register("FilterValueOptions", typeof(IEnumerable<string>),
-            typeof(CallListWindow), new PropertyMetadata(null));
-
-        public static readonly DependencyProperty SelectedFilterValueProperty =
-            DependencyProperty.Register("SelectedFilterValue", typeof(string),
-            typeof(CallListWindow), new PropertyMetadata(null));
-
-        public string SelectedSortBy
-        {
-            get { return (string)GetValue(SelectedSortByProperty); }
-            set { SetValue(SelectedSortByProperty, value); }
-        }
-
+        // Properties for filtering and sorting
+        private string _selectedFilterBy;
         public string SelectedFilterBy
         {
-            get { return (string)GetValue(SelectedFilterByProperty); }
-            set { SetValue(SelectedFilterByProperty, value); }
+            get => _selectedFilterBy;
+            set
+            {
+                if (_selectedFilterBy != value)
+                {
+                    _selectedFilterBy = value;
+                    OnPropertyChanged(nameof(SelectedFilterBy));
+                    UpdateFilterValueOptions();
+                }
+            }
         }
-
-        public IEnumerable<string> FilterValueOptions
-        {
-            get { return (IEnumerable<string>)GetValue(FilterValueOptionsProperty); }
-            set { SetValue(FilterValueOptionsProperty, value); }
-        }
-
+        public BO.Call SelectedCall { get; set; }
+        private string _selectedFilterValue;
         public string SelectedFilterValue
         {
-            get { return (string)GetValue(SelectedFilterValueProperty); }
-            set { SetValue(SelectedFilterValueProperty, value); }
+            get => _selectedFilterValue;
+            set
+            {
+                if (_selectedFilterValue != value)
+                {
+                    _selectedFilterValue = value;
+                    OnPropertyChanged(nameof(SelectedFilterValue));
+                    QueryCallList();
+                }
+            }
         }
 
-        private void cmbFilterValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private string _selectedSortBy;
+        public string SelectedSortBy
         {
-            // גישה ישירה לפריט הנבחר מבלי להמיר אותו ל-ComboBoxItem
-            var selectedItem = ((ComboBox)sender).SelectedItem as string;
-            if (selectedItem == null) return;
+            get => _selectedSortBy;
+            set
+            {
+                if (_selectedSortBy != value)
+                {
+                    _selectedSortBy = value;
+                    OnPropertyChanged(nameof(SelectedSortBy));
+                    QueryCallList();
+                }
+            }
+        }
 
-            SelectedFilterBy = selectedItem;
+        private IEnumerable<string> _filterValueOptions;
+        public IEnumerable<string> FilterValueOptions
+        {
+            get => _filterValueOptions;
+            private set
+            {
+                _filterValueOptions = value;
+                OnPropertyChanged(nameof(FilterValueOptions));
+            }
+        }
+        public IEnumerable<string> FilterByOptions { get; } = new[] { "CallType", "CallInListStatus" }; // לא כוללים תאריך
 
-            // עדכון אפשרויות הפילטר בהתאם לבחירה
+        public IEnumerable<string> SortByOptions { get; } = new[] { "CallId", "OpenTime", "LastName" }; // אפשרויות למיון
+
+        //public IEnumerable<string> FilterByOptions { get; } = new[] { "CallType", "CallInListStatus", "Date" }; // אפשרות סינון לפי תאריך
+
+        private IEnumerable<BO.CallInList> _callList;
+        public IEnumerable<BO.CallInList> CallList
+        {
+            get => _callList;
+            set
+            {
+                _callList = value;
+                OnPropertyChanged(nameof(CallList));
+            }
+        }
+
+        private DateTime? _startDate; // תאריך התחלה
+        public DateTime? StartDate
+        {
+            get => _startDate;
+            set
+            {
+                if (_startDate != value)
+                {
+                    _startDate = value;
+                    OnPropertyChanged(nameof(StartDate));
+                    QueryCallList();
+                }
+            }
+        }
+
+        private DateTime? _endDate; // תאריך סיום
+        public DateTime? EndDate
+        {
+            get => _endDate;
+            set
+            {
+                if (_endDate != value)
+                {
+                    _endDate = value;
+                    OnPropertyChanged(nameof(EndDate));
+                    QueryCallList();
+                }
+            }
+        }
+
+        private void UpdateFilterValueOptions()
+        {
             FilterValueOptions = SelectedFilterBy switch
             {
                 "CallType" => Enum.GetNames(typeof(BO.CallType)),
                 "CallInListStatus" => Enum.GetNames(typeof(BO.CallInListStatus)),
+                "Date" => Array.Empty<string>(), // סינון לפי תאריך לא מצריך ערכים
                 _ => Array.Empty<string>()
             };
-
-            queryCallList();
         }
 
-        private void cmbSortBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void QueryCallList()
         {
-            // גישה ישירה לפריט הנבחר מבלי להמיר אותו ל-ComboBoxItem
-            var selectedItem = ((ComboBox)sender).SelectedItem as string;
-            if (selectedItem == null) return;
-
-            SelectedSortBy = selectedItem;
-            queryCallList();
-        }
-
-
-        private void queryCallList()
-        {
-            // המרת ערך המיון ל-enum
             BO.CallInListSort? sortType = null;
+
             if (Enum.TryParse<BO.CallInListSort>(SelectedSortBy, out var parsedSortType))
             {
                 sortType = parsedSortType;
             }
 
-            // אם אין ערך פילטר נבחר
+            if (SelectedFilterBy == "Date" && StartDate.HasValue && EndDate.HasValue)
+            {
+                CallList = s_bl?.Call.GetListOfCalls(
+                    filterType: BO.CallInListSort.OpenTime,
+                    filterValue: new { StartDate = StartDate.Value, EndDate = EndDate.Value },
+                    sortType: sortType
+                );
+                return;
+            }
+
+
             if (string.IsNullOrEmpty(SelectedFilterValue))
             {
                 CallList = s_bl?.Call.GetListOfCalls(sortType: sortType);
                 return;
             }
 
-            // בחירת סוג הפילטר והפעלתו
-            if (SelectedFilterBy == "CallType")
+            CallList = SelectedFilterBy switch
             {
-                CallList = s_bl?.Call.GetListOfCalls(BO.CallInListSort.CallType, SelectedFilterValue, sortType);
-            }
-            else if (SelectedFilterBy == "CallInListStatus")
-            {
-                CallList = s_bl?.Call.GetListOfCalls(BO.CallInListSort.CallInListStatus, SelectedFilterValue, sortType);
-            }
-        }
+                "CallType" => s_bl?.Call.GetListOfCalls(filterType: BO.CallInListSort.CallType, filterValue: Enum.Parse<BO.CallType>(SelectedFilterValue), sortType: sortType),
+                "CallInListStatus" => s_bl?.Call.GetListOfCalls(filterType: BO.CallInListSort.CallInListStatus, filterValue: Enum.Parse<BO.CallInListStatus>(SelectedFilterValue), sortType: sortType),
+                _ => CallList
+            };
 
+        }
+        // Function to be called whenever the filter or sort option changes
         private void CallListObserver()
         {
-            queryCallList();
+            QueryCallList();
         }
 
-        public CallListWindow()
-        {
-            InitializeComponent();
-            queryCallList();
-            Loaded += Window_Loaded;
-            Closed += Window_Closed;
-        }
-
+        // Window Loaded event handler
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             s_bl.Call.AddObserver(CallListObserver);
         }
 
+        // Window Closed event handler
         private void Window_Closed(object sender, EventArgs e)
         {
             s_bl.Call.RemoveObserver(CallListObserver);
         }
 
-        ///-----------------------------------------BUTTONS------------------------------------
+        public CallListWindow()
+        {
+            InitializeComponent();
+            UpdateFilterValueOptions();
+            QueryCallList();
+        }
 
-        /// <summary>
-        /// Delete function for call
-        /// </summary>
+
+
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is int callId)
@@ -309,9 +215,7 @@ namespace PL.Call
                     try
                     {
                         s_bl.Call.Delete(callId);
-
-                        queryCallList();
-
+                        QueryCallList();
                         MessageBox.Show($"Call with ID {callId} has been successfully deleted.",
                                         "Deletion Successful",
                                         MessageBoxButton.OK,
@@ -329,60 +233,24 @@ namespace PL.Call
             }
         }
 
-        /// <summary>
-        /// Add function for new call
-        /// </summary>
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             new CallWindow().Show();
         }
 
-        /// <summary>
-        /// Function to handle sorting selection changes
-        /// </summary>
         private void ComboBoxSortBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedSortBy = ((ComboBoxItem)((ComboBox)sender).SelectedItem).Tag.ToString();
-            queryCallList();
+            QueryCallList();
         }
 
-        /// <summary>
-        /// Function to handle filter selection changes
-        /// </summary>
-        private void cmbFilterBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = ((ComboBox)sender).SelectedItem as string;
-            if (selectedItem == null) return;
-
-            SelectedFilterBy = selectedItem;
-
-            // עדכון אפשרויות הפילטר בהתאם לבחירה
-            FilterValueOptions = SelectedFilterBy switch
-            {
-                "CallType" => Enum.GetNames(typeof(BO.CallType)),
-                "CallInListStatus" => Enum.GetNames(typeof(BO.CallInListStatus)),
-                _ => Array.Empty<string>()
-            };
-
-            // עדכון הקומבובוקס הימני עם הערכים החדשים
-            cmbFilterValue.ItemsSource = FilterValueOptions;
-
-            // מאפס את הבחירה הנוכחית
-            cmbFilterValue.SelectedIndex = -1;
-
-            // ביצוע השאילתה מחדש
-            queryCallList();
-        }
-
-
-        /// <summary>
-        /// Function to handle double-click on a call in the list
-        /// </summary>
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (SelectedCall != null)
+            {
                 new CallWindow(SelectedCall.CallId).Show();
+            }
         }
+
     }
 }
-

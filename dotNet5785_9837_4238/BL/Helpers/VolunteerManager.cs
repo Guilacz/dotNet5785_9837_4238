@@ -110,13 +110,23 @@ internal class VolunteerManager
 
     internal static BO.CallInProgress? GetCallInProgress(DO.Assignment assignment, DO.Volunteer DOvoluTemp)
     {
-        DO.Call call = s_dal.Call.Read(assignment.CallId);
-        IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
+        //DO.Call call = s_dal.Call.Read(assignment.CallId);
+        //IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
 
+        //if (call == null)
+        //    return null;
+        //if (assignment == null)
+        //    return null;
+
+        if (assignment == null || DOvoluTemp == null)
+            return null;
+
+        // Try to read the call; return null if it doesn't exist
+        DO.Call? call = s_dal.Call.Read(assignment.CallId);
         if (call == null)
             return null;
-        if (assignment == null)
-            return null;
+        IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
+
         //BO.CallStatus status = Helpers.CallManager.GetCallStatus(call, assignmentss);
         BO.CallInProgressStatus? callInProgressStatus = GetCallInProgressStatus(call, assignmentss);
 
