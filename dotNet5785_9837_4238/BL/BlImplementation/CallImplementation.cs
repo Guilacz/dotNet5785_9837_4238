@@ -252,14 +252,14 @@ internal class CallImplementation : ICall
     /// <exception cref="BO.BlDoesNotExistException"></exception>
 
 
-    internal static BO.CallInListStatus ConvertCallStatusToCallInListStatus(BO.CallStatus status, bool isAtRisk)
+    internal static BO.CallInListStatus ConvertCallStatusToCallInListStatus(BO.CallInListStatus status, bool isAtRisk)
     {
         return status switch
         {
-            BO.CallStatus.Open => isAtRisk ? BO.CallInListStatus.OpenAtRisk : BO.CallInListStatus.Open,
-            BO.CallStatus.InCare => isAtRisk ? BO.CallInListStatus.InCareAtRisk : BO.CallInListStatus.InCare,
-            BO.CallStatus.Closed => BO.CallInListStatus.Closed,
-            BO.CallStatus.Expired => BO.CallInListStatus.Expired,
+            BO.CallInListStatus.Open => isAtRisk ? BO.CallInListStatus.OpenAtRisk : BO.CallInListStatus.Open,
+            BO.CallInListStatus.InCare => isAtRisk ? BO.CallInListStatus.InCareAtRisk : BO.CallInListStatus.InCare,
+            BO.CallInListStatus.Closed => BO.CallInListStatus.Closed,
+            BO.CallInListStatus.Expired => BO.CallInListStatus.Expired,
             _ => BO.CallInListStatus.Open // ברירת מחדל
         };
     }
@@ -328,9 +328,11 @@ internal class CallImplementation : ICall
                         {
                             // קבלת סטטוס הקריאה לפי ההמרה
                             var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal);
-                            var isAtRisk = boCall.CallStatus == BO.CallStatus.Open && boCall.MaxTime.HasValue && boCall.MaxTime.Value < DateTime.Now;
+                            var isAtRisk = boCall.CallStatus == BO.CallInListStatus.Open && boCall.MaxTime.HasValue && boCall.MaxTime.Value < DateTime.Now;
                             var convertedStatus = ConvertCallStatusToCallInListStatus(boCall.CallStatus, isAtRisk);
                             return convertedStatus == (BO.CallInListStatus)status;
+                            // return status;
+
                         }) :
                         calls,
 
@@ -372,47 +374,7 @@ internal class CallImplementation : ICall
                     NumberOfAssignment = assignments.Count(a => a.CallId == boCall.CallId)
                 };
             }).ToList();
-            //var callInList = calls.Select(c =>
-            //{
-            //    var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal); // המרה מ-DO ל-BO
-
-            //    // חיפוש ההקצאה האחרונה של הקריאה
-            //    var lastAssignment = assignments
-            //        .Where(a => a.CallId == c.CallId)
-            //        .OrderByDescending(a => a.FinishTime ?? a.StartTime) // מסדר לפי FinishTime אם קיים, אחרת לפי StartTime
-            //        .FirstOrDefault();
-
-            //    // אם מצאנו הקצאה אחרונה, נחפש את המתנדב שקשור לה
-            //    var lastVolunteerName = lastAssignment != null
-            //        ? _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == lastAssignment.VolunteerId)?.Name
-            //        : null;
-
-            //    return new BO.CallInList
-            //    {
-            //        CallId = boCall.CallId,
-            //        CallType = boCall.CallType,
-            //        OpenTime = boCall.OpenTime,
-            //        LastName = lastVolunteerName, // שמו של המתנדב שטיפל בקריאה
-            //        TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
-            //        TimeToCare = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
-            //        CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
-            //    };
-            //}).ToList();
-
-            //var callInList = calls.Select(c =>
-            //{
-            //    var boCall = Helpers.CallManager.ConvertCallToBO(c, _dal); // המרה מ-DO ל-BO
-            //    return new BO.CallInList
-            //    {
-            //        CallId = boCall.CallId,
-            //        CallType = boCall.CallType,
-            //        OpenTime = boCall.OpenTime,
-            //        LastName = null,  // אם אתה רוצה להוסיף שם מתנדב, תוכל לעדכן כאן
-            //        TimeToEnd = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(boCall.OpenTime) : (TimeSpan?)null,
-            //        TimeToCare = boCall.MaxTime.HasValue ? boCall.MaxTime.Value.Subtract(DateTime.Now) : (TimeSpan?)null,
-            //        CallInListStatus = (BO.CallInListStatus)Helpers.CallManager.GetCallStatus(c, assignments)
-            //    };
-            //}).ToList();
+    
             if (sortType != null)
             {
                 callInList = sortType switch
@@ -706,7 +668,7 @@ internal class CallImplementation : ICall
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
-                return status == BO.CallStatus.Open || status == BO.CallStatus.OpenAtRisk || status == BO.CallStatus.InCare;
+                return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk || status == BO.CallInListStatus.InCare;
             });
 
 

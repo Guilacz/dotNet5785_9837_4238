@@ -148,14 +148,14 @@ internal class VolunteerManager
     }
     internal static CallInProgressStatus? GetCallInProgressStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
-        BO.CallStatus currentStatus = Helpers.CallManager.GetCallStatus(call, assignments);
+        BO.CallInListStatus currentStatus = Helpers.CallManager.GetCallStatus(call, assignments);
 
         switch (currentStatus)
         {
-            case BO.CallStatus.InCare:
+            case BO.CallInListStatus.InCare:
                 return CallInProgressStatus.InCare;
 
-            case BO.CallStatus.OpenAtRisk:
+            case BO.CallInListStatus.OpenAtRisk:
                 var isInCare = assignments.Any(a => a.CallId == call.CallId && a.FinishTime == null);
                 if (isInCare)
                 {

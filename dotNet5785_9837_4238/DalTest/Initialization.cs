@@ -251,7 +251,7 @@ public static class Initialization
 
 
         //creation of 45 calls
-        for (j = 0; j < 45; j++)
+        for (j = 0; j < 15; j++)
         {
             CallType callType = s_rand.Next(1, 9) switch
             {
@@ -267,12 +267,39 @@ public static class Initialization
 
                 _ => throw new DalInvalidValueException("Invalid value in call")
             };
+            DateTime openTime = s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)); // זמן פתיחה לפני 30 עד 120 דקות
+            DateTime maxTime = openTime.AddMinutes(random.Next(5, 20)); // מקסימום 5 עד 20 דקות לסגירה
+
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
+            s_dal!.Call.Create(c);
+        }
+
+        for (j = 15; j < 30; j++)
+        {
+            CallType callType = s_rand.Next(1, 9) switch
+            {
+                1 => CallType.Math_Primary,
+                2 => CallType.Math_Middle,
+                3 => CallType.Math_High,
+                4 => CallType.English_Primary,
+                5 => CallType.English_Middle,
+                6 => CallType.English_High,
+                7 => CallType.Grammary_Primary,
+                8 => CallType.Grammary_Middle,
+                9 => CallType.Grammary_High,
+
+                _ => throw new DalInvalidValueException("Invalid value in call")
+            };
+            DateTime openTime = s_dal.Config.Clock.AddMinutes(-random.Next(10, 30)); // זמן פתיחה לפני 10 עד 30 דקות
+            DateTime maxTime = openTime.AddMinutes(random.Next(60, 180)); // מקסימום 60 עד 180 דקות לסגירה
+
+
             Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
             s_dal!.Call.Create(c);
         }
 
         //creation of 5 calls already expired
-        for (j = 45; j < 50; j++)
+        for (j = 30; j < 50; j++)
         {
             CallType callType = s_rand.Next(1, 9) switch
             {
@@ -288,6 +315,9 @@ public static class Initialization
 
                 _ => throw new DalInvalidValueException("Invalid value in call")
             };
+            DateTime openTime = s_dal.Config.Clock.AddMinutes(-random.Next(5, 15)); // זמן פתיחה לפני 5 עד 15 דקות
+            DateTime maxTime = openTime.AddMinutes(random.Next(15, 30)); // מקסימום 15 עד 30 דקות לסגירה
+
             Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5));
             s_dal!.Call.Create(c);
         }

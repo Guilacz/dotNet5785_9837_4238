@@ -46,7 +46,7 @@ namespace PL
                 int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
 
                 // התנאי לא לפיה אם קריאה פתוחה ואין הקצאות
-                if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
+                if (call.CallStatus == BO.CallInListStatus.Open && numberOfAssignment == 0)
                 {
                     return Visibility.Visible;
                 }

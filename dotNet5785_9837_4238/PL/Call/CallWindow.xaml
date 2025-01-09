@@ -88,21 +88,19 @@
 
             <Label Grid.Row="3" Grid.Column="0" Content="Type of call:" VerticalAlignment="Center"/>
             <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
-               SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+               SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="True"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Status:" VerticalAlignment="Center"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="Status:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
             <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallInListStatusCollectionKey}}" 
-               SelectedValue="{Binding CurrentCall.CallStatus}"/>
+               SelectedValue="{Binding CurrentCall.CallStatus}" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}" IsReadOnly="True"/>
 
 
             <Label Grid.Row="5" Grid.Column="0" Content="Opening Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
             <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding CurrentCall.OpenTime}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
-            <Label Grid.Row="6" Grid.Column="0" Content="Maximum Time:" VerticalAlignment="Center" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
-            <DatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="True" Visibility ="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Maximum Time:" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="True"/>
 
-            <Label Grid.Row="7" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding CurrentCall.Address}"/>
 
 
 

@@ -47,35 +47,70 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="assignments"></param>
     /// <returns></returns>
-    internal static BO.CallStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    //{
+    //    var now = DateTime.Now;
+
+    //    var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
+    //    if (activeAssignment != null)
+    //    {
+    //        return BO.CallInListStatus.InCare;
+    //    }
+
+    //    if (call.MaxTime.HasValue && now > call.MaxTime.Value)
+    //    {
+    //        return BO.CallInListStatus.Expired;
+    //    }
+
+    //    var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
+    //    if (finishedAssignment != null)
+    //    {
+    //        return BO.CallInListStatus.Closed;
+    //    }
+
+    //    if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
+    //    {
+    //        return BO.CallInListStatus.OpenAtRisk;
+    //    }
+
+    //    return BO.CallInListStatus.Open;
+    //}
+
+    internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
         var now = DateTime.Now;
 
         var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
+
+        // תנאי לקריאה שהיא גם בטיפול וגם בסיכון
+        if (activeAssignment != null && call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
+        {
+            return BO.CallInListStatus.InCareAtRisk;
+        }
+
         if (activeAssignment != null)
         {
-            return BO.CallStatus.InCare;
+            return BO.CallInListStatus.InCare;
         }
 
         if (call.MaxTime.HasValue && now > call.MaxTime.Value)
         {
-            return BO.CallStatus.Expired;
+            return BO.CallInListStatus.Expired;
         }
 
         var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
         if (finishedAssignment != null)
         {
-            return BO.CallStatus.Closed;
+            return BO.CallInListStatus.Closed;
         }
 
         if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
         {
-            return BO.CallStatus.OpenAtRisk;
+            return BO.CallInListStatus.OpenAtRisk;
         }
 
-        return BO.CallStatus.Open;
+        return BO.CallInListStatus.Open;
     }
-
 
     /// <summary>
     /// function to convert a DO call to a BO call
@@ -83,7 +118,7 @@ internal class CallManager
     /// <param name="call"></param>
     /// <param name="dal"></param>
     /// <returns></returns>
- 
+
     internal static BO.Call ConvertCallToBO(DO.Call call, IDal dal)
         {
         return new BO.Call
@@ -133,7 +168,7 @@ internal class CallManager
             var CurrentCall = ConvertCallToBO(call, _dal);
             if (call.MaxTime != null && call.MaxTime.Value < AdminManager.Now)
             {
-                if (CurrentCall.CallStatus != CallStatus.Closed)
+                if (CurrentCall.CallStatus != CallInListStatus.Closed)
                 {
                     var assignments = _dal.Assignment.ReadAll().Where(a => a.CallId == call.CallId).ToList();
 

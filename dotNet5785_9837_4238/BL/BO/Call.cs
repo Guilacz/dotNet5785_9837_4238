@@ -33,7 +33,7 @@ public class Call
 
     public DateTime? MaxTime { get; set; } 
 
-    public CallStatus CallStatus { get; set; }
+    public CallInListStatus CallStatus { get; set; }
 
     public string? Details { get; set; }
 
