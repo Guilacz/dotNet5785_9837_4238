@@ -57,20 +57,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>206870933</VolunteerId>
-    <Name>Yafit Maayan</Name>
-    <Phone>0723456789</Phone>
-    <Email>Yafit@gmail.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>name@pass</Password>
-    <Address>Emek Refaim Street 12, Jerusalem</Address>
-    <Distance>11637</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>994168219</VolunteerId>
     <Name>Dan Zilberstein</Name>
     <Phone>031234567</Phone>
@@ -197,20 +183,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>325464238</VolunteerId>
-    <Name>bracha k</Name>
-    <Phone>0533437353</Phone>
-    <Email>bracha@gmail.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>AirDistance</DistanceType>
-    <Password>bjywvu@ywvu</Password>
-    <Address>Herzl St 10, Jerusalem, Israel</Address>
-    <Distance>6666</Distance>
-    <Latitude>31.7873786</Latitude>
-    <Longitude>35.1996734</Longitude>
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>245657465</VolunteerId>
     <Name>Yael Levy</Name>
     <Phone>045678901</Phone>
@@ -222,6 +194,34 @@
     <Distance>150</Distance>
     <Latitude>31.759595</Latitude>
     <Longitude>35.215315</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>325464238</VolunteerId>
+    <Name>bracha k</Name>
+    <Phone>0533437353</Phone>
+    <Email>bracha@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>{jywvu@ywvu</Password>
+    <Address>Herzl St 10, Jerusalem, Israel</Address>
+    <Distance>6666</Distance>
+    <Latitude>31.7873786</Latitude>
+    <Longitude>35.1996734</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>206870933</VolunteerId>
+    <Name>Yafit Maayan</Name>
+    <Phone>0723456789</Phone>
+    <Email>Yafit@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>CarDistance</DistanceType>
+    <Password>o|px@m|jj</Password>
+    <Address>Herzl St 10, Jerusalem, Israel</Address>
+    <Distance>11637</Distance>
+    <Latitude>31.7873786</Latitude>
+    <Longitude>35.1996734</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
 </ArrayOfVolunteer>

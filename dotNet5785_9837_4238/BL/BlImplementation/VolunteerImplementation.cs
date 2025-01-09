@@ -474,6 +474,11 @@ internal class VolunteerImplementation : IVolunteer
         {
             vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
             var volun = _dal.Volunteer.Read(volId);
+            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+            double latitude = coordinates.Latitude; 
+            double longitude = coordinates.Longitude;
+            vol.Latitude = latitude;
+            vol.Longitude = longitude;
             if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
                 throw new BO.BlInvalidValueException("Password not strong enough.");
 

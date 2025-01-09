@@ -77,8 +77,8 @@
             </Grid.RowDefinitions>
 
             <!-- Left column (Label and element) -->
-            <Label Grid.Row="0" Grid.Column="0" Content="Call ID:" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCall.CallId}" IsReadOnly="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="Call ID:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCall.CallId}" IsReadOnly="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
             <Label Grid.Row="1" Grid.Column="0" Content="Details:" VerticalAlignment="Center"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCall.Details}"/>

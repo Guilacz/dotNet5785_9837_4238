@@ -813,6 +813,11 @@ internal class CallImplementation : ICall
     {
         try
         {
+            var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
+            double latitude = coordinates.Latitude;
+            double longitude = coordinates.Longitude;
+            c.Latitude = latitude;
+            c.Longitude = longitude;
             if (!Helpers.CallManager.CheckCall(c))
             {
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");

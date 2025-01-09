@@ -40,7 +40,25 @@ namespace PL.Call
                 }
             }
         }
-        public BO.Call SelectedCall { get; set; }
+
+
+        // DependencyProperty עבור הקריאה הנבחרת
+        public BO.CallInList? SelectedCall
+        {
+            get { return (BO.CallInList?)GetValue(SelectedCallProperty); }
+            set { SetValue(SelectedCallProperty, value); }
+        }
+        public static readonly DependencyProperty SelectedCallProperty =
+            DependencyProperty.Register("SelectedCall", typeof(BO.CallInList), typeof(CallListWindow));
+        // DependencyProperty עבור רשימת הקריאות
+        public IEnumerable<BO.CallInList> CallList
+            {
+                get { return (IEnumerable<BO.CallInList>)GetValue(CallListProperty); }
+                set { SetValue(CallListProperty, value); }
+            }
+            public static readonly DependencyProperty CallListProperty =
+                DependencyProperty.Register("CallList", typeof(IEnumerable<BO.CallInList>), typeof(CallListWindow));
+        
         private string _selectedFilterValue;
         public string SelectedFilterValue
         {
@@ -85,18 +103,7 @@ namespace PL.Call
 
         public IEnumerable<string> SortByOptions { get; } = new[] { "CallId", "OpenTime", "LastName" }; // אפשרויות למיון
 
-        //public IEnumerable<string> FilterByOptions { get; } = new[] { "CallType", "CallInListStatus", "Date" }; // אפשרות סינון לפי תאריך
-
-        private IEnumerable<BO.CallInList> _callList;
-        public IEnumerable<BO.CallInList> CallList
-        {
-            get => _callList;
-            set
-            {
-                _callList = value;
-                OnPropertyChanged(nameof(CallList));
-            }
-        }
+ 
 
         private DateTime? _startDate; // תאריך התחלה
         public DateTime? StartDate
@@ -196,6 +203,8 @@ namespace PL.Call
             InitializeComponent();
             UpdateFilterValueOptions();
             QueryCallList();
+            Loaded += Window_Loaded;
+            Closed += Window_Closed;
         }
 
 

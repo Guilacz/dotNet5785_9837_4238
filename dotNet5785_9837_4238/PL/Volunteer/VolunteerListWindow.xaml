@@ -12,7 +12,7 @@
     <Window.Resources>
 
         <!--comboBox style-->
-        <Style TargetType="ComboBox" >
+        <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="Black" />
             <Setter Property="Background" Value="Beige" />
             <Setter Property="BorderBrush" Value="#8B4513" />
@@ -114,8 +114,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-
             </DataGrid.Columns>
 
         </DataGrid>

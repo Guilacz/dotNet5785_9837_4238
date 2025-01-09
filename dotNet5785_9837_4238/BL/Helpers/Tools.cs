@@ -174,7 +174,6 @@ public static class Tools
 
         var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
         const double tolerance = 0.0001;
-
         bool isLatitudeMatch = Math.Abs(c.Latitude.Value - expectedLatitude) < tolerance;
         bool isLongitudeMatch = Math.Abs(c.Longitude.Value - expectedLongitude) < tolerance;
 
@@ -236,11 +235,6 @@ public static class Tools
                 case DistanceType.AirDistance:
                     return CalculateAirDistance(address1, address2);
 
-                case DistanceType.WalkDistance:
-                    return CalculateWalkingDistance(address1, address2);
-
-                case DistanceType.CarDistance:
-                    return CalculateDrivingDistance(address1, address2);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(distanceType), "Invalid distance type.");
@@ -257,71 +251,7 @@ public static class Tools
 
             return CalculateDistanceBetweenCoordinates(latitude1, longitude1, latitude2, longitude2);
         }
-        private static double CalculateWalkingDistance(string address1, string address2)
-        {
-            return CalculateTravelDistance(address1, address2, "foot");
-        }
 
-        private static double CalculateDrivingDistance(string address1, string address2)
-        {
-            return CalculateTravelDistance(address1, address2, "driving");
-        }
-
-
-        /// <summary>
-        /// calculate driving and walking distance
-        /// </summary>=
-        private static double CalculateTravelDistance(string address1, string address2, string mode)
-        {
-            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
-            const string BaseUrl = "https://us1.locationiq.com/v1/directions/";
-
-            var (latitude1, longitude1) = GetAddressCoordinates(address1);
-            var (latitude2, longitude2) = GetAddressCoordinates(address2);
-
-              string requestUrl = $"{BaseUrl}driving/{latitude1},{longitude1};{latitude2},{longitude2}?key={LocationIqApiKey}&overview=false";
-
-
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response;
-
-                try
-                {
-                    response = client.GetAsync(requestUrl).Result;
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        string errorContent = response.Content.ReadAsStringAsync().Result;
-
-                        throw new Exception($"Error fetching route data: {response.ReasonPhrase} (HTTP {response.StatusCode})\n{errorContent}");
-                    }
-
-                    string responseContent = response.Content.ReadAsStringAsync().Result;
-
-                    var routeData = System.Text.Json.JsonSerializer.Deserialize<RouteResponse>(responseContent);
-
-                    if (routeData == null || routeData.Routes == null || routeData.Routes.Length == 0)
-                    {
-                        throw new Exception("No route data found for the provided addresses.");
-                    }
-
-                    return routeData.Routes[0].Distance / 1000.0;
-                }
-                catch (HttpRequestException httpEx)
-                {
-                    throw;
-                }
-                catch (AggregateException aggEx)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
 
         public class RouteResponse
         {
@@ -355,19 +285,7 @@ public static class Tools
 
             return EarthRadiusKm * c;
         }
-        private class LocationIqDirectionsResponse
-        {
-            public Route[] Routes { get; set; }
-        }
-        private class Routes
-        {
-            public double Distance { get; set; }
-        }
-        private class LocationIqResponse
-        {
-            public string Lat { get; set; }
-            public string Lon { get; set; }
-        }
+
     }
 
 

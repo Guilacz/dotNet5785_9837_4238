@@ -37,15 +37,6 @@
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
-    <CallId>6</CallId>
-    <CallType>Math_Primary</CallType>
-    <Address>50 HaNevi'im Street, Jerusalem</Address>
-    <Latitude>35.221665622205705</Latitude>
-    <Longitude>31.78391107912798</Longitude>
-    <OpenTime>2024-12-19T23:33:11</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
     <CallId>7</CallId>
     <CallType>Grammary_Primary</CallType>
     <Address>60 Gaza Street, Jerusalem</Address>
@@ -439,6 +430,15 @@
     <Latitude>35.224944</Latitude>
     <Longitude>31.777475</Longitude>
     <OpenTime>2024-12-19T23:33:06</OpenTime>
+    <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>6</CallId>
+    <CallType>Math_Primary</CallType>
+    <Address>Herzl St 10, Jerusalem, Israel</Address>
+    <Latitude>31.7873786</Latitude>
+    <Longitude>35.1996734</Longitude>
+    <OpenTime>2024-12-19T23:33:11</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
 </ArrayOfCall>

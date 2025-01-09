@@ -153,15 +153,5 @@ namespace PL.Volunteer
                 new VolunteerWindow().Show();
         }
 
-        //private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (sender is DataGrid dataGrid && dataGrid.SelectedItem is BO.VolunteerInList selectedVolunteer)
-        //    {
-        //        SelectedVolunteer = selectedVolunteer;
-        //    }
-        //}
-
-
-
     }
 }
