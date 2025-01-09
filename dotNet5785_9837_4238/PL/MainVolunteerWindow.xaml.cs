@@ -54,7 +54,7 @@ namespace PL
 
 
 
-      
+
 
         /// <summary>
         /// This method calls the volunteer observer.
@@ -127,24 +127,34 @@ namespace PL
 
         private void SelectCall_Click(object sender, RoutedEventArgs e)
         {
-            new ChooseCallWindow().Show();
+            new ChooseCallWindow(CurrentVolunteer!.VolunteerId).Show();
         }
 
         private void CancellCall_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                s_bl.Call.UpdateCallCancelled(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id);
+                MessageBox.Show("The call has been successfully cancelled.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while cancelling the call: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void FinishCall_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                s_bl.Call.UpdateCallFinished(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id);
+                MessageBox.Show("The call has been successfully finished.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while finishing the call: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
 }
-
-
-
-
-
-

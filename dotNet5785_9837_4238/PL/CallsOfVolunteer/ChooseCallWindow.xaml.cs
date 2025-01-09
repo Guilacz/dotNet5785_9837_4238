@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PL.Call;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,18 +24,52 @@ namespace PL.CallsOfVolunteer
         //access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-        //DependencyProperty of the Call list
-        public IEnumerable<BO.CallInList> CallList
-        {
-            get { return (IEnumerable<BO.CallInList>)GetValue(CallListProperty); }
-            set { SetValue(CallListProperty, value); }
-        }
-        public static readonly DependencyProperty CallListProperty =
-            DependencyProperty.Register("CallList", typeof(IEnumerable<BO.CallInList>), typeof(ChooseCallWindow));
 
-        public ChooseCallWindow()
+
+        public List<BO.Call> ListOfCalls
+        {
+            get { return (List<BO.Call>)GetValue(ListOfCallsProperty); }
+            set { SetValue(ListOfCallsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ListOfCalls.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ListOfCallsProperty =
+            DependencyProperty.Register("ListOfCalls", typeof(List<BO.Call>), typeof(ChooseCallWindow));
+
+
+
+        public ChooseCallWindow(int id)
         {
             InitializeComponent();
+            this.Loaded += ChooseCallWindow_Loaded;
+
         }
+
+        private void ChooseCallWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Fetch initial list of calls
+                var callIds = s_bl.Call.GetListOfCalls()
+                    .Where(call => call.CallInListStatus == BO.CallInListStatus.Open
+                                   || call.CallInListStatus == BO.CallInListStatus.OpenAtRisk)
+                    .Select(call => call.CallId)
+                    .ToList();
+
+
+                // Fetch full details for each call using GetCallDetails
+                var detailedCalls = callIds
+                    .Select(callId => s_bl.Call.GetCallDetails(callId))
+                    .ToList();
+
+                ListOfCalls = detailedCalls;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load calls: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
     }
 }

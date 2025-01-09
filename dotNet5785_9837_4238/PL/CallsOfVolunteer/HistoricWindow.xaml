@@ -5,58 +5,124 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.CallsOfVolunteer"
         mc:Ignorable="d"
-        Title="HistoricWindow" Height="450" Width="800">
+        Title="HistoricWindow" Height="450" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <Grid>
+        <Grid.RowDefinitions>
 
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--grid for the elements of the calls-->
+        <ListBox ItemsSource="{Binding ListOfCalls}" Grid.Row="2" Grid.ColumnSpan="2" Background="Transparent" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding CallId}" FontStyle="Italic" Grid.Column="0" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding CallType}" Grid.Column="1" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding Adress}" Grid.Column="2" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding OpenTime}" Grid.Column="3" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding StartTime}" Grid.Column="4" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding FinishTime}" Grid.Column="5" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding TypeOfEnd}" Grid.Column="5" HorizontalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox> \
+
+        <!--<Grid>
+            <ListView ItemsSource="{Binding}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Call ID" DisplayMemberBinding="{Binding CallId}" />
+                        <GridViewColumn Header="Adress" DisplayMemberBinding="{Binding Adress}" />
+                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding CallType}" />
+                        <GridViewColumn Header="End Type" DisplayMemberBinding="{Binding TypeOfEnd}" />
+                        <GridViewColumn Header="OpenTime" DisplayMemberBinding="{Binding OpenTime}" />
+                        <GridViewColumn Header="StartTime" DisplayMemberBinding="{Binding StartTime}" />
+                        <GridViewColumn Header="FinishTime" DisplayMemberBinding="{Binding FinishTime}" />
+
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>-->
+        <!--<Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
 
+            -->
         <!-- ID -->
+        <!--
             <Label Grid.Row="0" Grid.Column="0" Content="ID :" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCall.Id}" IsReadOnly="True"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CallId}" IsReadOnly="True"/>
 
-            <!-- Type of call -->
+            -->
+        <!-- Type of call -->
+        <!--
             <Label Grid.Row="1" Grid.Column="0" Content="Type d'appel :" VerticalAlignment="Center"/>
             <ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding SelectedCall.CallType}" 
-              ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}"/>
-       
+      ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}"/>
 
 
+
+            -->
         <!-- Adress -->
+        <!--
             <Label Grid.Row="2" Grid.Column="0" Content="Adresse complète :" VerticalAlignment="Center"/>
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedCall.Address}" IsReadOnly="True"/>
 
-            <!-- open time-->
+            -->
+        <!-- open time-->
+        <!--
             <Label Grid.Row="3" Grid.Column="0" Content="Temps d'ouverture :" VerticalAlignment="Center"/>
             <DatePicker Grid.Row="3" Grid.Column="1" SelectedDate="{Binding SelectedCall.OpenTime}" IsEnabled="False"/>
 
+            -->
         <!-- StartTime-->
-        <Label Grid.Row="4" Grid.Column="0" Content="StartTime:" VerticalAlignment="Center"/>
+        <!--
+            <Label Grid.Row="4" Grid.Column="0" Content="StartTime:" VerticalAlignment="Center"/>
             <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding SelectedCall.StartTime}" IsEnabled="False"/>
 
-            <!-- Temps de fin réel -->
-        <Label Grid.Row="5" Grid.Column="0" Content="FinishTime :" VerticalAlignment="Center"/>
-        <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding SelectedCall.FinishTime}" IsEnabled="False"/>
+            -->
+        <!-- Temps de fin réel -->
+        <!--
+            <Label Grid.Row="5" Grid.Column="0" Content="FinishTime :" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding SelectedCall.FinishTime}" IsEnabled="False"/>
 
-            <!-- Type de fin -->
-        <Label Grid.Row="6" Grid.Column="0" Content="TypeOfEnd:" VerticalAlignment="Center"/>
-        <ComboBox Grid.Row="6" Grid.Column="1" SelectedValue="{Binding SelectedCall.TypeOfEnd}" 
-              ItemsSource="{Binding Source={StaticResource TypeOfEndCollectionKey}}"/>
-        </Grid>
+            -->
+        <!-- Type de fin -->
+        <!--
+            <Label Grid.Row="6" Grid.Column="0" Content="TypeOfEnd:" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="6" Grid.Column="1" SelectedValue="{Binding SelectedCall.TypeOfEnd}" 
+      ItemsSource="{Binding Source={StaticResource TypeOfEndCollectionKey}}"/>
+        </Grid>-->
+    </Grid>
 
 
 </Window>

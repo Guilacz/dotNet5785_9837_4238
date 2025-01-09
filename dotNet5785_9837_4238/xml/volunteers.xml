@@ -9,7 +9,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>abcd@xyz</Password>
     <Address>Yaffo Street 123, Jerusalem</Address>
-    <Distance>5294</Distance>
+    <Distance>31308</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -23,7 +23,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>passw@rd</Password>
     <Address>King David Street 45, Jerusalem</Address>
-    <Distance>16817</Distance>
+    <Distance>9297</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -37,7 +37,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>valid@key</Password>
     <Address>Prophets Street 67, Jerusalem</Address>
-    <Distance>23406</Distance>
+    <Distance>24594</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -51,7 +51,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>strong@pw</Password>
     <Address>Herzl Boulevard 89, Jerusalem</Address>
-    <Distance>30792</Distance>
+    <Distance>34797</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -65,7 +65,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>email@tag</Password>
     <Address>Gaza Street 101, Jerusalem</Address>
-    <Distance>24396</Distance>
+    <Distance>24897</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -79,7 +79,7 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>name@pass</Password>
     <Address>Emek Refaim Street 12, Jerusalem</Address>
-    <Distance>26957</Distance>
+    <Distance>31480</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -93,7 +93,7 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>data@save</Password>
     <Address>Hebron Road 34, Jerusalem</Address>
-    <Distance>32279</Distance>
+    <Distance>31482</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -107,7 +107,7 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>secure@ok</Password>
     <Address>Agripas Street 56, Jerusalem</Address>
-    <Distance>37281</Distance>
+    <Distance>10415</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -121,7 +121,7 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>simple@me</Password>
     <Address>Ben Yehuda Street 78, Jerusalem</Address>
-    <Distance>12905</Distance>
+    <Distance>30551</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -135,7 +135,7 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>user@info</Password>
     <Address>Keren Hayesod Street 23, Jerusalem</Address>
-    <Distance>27415</Distance>
+    <Distance>21673</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -149,7 +149,7 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>login@now</Password>
     <Address>Shmuel Hanagid Street 15, Jerusalem</Address>
-    <Distance>35698</Distance>
+    <Distance>24328</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -163,7 +163,7 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>token@set</Password>
     <Address>Betzalel Street 42, Jerusalem</Address>
-    <Distance>23366</Distance>
+    <Distance>1951</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -177,7 +177,7 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>value@put</Password>
     <Address>Palmach Street 90, Jerusalem</Address>
-    <Distance>20509</Distance>
+    <Distance>29638</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -191,7 +191,7 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>access@key</Password>
     <Address>King George Street 33, Jerusalem</Address>
-    <Distance>10128</Distance>
+    <Distance>32956</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -205,7 +205,7 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>safe@code</Password>
     <Address>Hillel Street 67, Jerusalem</Address>
-    <Distance>28655</Distance>
+    <Distance>16170</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -219,7 +219,7 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>check@yes</Password>
     <Address>Ein Kerem Street 28, Jerusalem</Address>
-    <Distance>10087</Distance>
+    <Distance>31236</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
