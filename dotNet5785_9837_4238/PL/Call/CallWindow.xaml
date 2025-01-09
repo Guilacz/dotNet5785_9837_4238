@@ -91,7 +91,7 @@
                SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Status:" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallStatusCollectionKey}}" 
+            <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallInListStatusCollectionKey}}" 
                SelectedValue="{Binding CurrentCall.CallStatus}"/>
 
 
