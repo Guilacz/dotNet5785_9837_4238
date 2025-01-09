@@ -8,6 +8,8 @@
         <local:CallTypeCollection x:Key="CallTypeCollectionKey" />
         <local:RoleTypeCollection x:Key="RoleTypeCollectionKey" />
         <local:CallStatusCollection x:Key="CallStatusCollectionKey" />
+        <local:TypeOfEndCollection x:Key="TypeOfEndCollectionKey" />
+        <local:CallInListStatusCollection x:Key="CallInListStatusCollectionKey" />
         <local:CallInProgressVisibilityConverter x:Key="CallInProgressVisibilityConverter" />
 
 

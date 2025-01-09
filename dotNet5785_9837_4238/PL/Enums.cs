@@ -26,6 +26,20 @@ internal class CallStatusCollection : IEnumerable
 
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
+
+internal class TypeOfEndCollection : IEnumerable
+{
+    static readonly IEnumerable<BO.TypeOfEnd> s_enums = (Enum.GetValues(typeof(BO.TypeOfEnd)) as IEnumerable<BO.TypeOfEnd>)!;
+
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
+
+internal class CallInListStatusCollection : IEnumerable
+{
+    static readonly IEnumerable<BO.CallInListStatus> s_enums = (Enum.GetValues(typeof(BO.CallInListStatus)) as IEnumerable<BO.CallInListStatus>)!;
+
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
 internal class Enums
 {
 

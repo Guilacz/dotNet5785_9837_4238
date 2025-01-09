@@ -111,7 +111,7 @@ namespace PL
 
             try
             {
-                s_bl.Volunteer.Update(CurrentVolunteer.VolunteerId, CurrentVolunteer!);
+                s_bl.Volunteer.Update(CurrentVolunteer!.VolunteerId, CurrentVolunteer!);
                 MessageBox.Show("The volunteer has been successfully updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace PL
 
         private void History_Click(object sender, RoutedEventArgs e)
         {
-            new HistoricWindow().Show();
+            new HistoricWindow(CurrentVolunteer!.VolunteerId).Show();
         }
 
         private void SelectCall_Click(object sender, RoutedEventArgs e)

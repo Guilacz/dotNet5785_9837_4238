@@ -19,9 +19,27 @@ namespace PL.CallsOfVolunteer
     /// </summary>
     public partial class HistoricWindow : Window
     {
-        public HistoricWindow()
+
+        //access to the BL
+        static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+        //call list 
+        private IEnumerable<BO.ClosedCallInList> _allCalls;
+        private int volunteerId;
+
+
+
+
+        public HistoricWindow(int id)
         {
             InitializeComponent();
+            volunteerId = id;
+        }
+
+        private void LoadData()
+        {
+            _allCalls = s_bl.Call.GetListOfClosedCall(volunteerId);
+
         }
     }
 }

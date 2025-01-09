@@ -7,6 +7,56 @@
         mc:Ignorable="d"
         Title="HistoricWindow" Height="450" Width="800">
     <Grid>
-        
-    </Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- ID -->
+            <Label Grid.Row="0" Grid.Column="0" Content="ID :" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCall.Id}" IsReadOnly="True"/>
+
+            <!-- Type of call -->
+            <Label Grid.Row="1" Grid.Column="0" Content="Type d'appel :" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding SelectedCall.CallType}" 
+              ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}"/>
+       
+
+
+        <!-- Adress -->
+            <Label Grid.Row="2" Grid.Column="0" Content="Adresse complète :" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedCall.Address}" IsReadOnly="True"/>
+
+            <!-- open time-->
+            <Label Grid.Row="3" Grid.Column="0" Content="Temps d'ouverture :" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="3" Grid.Column="1" SelectedDate="{Binding SelectedCall.OpenTime}" IsEnabled="False"/>
+
+        <!-- StartTime-->
+        <Label Grid.Row="4" Grid.Column="0" Content="StartTime:" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding SelectedCall.StartTime}" IsEnabled="False"/>
+
+            <!-- Temps de fin réel -->
+        <Label Grid.Row="5" Grid.Column="0" Content="FinishTime :" VerticalAlignment="Center"/>
+        <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding SelectedCall.FinishTime}" IsEnabled="False"/>
+
+            <!-- Type de fin -->
+        <Label Grid.Row="6" Grid.Column="0" Content="TypeOfEnd:" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="6" Grid.Column="1" SelectedValue="{Binding SelectedCall.TypeOfEnd}" 
+              ItemsSource="{Binding Source={StaticResource TypeOfEndCollectionKey}}"/>
+        </Grid>
+
+
 </Window>
