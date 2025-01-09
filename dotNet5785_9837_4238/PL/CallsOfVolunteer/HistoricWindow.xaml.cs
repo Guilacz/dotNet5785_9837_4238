@@ -37,13 +37,13 @@ namespace PL.CallsOfVolunteer
 
         public IEnumerable<BO.ClosedCallInList> ListOfCalls
         {
-            get { return (List<BO.ClosedCallInList>)GetValue(ListOfCallsProperty); }
+            get { return (IEnumerable<BO.ClosedCallInList>)GetValue(ListOfCallsProperty); }
             set { SetValue(ListOfCallsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ListOfCalls.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ListOfCallsProperty =
-            DependencyProperty.Register("ListOfCalls", typeof(List<BO.ClosedCallInList>), typeof(HistoricWindow));
+            DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.ClosedCallInList>), typeof(HistoricWindow));
 
 
 

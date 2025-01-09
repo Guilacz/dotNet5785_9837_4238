@@ -7,14 +7,45 @@
         mc:Ignorable="d"
         Title="HistoricWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- DataGrid for the list of calls -->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}"
+                  SelectedItem="{Binding SelectedCall}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  EnableRowVirtualization="True"
+                  RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding CallId}" Header="Call ID" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding CallType}" Header="Type" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Adress}" Header="Address" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding OpenTime}" Header="Open Time" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding StartTime}" Header="Start Time" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding FinishTime}" Header="Finish Time" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding TypeOfEnd}" Header="End Type" Width="Auto"/>
+
+                
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+
+
+
+    <!--<Grid>
         <Grid.RowDefinitions>
 
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--grid for the elements of the calls-->
+        --><!--grid for the elements of the calls--><!--
         <ListBox ItemsSource="{Binding ListOfCalls}" Grid.Row="2" Grid.ColumnSpan="2" Background="Transparent" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -39,9 +70,9 @@
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-        </ListBox> \
+        </ListBox> 
 
-        <!--<Grid>
+        --><!--<Grid>
             <ListView ItemsSource="{Binding}">
                 <ListView.View>
                     <GridView>
@@ -121,8 +152,8 @@
             <Label Grid.Row="6" Grid.Column="0" Content="TypeOfEnd:" VerticalAlignment="Center"/>
             <ComboBox Grid.Row="6" Grid.Column="1" SelectedValue="{Binding SelectedCall.TypeOfEnd}" 
       ItemsSource="{Binding Source={StaticResource TypeOfEndCollectionKey}}"/>
-        </Grid>-->
-    </Grid>
+        </Grid>--><!--
+    </Grid>-->
 
 
 </Window>

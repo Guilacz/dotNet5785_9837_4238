@@ -664,7 +664,7 @@ class Program
         int day = int.Parse(Console.ReadLine()!);
         DateTime specificDate2 = new DateTime(year, month, day);
 
-        Call c = new Call { CallType = lesson, Address = address!, Latitude = latitude, Longitude = longitude, OpenTime = DateTime.Now, Details = details, MaxTime = specificDate2, CallStatus = CallStatus.Open, callAssignInLists = null };
+        Call c = new Call { CallType = lesson, Address = address!, Latitude = latitude, Longitude = longitude, OpenTime = DateTime.Now, Details = details, MaxTime = specificDate2, CallStatus = CallInListStatus.Open, callAssignInLists = null };
         s_bl.Call?.Create(c);
         Console.WriteLine("Call added.");
     }
