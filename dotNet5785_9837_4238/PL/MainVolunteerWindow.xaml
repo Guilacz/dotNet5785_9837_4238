@@ -62,7 +62,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,53,0,-33" Width="344">
 
             <Button Content="Update" Width="100" Margin="5"  Click="btnUpdate_Click" Height="60"/>
-            <Button Content="Select Call" Width="100" Margin="5"  Click="SelectCall_Click" Height="60"/>
+            <Button Content="Select Call" Width="100" Margin="5"  Click="SelectCall_Click" Height="60" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}, ConverterParameter=HideOnCall}"/>
             <Button Content="Call History" Width="100" Margin="5" Click="History_Click" Height="60" />
         </StackPanel>
 
@@ -71,7 +71,6 @@
 
         <StackPanel Grid.Column="1"  Margin="10" Grid.RowSpan="2" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}}">
             
-
             <TextBlock Text="Call in care Details"   FontWeight="Bold" FontSize="16" Width="150"/>
             <Grid>
                 <Grid.RowDefinitions>
@@ -93,8 +92,6 @@
                 </Grid.ColumnDefinitions>
 
 
-
-
                 <!-- Id (int) -->
                 <TextBlock Text="Id:" Grid.Row="0" VerticalAlignment="Center" Margin="5"/>
                 <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Id}" IsReadOnly="True"/>
@@ -112,7 +109,6 @@
                 <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Adress}"/>
 
 
-
                 <!-- Start Time (DateTime) -->
                 <TextBlock Text="Start Time:" Grid.Row="4" VerticalAlignment="Center" Margin="5"/>
                 <DatePicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentVolunteer.callInCaring.StartTime}"/>
@@ -128,11 +124,11 @@
                 <Button Grid.Row="9"  Grid.Column="0" Content="Cancel Call" Width="100" Click="CancellCall_Click"  Height="60" Margin="0,62,0,-62"/>
                 <Button Grid.Row="9" Grid.Column="1" Content="Finish Call" Width="100" Click="FinishCall_Click"  Height="60" Margin="20,62,20,-62"/>
             </Grid>
-
-
-
+            
         </StackPanel>
+        
     </Grid>
+    
 </Window>
 
 

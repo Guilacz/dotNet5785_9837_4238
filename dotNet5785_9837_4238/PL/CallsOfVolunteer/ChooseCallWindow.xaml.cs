@@ -19,6 +19,18 @@ namespace PL.CallsOfVolunteer
     /// </summary>
     public partial class ChooseCallWindow : Window
     {
+        //access to the BL
+        static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+        //DependencyProperty of the Call list
+        public IEnumerable<BO.CallInList> CallList
+        {
+            get { return (IEnumerable<BO.CallInList>)GetValue(CallListProperty); }
+            set { SetValue(CallListProperty, value); }
+        }
+        public static readonly DependencyProperty CallListProperty =
+            DependencyProperty.Register("CallList", typeof(IEnumerable<BO.CallInList>), typeof(ChooseCallWindow));
+
         public ChooseCallWindow()
         {
             InitializeComponent();

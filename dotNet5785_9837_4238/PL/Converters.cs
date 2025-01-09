@@ -150,12 +150,34 @@ namespace PL
 
 
 
+    //public class CallInProgressVisibilityConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        var callInProgress = value as BO.CallInProgress;
+    //        // Return Visibility.Visible if there's a call in progress, otherwise Collapsed
+    //        return callInProgress != null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
     public class CallInProgressVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var callInProgress = value as BO.CallInProgress;
-            // Return Visibility.Visible if there's a call in progress, otherwise Collapsed
+
+            // Si le paramètre est "HideOnCall", renvoie Visibility.Collapsed si l'appel est en cours
+            if (parameter != null && parameter.ToString() == "HideOnCall")
+            {
+                return callInProgress != null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+            }
+
+            // Sinon, le comportement par défaut : Visible si appel en cours, Collapsed sinon
             return callInProgress != null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
         }
 
@@ -164,4 +186,5 @@ namespace PL
             throw new NotImplementedException();
         }
     }
+
 }
