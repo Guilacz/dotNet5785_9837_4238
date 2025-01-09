@@ -118,17 +118,38 @@ internal class CallImplementation : ICall
 
         try
         {
-            _dal.Call.Create(new DO.Call
+            //_dal.Call.Create(new DO.Call
+            //{
+            //    CallId = c.CallId,
+            //    CallType = (DO.CallType)c.CallType,
+            //    Address = c.Address,
+            //    Latitude = c.Latitude.Value, 
+            //    Longitude = c.Longitude.Value, 
+            // // OpenTime = c.OpenTime,
+            //    MaxTime = c.MaxTime,
+            //    OpenTime = c.OpenTime,
+
+            //    Details = c.Details,
+
+            //});
+
+            var newCall = new DO.Call
             {
                 CallId = c.CallId,
                 CallType = (DO.CallType)c.CallType,
                 Address = c.Address,
-                Latitude = c.Latitude.Value, 
-                Longitude = c.Longitude.Value, 
-                OpenTime = c.OpenTime,
+                Latitude = c.Latitude.Value,
+                Longitude = c.Longitude.Value,
                 MaxTime = c.MaxTime,
+                OpenTime = c.OpenTime,
                 Details = c.Details,
-            });
+            };
+
+            // הוספה ל-DAL
+            _dal.Call.Create(newCall);
+
+            // המרה ל-BO
+            var convertedCall = Helpers.CallManager.ConvertCallToBO(newCall, _dal);
             CallManager.Observers.NotifyListUpdated();
             _dal.Volunteer.ReadAll()
                 .Where(vol =>
@@ -830,17 +851,34 @@ internal class CallImplementation : ICall
 
             try
             {
-                _dal.Call.Update(new DO.Call
+                //_dal.Call.Update(new DO.Call
+                //{
+                //    CallId = c.CallId,
+                //    CallType = (DO.CallType)c.CallType,
+                //    Address = c.Address,
+                //    Latitude = c.Latitude.Value, 
+                //    Longitude = c.Longitude.Value, 
+                //    OpenTime = c.OpenTime,
+                //    MaxTime = c.MaxTime,
+                //    Details = c.Details,
+                //});
+                var updatedCall = new DO.Call
                 {
                     CallId = c.CallId,
                     CallType = (DO.CallType)c.CallType,
                     Address = c.Address,
-                    Latitude = c.Latitude.Value, 
-                    Longitude = c.Longitude.Value, 
+                    Latitude = c.Latitude.Value,
+                    Longitude = c.Longitude.Value,
                     OpenTime = c.OpenTime,
                     MaxTime = c.MaxTime,
                     Details = c.Details,
-                });
+                };
+
+                // עדכון ב-DAL
+                _dal.Call.Update(updatedCall);
+
+                // המרה ל-BO
+                var convertedCall = Helpers.CallManager.ConvertCallToBO(updatedCall, _dal);
                 CallManager.Observers.NotifyItemUpdated(c.CallId);
                 CallManager.Observers.NotifyListUpdated(); 
 
