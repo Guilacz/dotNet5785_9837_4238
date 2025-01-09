@@ -35,9 +35,26 @@ namespace PL
             set { SetValue(CurrentVolunteerProperty, value); }
         }
         public static readonly DependencyProperty CurrentVolunteerProperty =
-            DependencyProperty.Register("CurrentVolunteer", typeof(BO.Volunteer), typeof(VolunteerWindow), new PropertyMetadata(null));
+            DependencyProperty.Register("CurrentVolunteer", typeof(BO.Volunteer), typeof(MainVolunteerWindow), new PropertyMetadata(null));
 
 
+
+
+
+        //public BO.CallInProgress CurrentCall
+        //{
+        //    get { return (BO.CallInProgress?)GetValue(CurrentCallProperty); }
+        //    set { SetValue(CurrentCallProperty, value); }
+        //}
+
+        //// Using a DependencyProperty as the backing store for CurrentCall.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty CurrentCallProperty =
+        //    DependencyProperty.Register("CurrentCall", typeof(BO.CallInProgress), typeof(MainVolunteerWindow));
+
+
+
+
+      
 
         /// <summary>
         /// This method calls the volunteer observer.
@@ -46,7 +63,8 @@ namespace PL
         {
             int id = CurrentVolunteer!.VolunteerId;
             CurrentVolunteer = null;
-            CurrentVolunteer = s_bl.Volunteer.GetVolunteerDetails(id);
+            CurrentVolunteer = s_bl.Volunteer.Read(id);
+
 
         }
 
@@ -77,7 +95,10 @@ namespace PL
         {
             InitializeComponent();
             CurrentVolunteer = s_bl.Volunteer.Read(id);
+            //CurrentCall = CurrentVolunteer?.callInCaring ?? new BO.CallInProgress(); // Initialisez avec un objet par défaut
+
             Loaded += Window_Loaded;
+
             Closed += Window_Closed;
 
         }
