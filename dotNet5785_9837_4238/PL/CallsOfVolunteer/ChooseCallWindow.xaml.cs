@@ -25,22 +25,24 @@ namespace PL.CallsOfVolunteer
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
+        private int volunteerId;
 
-        public List<BO.Call> ListOfCalls
+        public IEnumerable<BO.Call> ListOfCalls
         {
-            get { return (List<BO.Call>)GetValue(ListOfCallsProperty); }
+            get { return (IEnumerable<BO.Call>)GetValue(ListOfCallsProperty); }
             set { SetValue(ListOfCallsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ListOfCalls.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ListOfCallsProperty =
-            DependencyProperty.Register("ListOfCalls", typeof(List<BO.Call>), typeof(ChooseCallWindow));
+            DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.Call>), typeof(ChooseCallWindow));
 
 
 
         public ChooseCallWindow(int id)
         {
             InitializeComponent();
+            volunteerId = id;
             this.Loaded += ChooseCallWindow_Loaded;
 
         }
@@ -70,6 +72,33 @@ namespace PL.CallsOfVolunteer
                 MessageBox.Show($"Failed to load calls: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+     
+
+        private void ComboBoxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            var volunteerWindow = new MainVolunteerWindow(volunteerId);
+            volunteerWindow.Show();
+            this.Close();
+           
+        }
+
+        private void ChooseCallButton_Click(object sender, RoutedEventArgs e)
+        {
+           
+
+        }
+
 
     }
 }

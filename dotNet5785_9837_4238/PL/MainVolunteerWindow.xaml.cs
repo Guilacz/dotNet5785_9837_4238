@@ -123,11 +123,14 @@ namespace PL
         private void History_Click(object sender, RoutedEventArgs e)
         {
             new HistoricWindow(CurrentVolunteer!.VolunteerId).Show();
+            this.Close();
         }
 
         private void SelectCall_Click(object sender, RoutedEventArgs e)
         {
             new ChooseCallWindow(CurrentVolunteer!.VolunteerId).Show();
+            this.Close();
+
         }
 
         private void CancellCall_Click(object sender, RoutedEventArgs e)
