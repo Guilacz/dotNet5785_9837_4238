@@ -52,42 +52,7 @@ namespace PL
             return Visibility.Collapsed;
         }
 
-        class ConvertCallTypeToColor : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                var callType = (BO.CallType)value;
 
-                switch (callType)
-                {
-                    case BO.CallType.Math_Primary:
-                        return Brushes.Blue;
-                    case BO.CallType.Math_Middle:
-                        return Brushes.Cyan;
-                    case BO.CallType.Math_High:
-                        return Brushes.DarkBlue;
-                    case BO.CallType.English_Primary:
-                        return Brushes.LightGreen;
-                    case BO.CallType.English_Middle:
-                        return Brushes.Lime;
-                    case BO.CallType.English_High:
-                        return Brushes.Green;
-                    case BO.CallType.Grammary_Primary:
-                        return Brushes.Pink;
-                    case BO.CallType.Grammary_Middle:
-                        return Brushes.Purple;
-                    case BO.CallType.Grammary_High:
-                        return Brushes.Magenta;
-                    default:
-                        return Brushes.White; // default color if none match
-                }
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
-        }
 
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -95,7 +60,42 @@ namespace PL
             throw new NotImplementedException();
         }
     }
+    class ConvertCallTypeToColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var callType = (BO.CallType)value;
 
+            switch (callType)
+            {
+                case BO.CallType.Math_Primary:
+                    return Brushes.Blue;
+                case BO.CallType.Math_Middle:
+                    return Brushes.Cyan;
+                case BO.CallType.Math_High:
+                    return Brushes.DarkBlue;
+                case BO.CallType.English_Primary:
+                    return Brushes.LightGreen;
+                case BO.CallType.English_Middle:
+                    return Brushes.Lime;
+                case BO.CallType.English_High:
+                    return Brushes.Green;
+                case BO.CallType.Grammary_Primary:
+                    return Brushes.Pink;
+                case BO.CallType.Grammary_Middle:
+                    return Brushes.Purple;
+                case BO.CallType.Grammary_High:
+                    return Brushes.Magenta;
+                default:
+                    return Brushes.White; // default color if none match
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 
 
