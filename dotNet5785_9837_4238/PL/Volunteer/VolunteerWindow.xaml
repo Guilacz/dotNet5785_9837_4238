@@ -89,7 +89,11 @@
                   SelectedValue="{Binding CurrentVolunteer.RoleType}"/>
 
         <Label Grid.Row="5" Grid.Column="0" Content="Password:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding CurrentVolunteer.Password}"/>
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+            
+            <TextBox Text="{Binding CurrentVolunteer.Password}" />
+            <Button Content="Generate Password" Click="GeneratePassword_Click" />
+        </StackPanel>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
         <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding CurrentVolunteer.Address}"/>

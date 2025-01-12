@@ -158,15 +158,25 @@ namespace PL
 
             if (result == MessageBoxResult.Yes)
             {
-                foreach (Window window in Application.Current.Windows)
+                try
                 {
-                    if (window != this)
-                        window.Close(); 
-                }
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window != this)
+                            window.Close();
+                    }
 
-                Mouse.OverrideCursor = Cursors.Wait;
-                s_bl.Admin.ResetDB();
-                Mouse.OverrideCursor = null;
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    s_bl.Admin.ResetDB();
+                    Mouse.OverrideCursor = null;
+
+                    MessageBox.Show("Database reset succeeded.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    Mouse.OverrideCursor = null; // Make sure the cursor is reset
+                    MessageBox.Show($"Database reset failed.\nError: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -180,17 +190,27 @@ namespace PL
 
             if (result == MessageBoxResult.Yes)
             {
-                foreach (Window window in Application.Current.Windows)
+                try
                 {
-                    if (window != this)
-                        window.Close();
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window != this)
+                            window.Close();
+                    }
+
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    s_bl.Admin.InitializeDB();
+                    Mouse.OverrideCursor = null;
+
+                    MessageBox.Show("Database initialization succeeded.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    Mouse.OverrideCursor = null; // Make sure the cursor is reset
+                    MessageBox.Show($"Database initialization failed.\nError: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
-                Mouse.OverrideCursor = Cursors.Wait;
-                s_bl.Admin.InitializeDB();
-                Mouse.OverrideCursor = null;
             }
-
         }
 
     }

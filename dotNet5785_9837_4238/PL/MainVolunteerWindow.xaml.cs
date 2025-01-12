@@ -38,7 +38,14 @@ namespace PL
             DependencyProperty.Register("CurrentVolunteer", typeof(BO.Volunteer), typeof(MainVolunteerWindow), new PropertyMetadata(null));
 
 
+        private void GeneratePassword_Click(object sender, RoutedEventArgs e)
+        {
+            // כאן נקרא לפונקציה שמחזירה סיסמה אקראית
+            string generatedPassword = s_bl.Volunteer.NewPassword();
 
+            // מעדכנים את ה-TextBox
+            CurrentVolunteer.Password = generatedPassword;
+        }
 
 
         //public BO.CallInProgress CurrentCall

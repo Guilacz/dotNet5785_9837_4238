@@ -80,6 +80,15 @@ namespace PL.Volunteer
 
 
         }
+
+        private void GeneratePassword_Click(object sender, RoutedEventArgs e)
+        {
+            // כאן נקרא לפונקציה שמחזירה סיסמה אקראית
+            string generatedPassword = s_bl.Volunteer.NewPassword();
+
+            // מעדכנים את ה-TextBox
+            CurrentVolunteer.Password = generatedPassword;
+        }
         // Event handler for window loaded
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
