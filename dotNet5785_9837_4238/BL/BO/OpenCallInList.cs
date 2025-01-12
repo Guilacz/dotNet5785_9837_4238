@@ -17,7 +17,7 @@ public class OpenCallInList
 {
     public int CallId { get; init; }
 
-    public CallType CallType;
+    public CallType CallType { get; set; }
     public string Address { get; set; }
 
     public DateTime OpenTime { get; init; }

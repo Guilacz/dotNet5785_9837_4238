@@ -1,21 +1,27 @@
-﻿using BO;
+﻿//using BO;
+//using System;
+//using System.Collections.Generic;
+//using System.ComponentModel;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+//using System.Windows;
+//using System.Windows.Controls;
+//using System.Windows.Data;
+//using System.Windows.Documents;
+//using System.Windows.Input;
+//using System.Windows.Media;
+//using System.Windows.Media.Imaging;
+//using System.Windows.Shapes;
+
+
+using BO;
+using DO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-
-
 
 namespace PL.CallsOfVolunteer
 {
@@ -24,69 +30,114 @@ namespace PL.CallsOfVolunteer
     /// </summary>
     public partial class HistoricWindow : Window
     {
-
-        //access to the BL
+        // Access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-
-
-        private int volunteerId;
-
-
-
-
+        // DependencyProperty for the list of closed calls
         public IEnumerable<BO.ClosedCallInList> ListOfCalls
         {
             get { return (IEnumerable<BO.ClosedCallInList>)GetValue(ListOfCallsProperty); }
             set { SetValue(ListOfCallsProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for ListOfCalls.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ListOfCallsProperty =
             DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.ClosedCallInList>), typeof(HistoricWindow));
 
+        // Selected sort field
+        public BO.CloseCallInListSort SortSelected { get; set; } = BO.CloseCallInListSort.None;
 
+        // Selected filter type
+        public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
 
+        // The ID of the volunteer for which the history is displayed
+        private int _volunteerId;
 
-
-        public HistoricWindow(int id)
+        /// <summary>
+        /// Constructor for HistoricWindow
+        /// </summary>
+        /// <param name="volunteerId">ID of the volunteer</param>
+        public HistoricWindow(int volunteerId)
         {
+            if (volunteerId <= 0)
+                throw new ArgumentException("Invalid volunteer ID.", nameof(volunteerId));
+            _volunteerId = volunteerId;
             InitializeComponent();
-            volunteerId = id;
-            Loaded += ClosedCallsHistory_loaded;
+            
 
-
+            // Load the data and set up observers
+            queryClosedCalls();
+            Loaded += Window_Loaded;
+            Closed += Window_Closed;
         }
 
-
-        private void ClosedCallsHistory_loaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Loads the closed calls for the specified volunteer
+        /// </summary>
+        private void queryClosedCalls()
         {
             try
             {
-                var closedCalls = s_bl.Call.GetListOfClosedCall(volunteerId);
-
-                if (closedCalls == null || !closedCalls.Any())
-                {
-                    MessageBox.Show("No calls found for the specified volunteer.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-
-                ListOfCalls = closedCalls;
-
+                // Query based on the selected sort and filter
+                ListOfCalls = s_bl.Call.GetListOfClosedCall(_volunteerId, CallTypeSelected == BO.CallType.None ? null : CallTypeSelected, SortSelected == BO.CloseCallInListSort.None ? null : SortSelected);
+            }
+            catch (BO.BlDoesNotExistException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ListOfCalls = Enumerable.Empty<BO.ClosedCallInList>();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while loading calls: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ListOfCalls = Enumerable.Empty<BO.ClosedCallInList>();
             }
         }
 
-        private void ComboBoxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        /// <summary>
+        /// Observer to refresh the list of calls
+        /// </summary>
+        private void ClosedCallsObserver() => queryClosedCalls();
 
+        /// <summary>
+        /// Event handler for when the window is loaded
+        /// </summary>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            s_bl.Call.AddObserver(ClosedCallsObserver);
         }
 
+        /// <summary>
+        /// Event handler for when the window is closed
+        /// </summary>
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            s_bl.Call.RemoveObserver(ClosedCallsObserver);
+        }
+
+        /// <summary>
+        /// Event handler for the sort combobox selection change
+        /// </summary>
+        private void ComboBoxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            queryClosedCalls();
+        }
+
+        /// <summary>
+        /// Event handler for the filter combobox selection change
+        /// </summary>
         private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            queryClosedCalls();
+        }
 
+        /// <summary>
+        /// Return button click event
+        /// </summary>
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            var volunteerWindow = new MainVolunteerWindow(_volunteerId);
+             volunteerWindow.Show();
+            this.Close();
         }
     }
 }
+
+

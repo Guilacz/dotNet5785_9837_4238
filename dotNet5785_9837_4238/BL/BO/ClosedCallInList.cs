@@ -17,11 +17,11 @@ public class ClosedCallInList
 {
     public int CallId { get; init; }
 
-    public CallType CallType;
+    public CallType CallType { get; set; }
     public string Adress { get; set; }
     public DateTime OpenTime { get; set; }
     public DateTime StartTime { get; set; }
-    public TypeOfEnd? TypeOfEnd;
+    public TypeOfEnd? TypeOfEnd { get; set; } 
     public DateTime? FinishTime { get; set; }
 
     /// <summary>

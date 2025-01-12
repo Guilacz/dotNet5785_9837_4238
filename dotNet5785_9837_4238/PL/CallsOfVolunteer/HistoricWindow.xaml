@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--Line of the combobox-->
@@ -23,7 +24,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content=" Sort By:" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxSort_SelectionChanged"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource CloseCallInListSortCollection}}" SelectedValue="{Binding Path=SortSelected, Mode=TwoWay}"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxSort_SelectionChanged"/>
             <Label Grid.Column="2" Content=" Filter By:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,0,0,0" />
             <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxFilter_SelectionChanged"/>
         </Grid>
@@ -46,6 +47,9 @@
                 
             </DataGrid.Columns>
         </DataGrid>
+
+        <Button Content="Return to your detailed window" Grid.Row="2" HorizontalAlignment="Left" Height="50" Width="205" Click="ReturnButton_Click" Margin="208,77,0,77"/>
+
 
     </Grid>
 

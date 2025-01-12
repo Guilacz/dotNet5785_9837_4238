@@ -40,6 +40,20 @@ internal class CallInListStatusCollection : IEnumerable
 
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
+
+internal class OpenCallInListSortCollection : IEnumerable
+{
+    static readonly IEnumerable<BO.CloseCallInListSort> s_enums = (Enum.GetValues(typeof(BO.CloseCallInListSort)) as IEnumerable<BO.CloseCallInListSort>)!;
+
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
+
+internal class CloseCallInListSortCollection : IEnumerable
+{
+    static readonly IEnumerable<BO.CloseCallInListSort> s_enums = (Enum.GetValues(typeof(BO.CloseCallInListSort)) as IEnumerable<BO.CloseCallInListSort>)!;
+
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
 internal class Enums
 {
 

@@ -20,7 +20,7 @@ public class CallInProgress
 {
     public int Id { get; init; }
     public int CallId { get; set; }
-    public CallType CallType;
+    public CallType CallType { get; set; } 
 
     public string Adress { get; set; }
 

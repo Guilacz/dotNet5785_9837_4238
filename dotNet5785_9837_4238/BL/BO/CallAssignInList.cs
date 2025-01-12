@@ -19,8 +19,8 @@ public class CallAssignInList
 
    
     public DateTime StartTime { get; init; }
-    public TypeOfEnd? TypeOfEnd ;
-    public DateTime? FinishTime ;
+    public TypeOfEnd? TypeOfEnd { get; set; }
+    public DateTime? FinishTime { get; set; }
 
     /// <summary>
     /// toString function 

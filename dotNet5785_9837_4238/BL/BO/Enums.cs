@@ -119,12 +119,12 @@ public enum CallInListSort
 public enum CloseCallInListSort
 {
     CallId, 
-    CallType,
-    Adress, 
+    CallType, 
     OpenTime, 
     StartTime, 
     TypeOfEnd,
-    FinishTime
+    FinishTime,
+    None
 }
 public enum OpenCallInListSort
 {
@@ -134,5 +134,5 @@ public enum OpenCallInListSort
     OpenTime, 
     MaxTime,
     Details, 
-    Distance
+    None
 }

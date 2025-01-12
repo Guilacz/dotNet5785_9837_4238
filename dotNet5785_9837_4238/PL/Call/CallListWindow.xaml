@@ -94,7 +94,17 @@
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
 
                 <!-- Column for CallType -->
-                <DataGridTextColumn Binding="{Binding CallType}" Header=" Type of the call" Width="Auto"/>
+                <DataGridTemplateColumn Header="Type of the call" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding CallType, Converter={StaticResource ConvertCallTypeToColorKey}}">
+                                <TextBlock Text="{Binding CallType}" Padding="5"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
 
                 <!-- Column for CallStatus -->
                 <DataGridTextColumn Binding="{Binding CallInListStatus}" Header="Status of the call" Width="Auto"/>
@@ -119,11 +129,11 @@
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" 
-        Click="DeleteButton_Click" 
-        Tag="{Binding CallId}" 
-        Visibility="{Binding  ., Converter={StaticResource ConverterAddUpdateKey}, ConverterParameter=Delete}"/>
-
+                            <Button Content="Delete"
+                                    Click="DeleteButton_Click"
+                                    Tag="{Binding CallId}"
+                                    Visibility="{Binding NumberOfAssignment, Converter={StaticResource ConverterDeleteAssignmentKey}}"/>
+                              
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

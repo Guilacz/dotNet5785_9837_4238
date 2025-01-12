@@ -643,40 +643,79 @@ internal class CallImplementation : ICall
 
     public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
     {
-        var volunteer = _dal.Volunteer.Read(volId) ??
-            throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist.");
+        // Vérifier si le volontaire existe
+        var volunteer = _dal.Volunteer.Read(volId)
+                       ?? throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist.");
 
+        // Récupérer les affectations pour ce volontaire
+        var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.VolunteerId);
+        if (assignments == null || !assignments.Any())
+            return Enumerable.Empty<BO.ClosedCallInList>();
+
+        // Récupérer les appels fermés
         var closedCallsOfVolunteer =
-            from assignment in _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.VolunteerId)
+            from assignment in assignments
             let call = _dal.Call.Read(assignment.CallId)
-            where type == null || (BO.CallType)call.CallType == type.Value
-            select new BO.ClosedCallInList()
+            where call != null && (type == null || (BO.CallType)call.CallType == type.Value)
+            select new BO.ClosedCallInList
             {
                 CallId = call.CallId,
                 CallType = (BO.CallType)call.CallType,
                 Adress = call.Address,
                 OpenTime = call.OpenTime,
                 StartTime = assignment.StartTime,
-                TypeOfEnd = assignment.TypeOfEnd.HasValue  ? (BO.TypeOfEnd?)assignment.TypeOfEnd.Value  : null,
+                TypeOfEnd = assignment.TypeOfEnd.HasValue ? (BO.TypeOfEnd?)assignment.TypeOfEnd.Value : null,
                 FinishTime = assignment.FinishTime ?? null
             };
 
+        // Trier selon le critère spécifié
         return sort switch
         {
-            BO.CloseCallInListSort.CallId => from closedCall in closedCallsOfVolunteer
-                                             orderby closedCall.CallId
-                                             select closedCall,
-            BO.CloseCallInListSort.CallType => from closedCall in closedCallsOfVolunteer
-                                               orderby closedCall.CallType
-                                               select closedCall,
-            BO.CloseCallInListSort.TypeOfEnd => from closedCall in closedCallsOfVolunteer
-                                                orderby closedCall.TypeOfEnd
-                                                select closedCall,
-            _ => from closedCall in closedCallsOfVolunteer
-                 orderby closedCall.CallId
-                 select closedCall
+            BO.CloseCallInListSort.CallId => closedCallsOfVolunteer.OrderBy(c => c.CallId),
+            BO.CloseCallInListSort.CallType => closedCallsOfVolunteer.OrderBy(c => c.CallType),
+            BO.CloseCallInListSort.TypeOfEnd => closedCallsOfVolunteer.OrderBy(c => c.TypeOfEnd),
+            _ => closedCallsOfVolunteer
         };
     }
+
+
+    //public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
+    //{
+    //    var volunteer = _dal.Volunteer.Read(volId);
+    //    //??
+    //    //    throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist.");
+
+    //    var closedCallsOfVolunteer =
+    //        from assignment in _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.VolunteerId)
+    //        let call = _dal.Call.Read(assignment.CallId)
+    //        where type == null || (BO.CallType)call.CallType == type.Value
+    //        select new BO.ClosedCallInList()
+    //        {
+    //            CallId = call.CallId,
+    //            CallType = (BO.CallType)call.CallType,
+    //            Adress = call.Address,
+    //            OpenTime = call.OpenTime,
+    //            StartTime = assignment.StartTime,
+    //            TypeOfEnd = assignment.TypeOfEnd.HasValue  ? (BO.TypeOfEnd?)assignment.TypeOfEnd.Value  : null,
+    //            FinishTime = assignment.FinishTime ?? null
+    //        };
+
+    //    return sort switch
+    //    {
+    //        BO.CloseCallInListSort.CallId => from closedCall in closedCallsOfVolunteer
+    //                                         orderby closedCall.CallId
+    //                                         select closedCall,
+    //        BO.CloseCallInListSort.CallType => from closedCall in closedCallsOfVolunteer
+    //                                           orderby closedCall.CallType
+    //                                           select closedCall,
+    //        BO.CloseCallInListSort.TypeOfEnd => from closedCall in closedCallsOfVolunteer
+    //                                            orderby closedCall.TypeOfEnd
+    //                                            select closedCall,
+    //        _ => from closedCall in closedCallsOfVolunteer
+    //             orderby closedCall.CallId
+    //             select closedCall
+    //    };
+    //}
 
 
     /// <summary>
@@ -739,7 +778,6 @@ internal class CallImplementation : ICall
                 OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
                 OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
                 OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
-                OpenCallInListSort.Distance => openCalls.OrderBy(c => c.Distance).ToList(),
                 _ => openCalls.OrderBy(c => c.CallId).ToList() 
             };
 

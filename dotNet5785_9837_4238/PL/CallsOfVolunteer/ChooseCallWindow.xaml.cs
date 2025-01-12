@@ -1,4 +1,5 @@
-﻿using PL.Call;
+﻿using BO;
+using PL.Call;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,15 +38,20 @@ namespace PL.CallsOfVolunteer
         public static readonly DependencyProperty ListOfCallsProperty =
             DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.Call>), typeof(ChooseCallWindow));
 
+        public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
+        public OpenCallInListSort SortSelected { get; set; } = OpenCallInListSort.None;
+
 
 
         public ChooseCallWindow(int id)
         {
-            InitializeComponent();
             volunteerId = id;
+            InitializeComponent();
+
             this.Loaded += ChooseCallWindow_Loaded;
 
         }
+
 
         private void ChooseCallWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -64,7 +70,8 @@ namespace PL.CallsOfVolunteer
                     .Select(callId => s_bl.Call.GetCallDetails(callId))
                     .ToList();
 
-                ListOfCalls = detailedCalls;
+                ApplyFilterAndSort(detailedCalls);
+
 
             }
             catch (Exception ex)
@@ -73,16 +80,56 @@ namespace PL.CallsOfVolunteer
             }
         }
 
-     
+        private void ApplyFilterAndSort(List<BO.Call> calls)
+        {
+            if (CallTypeSelected != BO.CallType.None)
+            {
+                calls = calls.Where(call => call.CallType == CallTypeSelected).ToList();
+            }
+
+            switch (SortSelected)
+            {
+                case OpenCallInListSort.CallId:
+                    calls = calls.OrderBy(call => call.CallId).ToList();
+                    break;
+                case OpenCallInListSort.CallType:
+                    calls = calls.OrderBy(call => call.CallType).ToList();
+                    break;
+                case OpenCallInListSort.Address:
+                    calls = calls.OrderBy(call => call.Address).ToList();
+                    break;
+                case OpenCallInListSort.OpenTime:
+                    calls = calls.OrderBy(call => call.OpenTime).ToList();
+                    break;
+                case OpenCallInListSort.MaxTime:
+                    calls = calls.OrderBy(call => call.MaxTime).ToList();
+                    break;
+                case OpenCallInListSort.Details:
+                    calls = calls.OrderBy(call => call.Details).ToList();
+                    break;
+                case OpenCallInListSort.None:
+                    // no filter
+                    break;
+            }
+
+            ListOfCalls = calls;
+        }
 
         private void ComboBoxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+            if (SortSelected != null)
+            {
+                ApplyFilterAndSort(ListOfCalls.ToList());
+            }
         }
 
         private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (CallTypeSelected != BO.CallType.None)
+            {
+                ApplyFilterAndSort(ListOfCalls.ToList());
+            }
         }
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
@@ -90,12 +137,12 @@ namespace PL.CallsOfVolunteer
             var volunteerWindow = new MainVolunteerWindow(volunteerId);
             volunteerWindow.Show();
             this.Close();
-           
+
         }
 
         private void ChooseCallButton_Click(object sender, RoutedEventArgs e)
         {
-           
+
 
         }
 
