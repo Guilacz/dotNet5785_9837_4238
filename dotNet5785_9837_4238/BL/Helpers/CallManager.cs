@@ -40,7 +40,47 @@ internal class CallManager
         return true;
     }
 
+    internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    {
+        var now = DateTime.Now;
 
+        // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
+        var callAssignments = assignments
+            .Where(a => a.CallId == call.CallId)
+            .OrderByDescending(a => a.StartTime);
+
+        var lastAssignment = callAssignments.FirstOrDefault();
+
+        // אם אין הקצאות בכלל
+        if (lastAssignment == null)
+        {
+            // אם עבר יותר משעה מפתיחת הקריאה
+            if (now > call.OpenTime.AddHours(1))
+                return BO.CallInListStatus.OpenAtRisk;
+            return BO.CallInListStatus.Open;
+        }
+
+        // אם ההקצאה האחרונה פתוחה (בטיפול)
+        if (lastAssignment.FinishTime == null && !lastAssignment.TypeOfEnd.HasValue)
+        {
+            // אם עבר יותר משעה מתחילת הטיפול
+            if (now > lastAssignment.StartTime.AddHours(1))
+                return BO.CallInListStatus.InCareAtRisk;
+            return BO.CallInListStatus.InCare;
+        }
+
+        // אם הקריאה הסתיימה
+        if (lastAssignment.TypeOfEnd.HasValue && lastAssignment.TypeOfEnd.Value.Equals(TypeOfEnd.Fulfilled))
+            return BO.CallInListStatus.Closed;
+
+
+        // אם הקריאה בוטלה או פג תוקפה
+        if (lastAssignment.TypeOfEnd.HasValue)
+            return BO.CallInListStatus.Expired;
+
+        // מקרה ברירת מחדל - פתוח
+        return BO.CallInListStatus.Open;
+    }
     /// <summary>
     /// function to get the status of a call : in care, expired, closed, open, OpenAtRisk
     /// </summary>
@@ -76,41 +116,41 @@ internal class CallManager
     //    return BO.CallInListStatus.Open;
     //}
 
-    internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
-    {
-        var now = DateTime.Now;
+    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    //{
+    //    var now = DateTime.Now;
 
-        var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
+    //    var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
 
-        // תנאי לקריאה שהיא גם בטיפול וגם בסיכון
-        if (activeAssignment != null && call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
-        {
-            return BO.CallInListStatus.InCareAtRisk;
-        }
+    //    // תנאי לקריאה שהיא גם בטיפול וגם בסיכון
+    //    if (activeAssignment != null && call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
+    //    {
+    //        return BO.CallInListStatus.InCareAtRisk;
+    //    }
 
-        if (activeAssignment != null)
-        {
-            return BO.CallInListStatus.InCare;
-        }
+    //    if (activeAssignment != null)
+    //    {
+    //        return BO.CallInListStatus.InCare;
+    //    }
 
-        if (call.MaxTime.HasValue && now > call.MaxTime.Value)
-        {
-            return BO.CallInListStatus.Expired;
-        }
+    //    if (call.MaxTime.HasValue && now > call.MaxTime.Value)
+    //    {
+    //        return BO.CallInListStatus.Expired;
+    //    }
 
-        var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
-        if (finishedAssignment != null)
-        {
-            return BO.CallInListStatus.Closed;
-        }
+    //    var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
+    //    if (finishedAssignment != null)
+    //    {
+    //        return BO.CallInListStatus.Closed;
+    //    }
 
-        if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
-        {
-            return BO.CallInListStatus.OpenAtRisk;
-        }
+    //    if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
+    //    {
+    //        return BO.CallInListStatus.OpenAtRisk;
+    //    }
 
-        return BO.CallInListStatus.Open;
-    }
+    //    return BO.CallInListStatus.Open;
+    //}
 
     /// <summary>
     /// function to convert a DO call to a BO call

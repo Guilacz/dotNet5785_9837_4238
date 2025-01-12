@@ -19,10 +19,10 @@ public class ClosedCallInList
 
     public CallType CallType;
     public string Adress { get; set; }
-    public DateTime OpenTime { get; init; }
+    public DateTime OpenTime { get; set; }
     public DateTime StartTime { get; set; }
     public TypeOfEnd? TypeOfEnd;
-    public DateTime? FinishTime { get; init; }
+    public DateTime? FinishTime { get; set; }
 
     /// <summary>
     /// toString function 

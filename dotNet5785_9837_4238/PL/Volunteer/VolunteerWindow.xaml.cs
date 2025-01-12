@@ -80,6 +80,44 @@ namespace PL.Volunteer
 
 
         }
+        // Event handler for window loaded
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
+            {
+                // Register the observer
+                s_bl.Volunteer.AddObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
+            }
+        }
+        // Event handler for window closed
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
+            {
+                // Unregister the observer
+                s_bl.Volunteer.RemoveObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
+            }
+        }
+        private void VolunteerObserver()
+        {
+            if (CurrentVolunteer != null)
+            {
+                try
+                {
+                    // Reload the volunteer data
+                    int id = CurrentVolunteer.VolunteerId;
+                    CurrentVolunteer = null;
+                    CurrentVolunteer = s_bl.Volunteer.Read(id);
+
+                    // אפשרות לעדכן את הממשק בהתאם לנתונים החדשים
+                    MessageBox.Show("Volunteer data has been updated.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while refreshing volunteer data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
 
 
 

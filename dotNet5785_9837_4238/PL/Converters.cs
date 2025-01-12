@@ -73,40 +73,6 @@ namespace PL
             throw new NotImplementedException();
         }
 
-
-        //public object Convert(object values, Type targetType, object parameter, CultureInfo culture)
-        //{
-        //    if (parameter as string == "Delete" && values is BO.Call call)
-        //    {
-        //        int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
-        //        if (_assignments == null)
-        //        {
-        //            return Visibility.Collapsed;
-        //        }
-        //        if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
-        //        {
-        //            return Visibility.Visible;
-        //        }
-        //        return Visibility.Collapsed;
-        //    }
-        //    if (values is string add && add == "Add")
-        //    {
-        //        if (targetType == typeof(Visibility))
-        //            return Visibility.Collapsed;
-
-        //        if (targetType == typeof(bool))//to id isRead
-        //            return false;
-        //    }
-
-        //    if (targetType == typeof(Visibility))
-        //        return Visibility.Visible;
-
-        //    if (targetType == typeof(bool))
-        //        return true;
-
-        //    throw new NotImplementedException();
-        //}
-
         /// <summary>
         /// Converts a value back to the original value.
         /// </summary>
@@ -120,50 +86,9 @@ namespace PL
         {
             throw new NotImplementedException();
         }
-
-
-
-        //public object ConvertToDelete(object value, Type targetType, object parameter, CultureInfo culture)
-        //{
-
-
-
-        //    if (value is BO.Call call)
-        //    {
-        //        //IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-
-        //        int numberOfAssignment = _assignments.Count(a => a.CallId == call.CallId);
-
-        //        // תנאי: קריאה בסטטוס פתוח והקצאות שוות לאפס
-        //        if (call.CallStatus == BO.CallStatus.Open && numberOfAssignment == 0)
-        //        {
-        //            return Visibility.Visible;
-        //        }
-        //    }
-
-        //    return Visibility.Collapsed;
-        //}
     }
 
 
-
-
-
-
-    //public class CallInProgressVisibilityConverter : IValueConverter
-    //{
-    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        var callInProgress = value as BO.CallInProgress;
-    //        // Return Visibility.Visible if there's a call in progress, otherwise Collapsed
-    //        return callInProgress != null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-    //    }
-
-    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
 
     public class CallInProgressVisibilityConverter : IValueConverter
     {
