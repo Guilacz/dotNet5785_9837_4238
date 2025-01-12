@@ -30,7 +30,6 @@
 
         <!-- DataGrid for the list of calls -->
         <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}"
-                  SelectedItem="{Binding SelectedCall}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   EnableRowVirtualization="True"

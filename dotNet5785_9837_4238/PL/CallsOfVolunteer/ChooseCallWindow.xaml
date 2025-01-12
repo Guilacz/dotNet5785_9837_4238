@@ -35,7 +35,7 @@
 
         <!-- DataGrid for the list of calls -->
         <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}"
-           SelectedItem="{Binding SelectedCall}"
+           
            AutoGenerateColumns="False"
            IsReadOnly="True"
            EnableRowVirtualization="True"
@@ -44,7 +44,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Call ID" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding CallType}" Header="Type" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Adress}" Header="Address" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Address}" Header="Address" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding OpenTime}" Header="Open Time" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding MaxTime}" Header="Max Time" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Details}" Header="Details" Width="Auto"/>
