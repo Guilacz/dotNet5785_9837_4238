@@ -20,7 +20,19 @@ internal class VolunteerImplementation : IVolunteer
     public void RemoveObserver(int id, Action observer) => VolunteerManager.Observers.RemoveObserver(id, observer); //stage 5
     #endregion Stage 5
 
+    public string NewPassword()
+    {
+        Random random = new Random();
+        char[] password = new char[9];
 
+        for (int i = 0; i < 4; i++)
+            password[i] = (char)random.Next('a', 'z' + 1);
+        password[4] = '@';
+
+        for (int i = 5; i < 9; i++)
+            password[i] = (char)random.Next('a', 'z' + 1);
+        return new string(password);
+    }
     /// <summary>
     /// function to associate a call with a volunteer 
     /// check that both exists and are correct

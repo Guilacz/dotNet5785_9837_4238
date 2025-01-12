@@ -11,6 +11,10 @@
         <local:TypeOfEndCollection x:Key="TypeOfEndCollectionKey" />
         <local:CallInListStatusCollection x:Key="CallInListStatusCollectionKey" />
         <local:CallInProgressVisibilityConverter x:Key="CallInProgressVisibilityConverter" />
+        <local:ConvertCallTypeToColor x:Key="ConvertCallTypeToColorKey" />
+        <local:OpenCallInListSortCollection x:Key="OpenCallInListSortCollection" />
+        <local:CloseCallInListSortCollection x:Key="CloseCallInListSortCollection" />
+        <local:ConverterDeleteAssignment x:Key="ConverterDeleteAssignmentKey" />
 
 
     </Application.Resources>
