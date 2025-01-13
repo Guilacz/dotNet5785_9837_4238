@@ -304,8 +304,7 @@ public static class Tools
     {
         // כתובת המייל והשדות של השולח
         string fromAddress = "brachakal2225@gmail.com"; // כתובת המייל שלך
-        string fromPassword = "0542236200";  // הסיסמה שלך (או App Password במקרה של Gmail)
-
+        string fromPassword = "xgba ufsc kkhd zdzg";  // הסיסמה שלך (או App Password במקרה של Gmail)
         // יצירת הודעת המייל
         MailMessage mail = new MailMessage
         {

@@ -329,109 +329,109 @@ public static class Initialization
     /// create assignment : we had 50 calls , for each type of end, so we create 200 assignments
     /// </summary>
 
-    private static void createAssignments()
-    {
-        if (s_dal == null)
-        {
-            throw new InvalidOperationException("s_dal is not initialized.");
-        }
+    //private static void createAssignments()
+    //{
+    //    if (s_dal == null)
+    //    {
+    //        throw new InvalidOperationException("s_dal is not initialized.");
+    //    }
 
-        var random = new Random();
+    //    var random = new Random();
 
-        // מערך תעודות זהות של מתנדבים
-        int[] volunteerIds = new int[]
-        {
-        979662525, 524933538, 364447862, 327598595, 565353679,
-        206870933, 994168219, 295677710, 245657465, 829237411,
-        957760242, 749113379, 117511204, 388066235, 566248829,
-        147142541
-        };
+    //    // מערך תעודות זהות של מתנדבים
+    //    int[] volunteerIds = new int[]
+    //    {
+    //    979662525, 524933538, 364447862, 327598595, 565353679,
+    //    206870933, 994168219, 295677710, 245657465, 829237411,
+    //    957760242, 749113379, 117511204, 388066235, 566248829,
+    //    147142541
+    //    };
 
-        // יצירת רשימה מעורבבת של כל הקריאות הזמינות
-        var availableCalls = Enumerable.Range(1, 45).ToList();
-        availableCalls = availableCalls.OrderBy(x => random.Next()).ToList();
+    //    // יצירת רשימה מעורבבת של כל הקריאות הזמינות
+    //    var availableCalls = Enumerable.Range(1, 45).ToList();
+    //    availableCalls = availableCalls.OrderBy(x => random.Next()).ToList();
 
-        int currentCallIndex = 0;
-
-
-        for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
-        {
-            Assignment a = new Assignment(
-                Id: 0,
-                CallId: availableCalls[currentCallIndex++],
-                StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
-                VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
-                TypeOfEnd: TypeOfEnd.Fulfilled,
-                FinishTime: s_dal.Config.Clock.AddYears(1)  // סיום בעתיד, שנה קדימה
-            );
-            s_dal.Assignment.Create(a);
-        }
-
-        // הקצאות שנסגרו על ידי מתנדב (5 הקצאות)
-        for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
-        {
-            Assignment a = new Assignment(
-                Id: 0,
-                CallId: availableCalls[currentCallIndex++],
-                StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
-                VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
-                TypeOfEnd: TypeOfEnd.CancelledByVolunteer,
-                FinishTime: s_dal.Config.Clock.AddMinutes(5)  // סיום בעוד 5 דקות
-            );
-            s_dal.Assignment.Create(a);
-        }
-
-        // הקצאות שנסגרו על ידי מנהל (5 הקצאות)
-        for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
-        {
-            Assignment a = new Assignment(
-                Id: 0,
-                CallId: availableCalls[currentCallIndex++],
-                StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
-                VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
-                TypeOfEnd: TypeOfEnd.CancelledByManager,
-                FinishTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 60))  // סיום שעבר כבר, עבר בין 30 ל-60 דקות
-            );
-            s_dal.Assignment.Create(a);
-        }
-
-        // הקצאות שפג תוקפן (5 הקצאות)
-        for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
-        {
-            Assignment a = new Assignment(
-                Id: 0,
-                CallId: availableCalls[currentCallIndex++],
-                StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(150, 180)),
-                VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
-                TypeOfEnd: TypeOfEnd.CancelledAfterTime,
-                FinishTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 60))  // סיום שעבר, בין 30 ל-60 דקות אחורה
-            );
-            s_dal.Assignment.Create(a);
-        }
-
-        // קריאות פתוחות בטיפול (שארית הקריאות)
-        for (int i = 0; currentCallIndex < availableCalls.Count; i++)
-        {
-            Assignment a = new Assignment(
-                Id: 0,
-                CallId: availableCalls[currentCallIndex++],
-                StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(10, 30)),
-                VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
-                TypeOfEnd: null, // לא סגור, עדיין בטיפול
-                FinishTime: null
-            );
-            s_dal.Assignment.Create(a);
-        }
-
-        for (int i = 0; i < 15; i++)
-        {
-            Assignment a = new Assignment(0, availableCalls[currentCallIndex++], s_dal!.Config.Clock.AddYears(-2), volunteerIds[i], TypeOfEnd.Fulfilled);
-            s_dal!.Assignment.Create(a);
-        }
+    //    int currentCallIndex = 0;
 
 
+    //    for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
+    //    {
+    //        Assignment a = new Assignment(
+    //            Id: 0,
+    //            CallId: availableCalls[currentCallIndex++],
+    //            StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
+    //            VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
+    //            TypeOfEnd: TypeOfEnd.Fulfilled,
+    //            FinishTime: s_dal.Config.Clock.AddYears(1)  // סיום בעתיד, שנה קדימה
+    //        );
+    //        s_dal.Assignment.Create(a);
+    //    }
 
-    }
+    //    // הקצאות שנסגרו על ידי מתנדב (5 הקצאות)
+    //    for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
+    //    {
+    //        Assignment a = new Assignment(
+    //            Id: 0,
+    //            CallId: availableCalls[currentCallIndex++],
+    //            StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
+    //            VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
+    //            TypeOfEnd: TypeOfEnd.CancelledByVolunteer,
+    //            FinishTime: s_dal.Config.Clock.AddMinutes(5)  // סיום בעוד 5 דקות
+    //        );
+    //        s_dal.Assignment.Create(a);
+    //    }
+
+    //    // הקצאות שנסגרו על ידי מנהל (5 הקצאות)
+    //    for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
+    //    {
+    //        Assignment a = new Assignment(
+    //            Id: 0,
+    //            CallId: availableCalls[currentCallIndex++],
+    //            StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)),
+    //            VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
+    //            TypeOfEnd: TypeOfEnd.CancelledByManager,
+    //            FinishTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 60))  // סיום שעבר כבר, עבר בין 30 ל-60 דקות
+    //        );
+    //        s_dal.Assignment.Create(a);
+    //    }
+
+    //    // הקצאות שפג תוקפן (5 הקצאות)
+    //    for (int i = 0; i < 5 && currentCallIndex < availableCalls.Count; i++)
+    //    {
+    //        Assignment a = new Assignment(
+    //            Id: 0,
+    //            CallId: availableCalls[currentCallIndex++],
+    //            StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(150, 180)),
+    //            VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
+    //            TypeOfEnd: TypeOfEnd.CancelledAfterTime,
+    //            FinishTime: s_dal.Config.Clock.AddMinutes(-random.Next(30, 60))  // סיום שעבר, בין 30 ל-60 דקות אחורה
+    //        );
+    //        s_dal.Assignment.Create(a);
+    //    }
+
+    //    // קריאות פתוחות בטיפול (שארית הקריאות)
+    //    for (int i = 0; currentCallIndex < availableCalls.Count; i++)
+    //    {
+    //        Assignment a = new Assignment(
+    //            Id: 0,
+    //            CallId: availableCalls[currentCallIndex++],
+    //            StartTime: s_dal.Config.Clock.AddMinutes(-random.Next(10, 30)),
+    //            VolunteerId: volunteerIds[random.Next(volunteerIds.Length)],
+    //            TypeOfEnd: null, // לא סגור, עדיין בטיפול
+    //            FinishTime: null
+    //        );
+    //        s_dal.Assignment.Create(a);
+    //    }
+
+    //    for (int i = 0; i < 15; i++)
+    //    {
+    //        Assignment a = new Assignment(0, availableCalls[currentCallIndex++], s_dal!.Config.Clock.AddYears(-2), volunteerIds[i], TypeOfEnd.Fulfilled);
+    //        s_dal!.Assignment.Create(a);
+    //    }
+
+
+
+    //}
     //////private static void createAssignments()
     //////{
     //////    if (s_dal == null)
@@ -537,133 +537,133 @@ public static class Initialization
     //////    }
     //////}
 
-    //    private static void createAssignments()
-    //    {
+    private static void createAssignments()
+    {
 
-    //        int[] volunteerId = new int[]
-    //{
-    //979662525,
-    //524933538,
-    //364447862,
-    //327598595,
-    //565353679,
-    //206870933,
-    //994168219,
-    //295677710,
-    //245657465,
-    //829237411,
-    //957760242,
-    //749113379,
-    //117511204,
-    //388066235,
-    //566248829,
-    //147142541
-    //};
-    //        int i;
-    //        List<int> callnumbers = s_dal.Call.ReadAll().Select(x => x.CallId).ToList();
-    //        int sumOfCalls = callnumbers.Count() - 1;
-    //        int callId = 0;
-
-
-
-    //        //short explanation : for each type of end we separated in several for , like that each volunteer receives a different num of calls
-    //        //creation of 50 assignments who are fulfilled
-    //        for (i = 0; i < 15; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.Fulfilled);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 15; i < 29; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.Fulfilled);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 29; i < 40; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.Fulfilled);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 40; i < 50; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.Fulfilled);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-
-    //        //creation of 50 assignments who are CancelledAfterTime
-
-    //        for (i = 0; i < 15; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledAfterTime);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 15; i < 29; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledAfterTime);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 29; i < 40; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledAfterTime);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 40; i < 50; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledAfterTime);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-
-    //        //creation of 50 assignments who are CancelledByManager
-
-    //        for (i = 0; i < 15; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByManager);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 15; i < 29; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByManager);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 29; i < 40; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByManager);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 40; i < 50; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByManager);
-    //            s_dal!.Assignment.Create(a);
-    //        }
+        int[] volunteerId = new int[]
+{
+    979662525,
+    524933538,
+    364447862,
+    327598595,
+    565353679,
+    206870933,
+    994168219,
+    295677710,
+    245657465,
+    829237411,
+    957760242,
+    749113379,
+    117511204,
+    388066235,
+    566248829,
+    147142541
+};
+        int i;
+        List<int> callnumbers = s_dal.Call.ReadAll().Select(x => x.CallId).ToList();
+        int sumOfCalls = callnumbers.Count() - 1;
+        int callId = 0;
 
 
-    //        //creation of 50 assignments who are CancelledByVolunteer
 
-    //        for (i = 0; i < 5; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 5; i < 15; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 15; i < 29; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByVolunteer);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 29; i < 40; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByVolunteer);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //        for (i = 40; i < 50; i++)
-    //        {
-    //            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByVolunteer);
-    //            s_dal!.Assignment.Create(a);
-    //        }
-    //    }
+        //short explanation : for each type of end we separated in several for , like that each volunteer receives a different num of calls
+        //creation of 50 assignments who are fulfilled
+        for (i = 0; i < 15; i++)
+        {
+            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.Fulfilled);
+            s_dal!.Assignment.Create(a);
+        }
+        //for (i = 15; i < 29; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.Fulfilled);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 29; i < 40; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.Fulfilled);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 40; i < 50; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.Fulfilled);
+        //    s_dal!.Assignment.Create(a);
+        //}
+
+        ////creation of 50 assignments who are CancelledAfterTime
+
+        //for (i = 0; i < 15; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledAfterTime);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        for (i = 15; i < 29; i++)
+        {
+            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledAfterTime);
+            s_dal!.Assignment.Create(a);
+        }
+        //for (i = 29; i < 40; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledAfterTime);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 40; i < 50; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledAfterTime);
+        //    s_dal!.Assignment.Create(a);
+        //}
+
+        //creation of 50 assignments who are CancelledByManager
+
+        //for (i = 0; i < 15; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByManager);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 15; i < 29; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByManager);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        for (i = 29; i < 40; i++)
+        {
+            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByManager);
+            s_dal!.Assignment.Create(a);
+        }
+        //for (i = 40; i < 50; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByManager);
+        //    s_dal!.Assignment.Create(a);
+        //}
+
+
+        //creation of 50 assignments who are CancelledByVolunteer
+
+        //for (i = 0; i < 5; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 5; i < 15; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i], TypeOfEnd.CancelledByVolunteer);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 15; i < 29; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 15], TypeOfEnd.CancelledByVolunteer);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        //for (i = 29; i < 40; i++)
+        //{
+        //    Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 29], TypeOfEnd.CancelledByVolunteer);
+        //    s_dal!.Assignment.Create(a);
+        //}
+        for (i = 40; i < 50; i++)
+        {
+            Assignment a = new Assignment(0, callnumbers[s_rand.Next(sumOfCalls)], s_dal!.Config.Clock, volunteerId[i - 40], TypeOfEnd.CancelledByVolunteer);
+            s_dal!.Assignment.Create(a);
+        }
+    }
 
     /// <summary>
     /// /// <summary>

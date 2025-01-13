@@ -25,7 +25,7 @@ internal static class Config
     {
         nextCallId = StartCallId; 
         nextAssignmentId = NextAssignmentId;
-        Clock = DateTime.Now ;
+        Clock = DateTime.Now;
         RiskRange = TimeSpan.Zero ;
     }
 }

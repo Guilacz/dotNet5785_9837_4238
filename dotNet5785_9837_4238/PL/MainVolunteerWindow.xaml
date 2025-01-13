@@ -125,11 +125,11 @@
 
                     <!-- Id (int) -->
                     <TextBlock Text="Id:" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
-                    <TextBox Grid.Row="0" Grid.Column="2" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.callInCaring.Id}" IsReadOnly="True"/>
+                    <TextBox Grid.Row="0" Grid.Column="2" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.callInCaring.CallId}" IsReadOnly="True"/>
 
                     <!-- Type (ENUM) -->
                     <TextBlock Text="Type:" Grid.Row="1" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
-                    <ComboBox Grid.Row="1" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding CallTypes}" SelectedItem="{Binding CurrentCall.Type}"/>
+                    <ComboBox Grid.Row="1" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding CurrentVolunteer.callInCaring.CallType}" SelectedItem="{Binding CurrentCall.CallType}"/>
 
                     <!-- Description (string) -->
                     <TextBlock Text="Description:" Grid.Row="2" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
@@ -150,7 +150,7 @@
 
                     <!-- Status (ENUM) -->
                     <TextBlock Text="Status:" Grid.Row="6" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
-                    <ComboBox Grid.Row="6" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding StatusTypes}" SelectedItem="{Binding CurrentCall.Status}"/>
+                    <ComboBox Grid.Row="6" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding CurrentVolunteer.callInCaring.CallInProgressStatus}" SelectedItem="{Binding CurrentCall.CallInProgressStatus}"/>
 
                     <!--Buttons-->
                     <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="10,10,0,10">
