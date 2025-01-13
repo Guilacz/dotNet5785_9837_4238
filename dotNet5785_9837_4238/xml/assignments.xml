@@ -400,4 +400,14 @@
     <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
     <FinishTime />
   </Assignment>
+  <Assignment>
+    <Assignment>
+      <Id>100</Id>
+      <CallId>2</CallId>
+      <VolunteerId>147142541</VolunteerId>
+      <StartTime>2025-01-13T20:03:56.9206362+02:00</StartTime>
+      <TypeOfEnd>Fulfilled</TypeOfEnd>
+      <FinishTime>2025-01-13T20:04:04.7735936+02:00</FinishTime>
+    </Assignment>
+  </Assignment>
 </Assignments>

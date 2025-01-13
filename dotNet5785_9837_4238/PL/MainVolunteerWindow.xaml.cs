@@ -100,6 +100,7 @@ namespace PL
 
         public MainVolunteerWindow(int id)
         {
+
             InitializeComponent();
             CurrentVolunteer = s_bl.Volunteer.Read(id);
             CurrentCall = CurrentVolunteer?.callInCaring ?? new BO.CallInProgress(); // Initialisez avec un objet par défaut
@@ -144,7 +145,7 @@ namespace PL
         {
             try
             {
-                s_bl.Call.UpdateCallCancelled(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.CallId);
+                s_bl.Call.UpdateCallCancelled(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id);
                 MessageBox.Show("The call has been successfully cancelled.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -157,7 +158,7 @@ namespace PL
         {
             try
             {
-                s_bl.Call.UpdateCallFinished(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.CallId);
+                s_bl.Call.UpdateCallFinished(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id);
                 MessageBox.Show("The call has been successfully finished.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)

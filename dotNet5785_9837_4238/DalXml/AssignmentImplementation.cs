@@ -12,7 +12,7 @@ internal class AssignmentImplementation : IAssignment
     private XElement createAssignmentElement(Assignment assignment)
     {
         return new XElement("Assignment",
-            new XElement("Id", Config.NextAssignmentId),
+            new XElement("Id", assignment.Id),
             new XElement("CallId", assignment.CallId),
             new XElement("VolunteerId", assignment.VolunteerId),
             new XElement("StartTime", assignment.StartTime.ToString("o")), 
@@ -125,13 +125,24 @@ internal class AssignmentImplementation : IAssignment
           $"Finish Time: {a.FinishTime?.ToString() ?? "Not Finished"}";
     }
 
+    //public void Update(Assignment item)
+    //{
+    //    XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
+    //    (assignmentRootElem.Elements().FirstOrDefault(assign => (int?)assign.Element("Id") == item.Id)
+    //    ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
+    //    .Remove();
+    //    assignmentRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
+    //    XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
+    //}
+
     public void Update(Assignment item)
     {
         XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);
         (assignmentRootElem.Elements().FirstOrDefault(assign => (int?)assign.Element("Id") == item.Id)
         ?? throw new DO.DalDoesNotExistException($"Assignment with ID={item.Id} does Not exist"))
         .Remove();
-        assignmentRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
+        // מוסיף את האלמנט החדש בלי קינון כפול
+        assignmentRootElem.Add(createAssignmentElement(item));
         XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
     }
 }
