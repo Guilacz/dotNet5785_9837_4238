@@ -10,13 +10,42 @@
 
     <Grid>
 
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#B3D9FF" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="0.5"/>
+                <GradientStop Color="#FFFFFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
 
-        <Label Content="Enter your T.Z :" HorizontalAlignment="Left" Margin="256,174,0,0" VerticalAlignment="Top"/>
-        <Label Content="Enter your password :" HorizontalAlignment="Left" Margin="256,230,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="400,178,0,0" TextWrapping="Wrap" Text="{Binding TzValue}" VerticalAlignment="Top" Width="120" />
-        <PasswordBox HorizontalAlignment="Left" Margin="400,234,0,0" VerticalAlignment="Top" Width="120"  PasswordChanged="PasswordBox_PasswordChanged" />
-        
-        <Button Content="Login" HorizontalAlignment="Left" Margin="318,287,0,0" VerticalAlignment="Top" Width="120" Click="LoginButton_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Label -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,64,0,0" Grid.RowSpan="3">
+            <TextBlock Text="Welcome to Bright Futures" 
+                       FontSize="45" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center" 
+                       Foreground="DarkBlue" />
+            <TextBlock Text="Volunteers Helping Kids Succeed" 
+                       FontSize="20" 
+                       FontStyle="Italic" 
+                       HorizontalAlignment="Center" 
+                       Foreground="DarkGray" Height="40" />
+        </StackPanel>
+
+
+        <Label Content="Enter your T.Z:" FontSize="20"  HorizontalAlignment="Left"  VerticalAlignment="Top" FontFamily="Cascadia Code SemiBold" Width="197" Grid.Row="2" Margin="217,67,0,0" />
+        <Label Content="Enter your password:" FontSize="20"  HorizontalAlignment="Left" Margin="191,105,0,0" VerticalAlignment="Top" FontFamily="Cascadia Code SemiBold" RenderTransformOrigin="-0.018,0.62" Width="255" Grid.Row="2"/>
+        <TextBox HorizontalAlignment="Left" Margin="446,71,0,0" TextWrapping="Wrap" Text="{Binding TzValue}" VerticalAlignment="Top" Width="120" Grid.Row="2"   />
+        <PasswordBox HorizontalAlignment="Left" Margin="446,112,0,0" VerticalAlignment="Top" Width="120"  PasswordChanged="PasswordBox_PasswordChanged" Grid.Row="2" />
+
+        <Button Content="Login" HorizontalAlignment="Left" Margin="322,28,0,0" VerticalAlignment="Top" Width="150" Click="LoginButton_Click" Grid.Row="3"/>
 
 
     </Grid>

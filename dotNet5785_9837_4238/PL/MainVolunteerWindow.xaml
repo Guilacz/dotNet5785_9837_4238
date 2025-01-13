@@ -8,137 +8,164 @@
 
     <Grid Margin="10">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <!-- Background -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#B3D9FF" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="0.5"/>
+                <GradientStop Color="#FFFFFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- Main Layout Grid -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Title Section -->
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,20">
+                <TextBlock Text="Welcome to Your Dashboard, Volunteer !" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="DarkBlue" 
+                           TextAlignment="Center" />
+            </StackPanel>
+
+            <!-- Volunteer Details Section -->
+            <StackPanel Grid.Row="1" Grid.Column="0"  Margin="10">
+                <TextBlock Text="Volunteer Details" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Id:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.VolunteerId}" IsReadOnly="True"/>
+
+                    <TextBlock Text="Name:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.Name}"/>
+
+                    <TextBlock Text="Phone Number:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.Phone}"/>
+
+                    <TextBlock Text="Email:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.Email}"/>
+
+                    <TextBlock Text="Address:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.Address}"/>
+
+                    <TextBlock Text="Max Distance:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.Distance}"/>
+
+                    <TextBlock Text="Is Active:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                    <CheckBox Grid.Row="6" Grid.Column="1" Margin="5" IsChecked="{Binding CurrentVolunteer.IsActive}" />
+
+
+                    <Label Grid.Row="7" Grid.Column="0" Content="Password:" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" Margin="5">
+                        <TextBox Text="{Binding CurrentVolunteer.Password}" Width="150"/>
+                        <Button Content="Generate Password" Click="GeneratePassword_Click" Width="120" Margin="10,0,0,0" FontSize="10"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <!-- Buttons Section -->
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="60,275,0,69">
+
+                <Button Content="Update" Width="100" Margin="5"  Click="btnUpdate_Click" Height="60"/>
+                <Button Content="Select Call" Width="100" Margin="5"  Click="SelectCall_Click" Height="60" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}, ConverterParameter=HideOnCall}"/>
+                <Button Content="Call History" Width="116" Margin="5" Click="History_Click" Height="60" />
+            </StackPanel>
 
 
 
-        <!-- Volunteer Details Section -->
-        <StackPanel Grid.Column="0"  Margin="10">
-            <TextBlock Text="Volunteer Details" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="Id:" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.VolunteerId}" IsReadOnly="True"/>
-
-                <TextBlock Text="Name:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.Name}"/>
-
-                <TextBlock Text="Phone Number:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.Phone}"/>
-
-                <TextBlock Text="Email:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.Email}"/>
-
-                <TextBlock Text="Address:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.Address}"/>
-
-                <TextBlock Text="Max Distance:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.Distance}"/>
-
-                <TextBlock Text="Is Active:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0" Height="16"/>
-                <CheckBox Grid.Row="6" Grid.Column="1" Margin="5,5,5,5" IsChecked="{Binding CurrentVolunteer.IsActive}" />
-
-                <Label Grid.Row="7" Grid.Column="0" Content="Password:" VerticalAlignment="Center"/>
-                <StackPanel Grid.Row="7" Orientation="Horizontal" Grid.ColumnSpan="3" Margin="93,0,133,0">
-
-                    <TextBox Text="{Binding CurrentVolunteer.Password}" />
-                    <Button Content="Generate Password" Click="GeneratePassword_Click" Width="112" />
-                </StackPanel>
-            </Grid>
-        </StackPanel>
-
-        <!-- Buttons Section -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="46,282,0,-28" Width="344">
-
-            <Button Content="Update" Width="100" Margin="5"  Click="btnUpdate_Click" Height="60"/>
-            <Button Content="Select Call" Width="100" Margin="5"  Click="SelectCall_Click" Height="60" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}, ConverterParameter=HideOnCall}"/>
-            <Button Content="Call History" Width="100" Margin="5" Click="History_Click" Height="60" />
-        </StackPanel>
+            <!-- Call Details Section -->
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}}">
+                <TextBlock Text="Call in Care Details" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
 
 
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27.6"/>
+                        <ColumnDefinition Width="45.253"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
 
-        <StackPanel Grid.Column="1"  Margin="10" Grid.RowSpan="2" Visibility="{Binding CurrentVolunteer.callInCaring, Converter={StaticResource CallInProgressVisibilityConverter}}">
+                    <!-- Id (int) -->
+                    <TextBlock Text="Id:" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Row="0" Grid.Column="2" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.callInCaring.Id}" IsReadOnly="True"/>
 
-            <TextBlock Text="Call in care Details"   FontWeight="Bold" FontSize="16" Width="150"/>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <!-- Type (ENUM) -->
+                    <TextBlock Text="Type:" Grid.Row="1" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <ComboBox Grid.Row="1" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding CallTypes}" SelectedItem="{Binding CurrentCall.Type}"/>
 
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                    <!-- Description (string) -->
+                    <TextBlock Text="Description:" Grid.Row="2" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.callInCaring.Details}"/>
+
+                    <!-- adress -->
+                    <TextBlock Text="Address:" Grid.Row="3" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Row="3" Grid.Column="2" Margin="5,5,5,5" Text="{Binding CurrentVolunteer.callInCaring.Adress}"/>
 
 
-                <!-- Id (int) -->
-                <TextBlock Text="Id:" Grid.Row="0" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Id}" IsReadOnly="True"/>
+                    <!-- Start Time (DateTime) -->
+                    <TextBlock Text="Start Time:" Grid.Row="4" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <DatePicker Grid.Row="4" Grid.Column="2" Margin="5,5,5,5" SelectedDate="{Binding CurrentVolunteer.callInCaring.StartTime}"/>
 
-                <!-- Type (ENUM) -->
-                <TextBlock Text="Type:" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" ItemsSource="{Binding CallTypes}" SelectedItem="{Binding CurrentCall.Type}"/>
+                    <!-- End Time (DateTime) -->
+                    <TextBlock Text="End Time:" Grid.Row="5" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <DatePicker Grid.Row="5" Grid.Column="2" Margin="5,5,5,5" SelectedDate="{Binding CurrentVolunteer.callInCaring.MaxTime}"/>
 
-                <!-- Description (string) -->
-                <TextBlock Text="Description:" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Details}"/>
+                    <!-- Status (ENUM) -->
+                    <TextBlock Text="Status:" Grid.Row="6" VerticalAlignment="Center" Margin="5,0,5,0" Grid.ColumnSpan="2"/>
+                    <ComboBox Grid.Row="6" Grid.Column="2" Margin="5,5,5,5" ItemsSource="{Binding StatusTypes}" SelectedItem="{Binding CurrentCall.Status}"/>
 
-                <!-- adress -->
-                <TextBlock Text="Address:" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding CurrentVolunteer.callInCaring.Adress}"/>
+                    <!--Buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="10,10,0,10">
+                        <Button Content="Cancel Call" Width="100" Click="CancellCall_Click" Margin="5"/>
+                        <Button Content="Finish Call" Width="100" Click="FinishCall_Click" Margin="5"/>
+                    </StackPanel>
 
+                </Grid>
 
-                <!-- Start Time (DateTime) -->
-                <TextBlock Text="Start Time:" Grid.Row="4" VerticalAlignment="Center" Margin="5"/>
-                <DatePicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentVolunteer.callInCaring.StartTime}"/>
-
-                <!-- End Time (DateTime) -->
-                <TextBlock Text="End Time:" Grid.Row="5" VerticalAlignment="Center" Margin="5"/>
-                <DatePicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedDate="{Binding CurrentVolunteer.callInCaring.MaxTime}"/>
-
-                <!-- Status (ENUM) -->
-                <TextBlock Text="Status:" Grid.Row="6" VerticalAlignment="Center" Margin="5"/>
-                <ComboBox Grid.Row="6" Grid.Column="1" Margin="5" ItemsSource="{Binding StatusTypes}" SelectedItem="{Binding CurrentCall.Status}"/>
-
-                <Button Grid.Row="9"  Grid.Column="0" Content="Cancel Call" Width="100" Click="CancellCall_Click"  Height="60" Margin="0,62,0,-62"/>
-                <Button Grid.Row="9" Grid.Column="1" Content="Finish Call" Width="100" Click="FinishCall_Click"  Height="60" Margin="20,62,20,-62"/>
-            </Grid>
-
-        </StackPanel>
-
+            </StackPanel>
+        </Grid>
     </Grid>
 
 </Window>
+
 
 
 

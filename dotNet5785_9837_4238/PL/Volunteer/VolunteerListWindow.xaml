@@ -9,95 +9,47 @@
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
 
-    <Window.Resources>
-
-        <!--comboBox style-->
-        <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="Black" />
-            <Setter Property="Background" Value="Beige" />
-            <Setter Property="BorderBrush" Value="#8B4513" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ComboBoxItem">
-                        <Setter Property="Foreground" Value="Black" />
-                        <Setter Property="Background" Value="LightGoldenrodYellow" />
-                        <Setter Property="Padding" Value="5" />
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="HorizontalContentAlignment" Value="Left" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="BorderThickness" Value="0" />
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!--TextBox style-->
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="BorderBrush" Value="#A9A9A9"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Background" Value="#FFF8DC"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border 
-                        CornerRadius="{TemplateBinding BorderThickness}" 
-                        BorderBrush="{TemplateBinding BorderBrush}" 
-                        BorderThickness="{TemplateBinding BorderThickness}" 
-                        Background="{TemplateBinding Background}">
-                            <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#FFDAB9"/>
-            <Setter Property="BorderBrush" Value="#8B4513"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
-
-    </Window.Resources>
 
     <!--External Grid-->
-    <Grid Background="#F5F5DC">
+    <Grid >
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
+                <GradientStop Color="DarkBlue" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="500*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
 
-        <!--Line of the combobox-->
-        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Choose a type of call :" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxCallType_SelectionChanged"/>
-        </Grid>
 
-        <!--datagrid of the list of the volunteers-->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}"  SelectedItem="{Binding SelectedVolunteer}" MouseDoubleClick="lsvVolunteersList_MouseDoubleClick" IsReadOnly ="True" AutoGenerateColumns="False"
-       	 EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected" >
+        <!--Line of the combobox-->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10" VerticalAlignment="Center">
+            <Label FontSize="12" Foreground="#D3D3D3" FontWeight="Bold" Content="Choose a type of call:" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
+                      SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" 
+                      SelectionChanged="ComboBoxCallType_SelectionChanged" 
+                      Width="200"/>
+        </StackPanel>
+
+
+        <!--DataGrid of the list of the volunteers-->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=VolunteerList}" SelectedItem="{Binding SelectedVolunteer}"
+                MouseDoubleClick="lsvVolunteersList_MouseDoubleClick" IsReadOnly="True" AutoGenerateColumns="False"
+                EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected" Margin="10">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding VolunteerId}" Header="Id of the Volunteer" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="Auto"/>
                 <DataGridTemplateColumn Header="Is Active" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsEnabled="False" IsChecked="{Binding Path=IsActive}" />
+                            <CheckBox IsEnabled="False" IsChecked="{Binding Path=IsActive}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -106,19 +58,22 @@
                 <DataGridTextColumn Binding="{Binding SumOfCallExpired}" Header="Expired Calls" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the current call" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding CallType}" Header="Type of the current call" Width="Auto"/>
-
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding VolunteerId}" />
+                            <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding VolunteerId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-
         </DataGrid>
 
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click"/>
+
+        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Width="100" Margin="0,4,0,10" Click="AddButton_Click"/>
 
     </Grid>
 </Window>
+
+    
+
+

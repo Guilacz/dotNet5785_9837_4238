@@ -14,34 +14,21 @@
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5"/>
             <Setter Property="Padding" Value="5"/>
-            <Setter Property="BorderBrush" Value="#A9A9A9"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
             <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Background" Value="#FFF8DC"/>
+            <Setter Property="Background" Value="#E6F2FF"/>
         </Style>
-
-        <!-- ComboBox style -->
-        <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Background" Value="Beige"/>
-            <Setter Property="BorderBrush" Value="#8B4513"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="5"/>
-        </Style>
-
-        <!-- Button style -->
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#FFDAB9"/>
-            <Setter Property="BorderBrush" Value="#8B4513"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
+    
     </Window.Resources>
 
-    <Grid Margin="10" Background="#F5F5DC">
+    <Grid Margin="10" >
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#B3D9FF" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="0.5"/>
+                <GradientStop Color="#FFFFFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <!-- Define a grid with 4 columns -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -92,7 +79,7 @@
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
             
             <TextBox Text="{Binding CurrentVolunteer.Password}" />
-            <Button Content="Generate Password" Click="GeneratePassword_Click" />
+            <Button Content="Generate Password" Click="GeneratePassword_Click" Height="30" Width="158" FontSize="12" />
         </StackPanel>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Address:" VerticalAlignment="Center"/>
@@ -147,7 +134,7 @@
                   SelectedValue="{Binding CurrentVolunteer.callInCaring.CallInProgressStatus}" IsEnabled="False" Visibility="{Binding ButtonText, Converter={StaticResource ConverterAddUpdateKey}}"/>
 
         <!-- Add/Update Button -->
-        <Button Grid.Row="11" Content="{Binding ButtonText}" HorizontalAlignment="Left" Margin="52,83,0,-73" 
+        <Button Grid.Row="11" Content="{Binding ButtonText}" HorizontalAlignment="Left" Margin="52,65,0,-55" 
                 Click="btnAddUpdate_Click" Width="150" Grid.Column="1"/>
     </Grid>
 </Window>

@@ -10,6 +10,13 @@
 
     <Grid>
 
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
+                <GradientStop Color="DarkBlue" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -17,29 +24,24 @@
         </Grid.RowDefinitions>
 
 
-
         <!--Line of the combobox-->
-        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content=" Sort By:" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource OpenCallInListSortCollection}}" SelectedValue="{Binding Path=SortSelected, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxSort_SelectionChanged"/>
-            <Label Grid.Column="2" Content=" Filter By:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,0,0,0" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="ComboBoxFilter_SelectionChanged"/>
-        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="19,13,0,7" HorizontalAlignment="Left">
+            <Label FontSize="14" Foreground="#D3D3D3" FontWeight="Bold" Content="Sort By:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource OpenCallInListSortCollection}}" 
+                      SelectedValue="{Binding Path=SortSelected, Mode=TwoWay}" 
+                      Width="150" 
+                      SelectionChanged="ComboBoxSort_SelectionChanged" Margin="0,0,20,0"/>
+
+            <Label FontSize="14" Foreground="#D3D3D3" FontWeight="Bold" Content="Filter By:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
+                      SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" 
+                      Width="150" 
+                      SelectionChanged="ComboBoxFilter_SelectionChanged"/>
+        </StackPanel>
 
 
         <!-- DataGrid for the list of calls -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}"
-           
-           AutoGenerateColumns="False"
-           IsReadOnly="True"
-           EnableRowVirtualization="True"
-           RowDetailsVisibilityMode="VisibleWhenSelected" >
+        <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}" AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True" RowDetailsVisibilityMode="VisibleWhenSelected" Margin="10,10,10,154" Grid.RowSpan="2">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Call ID" Width="Auto"/>
@@ -60,7 +62,10 @@
 
         </DataGrid>
 
-        <Button Content="Return to your detailed window" Grid.Row="2" HorizontalAlignment="Left" Height="50" Width="205" Click="ReturnButton_Click" Margin="208,77,0,77"/>
+        <!-- Return Button -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Button Content="Return to Your Dashboard" Click="ReturnButton_Click" Width="250" Height="50"/>
+        </StackPanel>
 
     </Grid>
 </Window>

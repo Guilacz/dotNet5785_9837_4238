@@ -15,6 +15,39 @@
         <local:OpenCallInListSortCollection x:Key="OpenCallInListSortCollection" />
         <local:CloseCallInListSortCollection x:Key="CloseCallInListSortCollection" />
         <local:ConverterDeleteAssignment x:Key="ConverterDeleteAssignmentKey" />
+        
+        
+        <!--buttons style-->
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="DarkBlue"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="BorderBrush" Value="DarkBlue"/>
+                <Setter Property="BorderThickness" Value="3"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="DodgerBlue"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="DarkBlue"/>
+                        <Setter Property="Foreground" Value="LightGray"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+        <!-- ComboBox style -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="#E6F2FF"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
 
 
     </Application.Resources>

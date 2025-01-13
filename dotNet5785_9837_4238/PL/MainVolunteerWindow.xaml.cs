@@ -48,15 +48,15 @@ namespace PL
         }
 
 
-        //public BO.CallInProgress CurrentCall
-        //{
-        //    get { return (BO.CallInProgress?)GetValue(CurrentCallProperty); }
-        //    set { SetValue(CurrentCallProperty, value); }
-        //}
+        public BO.CallInProgress CurrentCall
+        {
+            get { return (BO.CallInProgress?)GetValue(CurrentCallProperty); }
+            set { SetValue(CurrentCallProperty, value); }
+        }
 
-        //// Using a DependencyProperty as the backing store for CurrentCall.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty CurrentCallProperty =
-        //    DependencyProperty.Register("CurrentCall", typeof(BO.CallInProgress), typeof(MainVolunteerWindow));
+        // Using a DependencyProperty as the backing store for CurrentCall.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentCallProperty =
+            DependencyProperty.Register("CurrentCall", typeof(BO.CallInProgress), typeof(MainVolunteerWindow));
 
 
 
@@ -102,7 +102,7 @@ namespace PL
         {
             InitializeComponent();
             CurrentVolunteer = s_bl.Volunteer.Read(id);
-            //CurrentCall = CurrentVolunteer?.callInCaring ?? new BO.CallInProgress(); // Initialisez avec un objet par défaut
+            CurrentCall = CurrentVolunteer?.callInCaring ?? new BO.CallInProgress(); // Initialisez avec un objet par défaut
 
             Loaded += Window_Loaded;
 

@@ -142,9 +142,33 @@ namespace PL.CallsOfVolunteer
 
         private void ChooseCallButton_Click(object sender, RoutedEventArgs e)
         {
+            //var call = (BO.Call)ListOfCalls.SelectedItem;
+            //if (call == null)
+            //{
+            //    MessageBox.Show("Please select a call", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
+            //try
+            //{
+            //    s_bl.Call.ChoiceOfCallToCare(volunteerId, call.CallId);
+            //    MessageBox.Show("Call added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            //    var volunteerWindow = new MainVolunteerWindow(volunteerId);
+            //    volunteerWindow.Show();
+            //    this.Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Failed to add call: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
 
         }
+
+        //protected override void OnClosed(EventArgs e)
+        //{
+        //    base.OnClosed(e);
+        //    s_bl.Call.RemoveObserver(CallListObserver);
+        //}
 
 
     }
