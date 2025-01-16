@@ -401,13 +401,27 @@
     <FinishTime />
   </Assignment>
   <Assignment>
-    <Assignment>
-      <Id>100</Id>
-      <CallId>2</CallId>
-      <VolunteerId>147142541</VolunteerId>
-      <StartTime>2025-01-13T20:03:56.9206362+02:00</StartTime>
-      <TypeOfEnd>Fulfilled</TypeOfEnd>
-      <FinishTime>2025-01-13T20:04:04.7735936+02:00</FinishTime>
-    </Assignment>
+    <Id>100</Id>
+    <CallId>2</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-13T20:03:56.9206362+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-13T20:04:04.7735936+02:00</FinishTime>
+  </Assignment>
+  <Assignment>
+    <Id>101</Id>
+    <CallId>7</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-13T21:23:58.2729038+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-13T21:25:01.6347396+02:00</FinishTime>
+  </Assignment>
+  <Assignment>
+    <Id>102</Id>
+    <CallId>11</CallId>
+    <VolunteerId>979662525</VolunteerId>
+    <StartTime>2025-01-16T12:27:43.4095380+02:00</StartTime>
+    <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
+    <FinishTime>2025-01-16T12:28:21.9995112+02:00</FinishTime>
   </Assignment>
 </Assignments>

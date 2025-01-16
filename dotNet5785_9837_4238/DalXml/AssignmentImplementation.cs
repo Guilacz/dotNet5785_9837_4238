@@ -25,10 +25,10 @@ internal class AssignmentImplementation : IAssignment
     {
         return new DO.Assignment()
         {
-            Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
-            CallId = a.ToIntNullable("CallId") ?? throw new FormatException("can't convert id"),
-            VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("can't convert id"),
-            StartTime = a.ToDateTimeNullable("StartTime") ?? throw new FormatException("can't convert StartTime"),
+            Id = a.ToIntNullable("Id") ?? throw new FormatException("can't convert id " + a.ToString()),
+            CallId = a.ToIntNullable("CallId") ?? throw new FormatException("can't convert callid " + a.ToString()),
+            VolunteerId = a.ToIntNullable("VolunteerId") ?? throw new FormatException("can't convert id " + a.ToString()),
+            StartTime = a.ToDateTimeNullable("StartTime") ?? throw new FormatException("can't convert StartTime " + a.ToString()),
             TypeOfEnd = a.ToEnumNullable<TypeOfEnd>("TypeOfEnd"),
             FinishTime = a.ToDateTimeNullable("FinishTime")
         };

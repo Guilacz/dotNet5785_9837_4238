@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -66,6 +67,11 @@ namespace PL.Volunteer
                 try
                 {
                     CurrentVolunteer = s_bl.Volunteer.Read(volunteerId);
+
+                    if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
+                    {
+                        s_bl.Volunteer.AddObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -89,50 +95,29 @@ namespace PL.Volunteer
             // מעדכנים את ה-TextBox
             CurrentVolunteer.Password = generatedPassword;
         }
-        // Event handler for window loaded
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
-            {
-                // Register the observer
-                s_bl.Volunteer.AddObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
-            }
+            s_bl.Volunteer.AddObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
+
+
         }
-        // Event handler for window closed
+
         private void Window_Closed(object sender, EventArgs e)
         {
             if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
             {
-                // Unregister the observer
                 s_bl.Volunteer.RemoveObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
             }
         }
+
         private void VolunteerObserver()
         {
-            if (CurrentVolunteer != null)
-            {
-                try
-                {
-                    // Reload the volunteer data
-                    int id = CurrentVolunteer.VolunteerId;
-                    CurrentVolunteer = null;
-                    CurrentVolunteer = s_bl.Volunteer.Read(id);
+            int id = CurrentVolunteer!.VolunteerId;
+            CurrentVolunteer = null;
+            CurrentVolunteer = s_bl.Volunteer.Read(id);
 
-                    // אפשרות לעדכן את הממשק בהתאם לנתונים החדשים
-                    MessageBox.Show("Volunteer data has been updated.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error while refreshing volunteer data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
         }
-
-
-
-
-
-
 
         /// <summary>
         /// function of the AddUpdate button
@@ -170,3 +155,4 @@ namespace PL.Volunteer
       
     }
 }
+

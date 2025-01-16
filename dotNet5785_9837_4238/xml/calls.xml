@@ -19,24 +19,6 @@
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
-    <CallId>4</CallId>
-    <CallType>Grammary_Primary</CallType>
-    <Address>30 Agripas Street, Jerusalem</Address>
-    <Latitude>35.215657362641764</Latitude>
-    <Longitude>31.783470280009738</Longitude>
-    <OpenTime>2025-01-13T19:27:48</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
-    <CallId>5</CallId>
-    <CallType>English_Primary</CallType>
-    <Address>40 Shmuel HaNavi Street, Jerusalem</Address>
-    <Latitude>35.224665335668945</Latitude>
-    <Longitude>31.791048846509597</Longitude>
-    <OpenTime>2025-01-13T19:27:48</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
     <CallId>6</CallId>
     <CallType>Math_Primary</CallType>
     <Address>50 HaNevi'im Street, Jerusalem</Address>
@@ -51,15 +33,6 @@
     <Address>60 Gaza Street, Jerusalem</Address>
     <Latitude>35.21205714918638</Latitude>
     <Longitude>31.771053788166768</Longitude>
-    <OpenTime>2025-01-13T19:27:48</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
-    <CallId>8</CallId>
-    <CallType>English_Middle</CallType>
-    <Address>4 Herzl Boulevard, Jerusalem</Address>
-    <Latitude>35.19764122028971</Latitude>
-    <Longitude>31.785777797665002</Longitude>
     <OpenTime>2025-01-13T19:27:48</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>
@@ -449,5 +422,33 @@
     <Longitude>31.777475</Longitude>
     <OpenTime>2025-01-13T19:27:43</OpenTime>
     <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>8</CallId>
+    <CallType>English_Middle</CallType>
+    <Address>8 Herzl Boulevard, Jerusalem</Address>
+    <Latitude>41.669544</Latitude>
+    <Longitude>-83.279013</Longitude>
+    <OpenTime>2025-01-13T19:27:48</OpenTime>
+    <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>5</CallId>
+    <CallType>English_Primary</CallType>
+    <Address>30 Shmuel HaNavi Street, Jerusalem</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <OpenTime>2025-01-13T19:27:48</OpenTime>
+    <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>4</CallId>
+    <CallType>Grammary_Primary</CallType>
+    <Address>20 Agripas Street, Jerusalem</Address>
+    <Latitude>31.784252</Latitude>
+    <Longitude>35.211645</Longitude>
+    <OpenTime>2025-01-13T19:27:48</OpenTime>
+    <MaxTime xsi:nil="true" />
+    <Details>bla bla bla</Details>
   </Call>
 </ArrayOfCall>

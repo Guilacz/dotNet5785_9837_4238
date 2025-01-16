@@ -44,7 +44,27 @@ namespace PL.Call
 
         public static readonly DependencyProperty SelectedAssignmentProperty =
             DependencyProperty.Register("SelectedAssignment", typeof(BO.CallAssignInList), typeof(CallWindow));
+        private void CallObserver()
+        {
+            int id = CurrentCall!.CallId;
+            CurrentCall = null;
+            CurrentCall = s_bl.Call.Read(id);
 
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            s_bl.Call.AddObserver(CurrentCall.CallId, CallObserver);
+
+
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (CurrentCall != null && CurrentCall.CallId != 0)
+            {
+                s_bl.Call.RemoveObserver(CurrentCall.CallId, CallObserver);
+            }
+        }
         public CallWindow(int Id = 0)
         {
             ButtonText2 = Id == 0 ? "Add" : "Update";
@@ -56,6 +76,10 @@ namespace PL.Call
                 try
                 {
                     CurrentCall = s_bl.Call.Read(Id);
+                    if (CurrentCall != null && CurrentCall.CallId != 0)
+                    {
+                        s_bl.Call.AddObserver(CurrentCall.CallId, CallObserver);
+                    }
                 }
                 catch (Exception ex)
                 {

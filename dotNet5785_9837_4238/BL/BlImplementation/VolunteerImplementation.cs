@@ -111,7 +111,8 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             _dal.Volunteer.Delete(volId);
-            CallManager.Observers.NotifyListUpdated();
+            VolunteerManager.Observers.NotifyListUpdated();
+            VolunteerManager.Observers.NotifyItemUpdated(volId);
         }
         catch (DO.DalDeletionImpossible ex)
         {
@@ -511,9 +512,11 @@ internal class VolunteerImplementation : IVolunteer
                     {
                         DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
                         _dal.Volunteer.Update(DOvolunteer);
-                        CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
-                        CallManager.Observers.NotifyListUpdated();
+                        //CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+                        //CallManager.Observers.NotifyListUpdated();
                     }
+                    VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+                    VolunteerManager.Observers.NotifyListUpdated();
                 }
             }
         }
@@ -567,7 +570,7 @@ internal class VolunteerImplementation : IVolunteer
                 IsActive = vol.IsActive,
                 Distance = vol.Distance,
             });
-            CallManager.Observers.NotifyListUpdated();
+            VolunteerManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalAlreadyExistException ex)
         {

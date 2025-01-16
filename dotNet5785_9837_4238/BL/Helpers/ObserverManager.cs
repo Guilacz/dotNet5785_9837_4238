@@ -46,7 +46,7 @@ class ObserverManager //stage 5
         if (_specificObservers.ContainsKey(id)) // if there are already observers for the ID
             _specificObservers[id] += observer; // add the given observer
         else // there is the first observer for the ID
-            _specificObservers[id] = observer; // create hash table entry for the ID with the given observer
+            _specificObservers[id] =observer; // create hash table entry for the ID with the given observer
     }
 
     /// <summary>
@@ -56,13 +56,15 @@ class ObserverManager //stage 5
     /// <param name="observer">Observer method (usually from Presentation Layer) to be removed</param>
     internal void RemoveObserver(int id, Action observer)
     {
+        return;
         // First, lets check that there are any observers for the ID
         if (_specificObservers.ContainsKey(id) && _specificObservers[id] is not null)
         {
-            Action? specificObserver = _specificObservers[id]; // Reference to the delegate element for the ID
+           /* Action? specificObserver = _specificObservers[id]; // Reference to the delegate element for the ID
             specificObserver -= observer; // Remove the given observer from the delegate
             if (specificObserver?.GetInvocationList().Length == 0) // if there are no more observers for the ID
                 _specificObservers.Remove(id); // then remove the hash table entry for the ID
+           */
         }
     }
 
@@ -79,7 +81,7 @@ class ObserverManager //stage 5
     internal void NotifyItemUpdated(int id)
     {
         if (_specificObservers.ContainsKey(id))
-            _specificObservers[id]?.Invoke();
+            _specificObservers[id].Invoke();
     }
 
 }

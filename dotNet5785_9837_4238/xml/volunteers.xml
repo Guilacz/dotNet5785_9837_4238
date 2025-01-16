@@ -43,20 +43,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>327598595</VolunteerId>
-    <Name>Ivy Kidron</Name>
-    <Phone>0535678901</Phone>
-    <Email>Ivy@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>AirDistance</DistanceType>
-    <Password>strong@pw</Password>
-    <Address>Herzl Boulevard 89, Jerusalem</Address>
-    <Distance>31834</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>565353679</VolunteerId>
     <Name>Esteria Eisenberg</Name>
     <Phone>0771234567</Phone>
@@ -71,20 +57,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>206870933</VolunteerId>
-    <Name>Yafit Maayan</Name>
-    <Phone>0723456789</Phone>
-    <Email>Yafit@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>name@pass</Password>
-    <Address>Emek Refaim Street 12, Jerusalem</Address>
-    <Distance>37791</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>994168219</VolunteerId>
     <Name>Dan Zilberstein</Name>
     <Phone>031234567</Phone>
@@ -94,34 +66,6 @@
     <Password>data@save</Password>
     <Address>Hebron Road 34, Jerusalem</Address>
     <Distance>11923</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
-    <VolunteerId>295677710</VolunteerId>
-    <Name>Moshe Cohen</Name>
-    <Phone>022345678</Phone>
-    <Email>Moshe@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>secure@ok</Password>
-    <Address>Agripas Street 56, Jerusalem</Address>
-    <Distance>36109</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
-    <VolunteerId>245657465</VolunteerId>
-    <Name>Yael Levy</Name>
-    <Phone>045678901</Phone>
-    <Email>Yael@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>CarDistance</DistanceType>
-    <Password>simple@me</Password>
-    <Address>Ben Yehuda Street 78, Jerusalem</Address>
-    <Distance>12361</Distance>
     <Latitude xsi:nil="true" />
     <Longitude xsi:nil="true" />
     <IsActive>true</IsActive>
@@ -220,8 +164,64 @@
     <Password>check@yes</Password>
     <Address>Ein Kerem Street 28, Jerusalem</Address>
     <Distance>18968</Distance>
-    <Latitude xsi:nil="true" />
-    <Longitude xsi:nil="true" />
+    <Latitude>31.900083</Latitude>
+    <Longitude>35.179287</Longitude>
+    <IsActive>false</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>245657465</VolunteerId>
+    <Name>Yael Levy</Name>
+    <Phone>0545678901</Phone>
+    <Email>Yael@blablabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>CarDistance</DistanceType>
+    <Password>jtpmqx@px</Password>
+    <Address>Ben Yehuda Street 78, Jerusalem</Address>
+    <Distance>12361</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>295677710</VolunteerId>
+    <Name>Moshe Cohen</Name>
+    <Phone>0252345678</Phone>
+    <Email>Moshe@blablabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>CarDistance</DistanceType>
+    <Password>secure@ok</Password>
+    <Address>Agripas Street 56, Jerusalem</Address>
+    <Distance>36109</Distance>
+    <Latitude>31.784252</Latitude>
+    <Longitude>35.211645</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>327598595</VolunteerId>
+    <Name>Ivy Kidron</Name>
+    <Phone>0535678901</Phone>
+    <Email>Ivy@blabldabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>strong@pw</Password>
+    <Address>Herzl Boulevard 89, Jerusalem</Address>
+    <Distance>31834</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>206870933</VolunteerId>
+    <Name>Yafit Maayannn</Name>
+    <Phone>0723456789</Phone>
+    <Email>Yafit@blablabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>CarDistance</DistanceType>
+    <Password>n|me@p|ss</Password>
+    <Address>Emek Refaim Street 12, Jerusalem</Address>
+    <Distance>37791</Distance>
+    <Latitude>31.7596386</Latitude>
+    <Longitude>35.2152076</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
 </ArrayOfVolunteer>

@@ -183,7 +183,8 @@ namespace PL.Call
         // Function to be called whenever the filter or sort option changes
         private void CallListObserver()
         {
-            QueryCallList();
+            Dispatcher.Invoke(() => QueryCallList());
+
         }
 
         // Window Loaded event handler

@@ -1,4 +1,4 @@
-﻿<Window x:Class="PL.Call.CallListWindow"
+﻿<!--<Window x:Class="PL.Call.CallListWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,14 +15,14 @@
     </Window.Resources>
 
 
-    <!--External Grid-->
+    --><!--External Grid--><!--
     <Grid Background="#F5F5DC">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <!--Call List Lines-->
+        --><!--Call List Lines--><!--
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>
@@ -44,10 +44,10 @@
 
       
 
-            <!-- Label for "Sort By" -->
+            --><!-- Label for "Sort By" --><!--
             <Label Grid.Column="0" Content="מיון לפי:" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
-            <!-- ComboBox for Sorting -->
+            --><!-- ComboBox for Sorting --><!--
             <ComboBox 
             Grid.Column="1" 
             HorizontalAlignment="Left" 
@@ -56,10 +56,10 @@
             SelectedItem="{Binding SelectedSortBy, Mode=TwoWay}" 
             ItemsSource="{Binding SortByOptions}" />
 
-            <!-- Label for "Filter By" -->
+            --><!-- Label for "Filter By" --><!--
             <Label Grid.Column="2" Content="סינון לפי:" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
-            <!-- ComboBox for Filtering -->
+            --><!-- ComboBox for Filtering --><!--
             <ComboBox 
             Grid.Column="3" 
             HorizontalAlignment="Left" 
@@ -68,10 +68,10 @@
             SelectedItem="{Binding SelectedFilterBy, Mode=TwoWay}"
             ItemsSource="{Binding FilterByOptions}" />
 
-            <!-- Label for "Filter Value" -->
+            --><!-- Label for "Filter Value" --><!--
             <Label Grid.Column="4" Content="ערך לסינון:" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
-            <!-- ComboBox for Filter Values -->
+            --><!-- ComboBox for Filter Values --><!--
             <ComboBox 
             Grid.Column="5" 
             HorizontalAlignment="Left" 
@@ -85,11 +85,151 @@
       
 
 
-        <!--datagrid of the list of the calls-->
+        --><!--datagrid of the list of the calls--><!--
         <DataGrid  ItemsSource="{Binding CallList, RelativeSource={RelativeSource AncestorType=Window}}" 
           SelectedItem="{Binding SelectedCall, RelativeSource={RelativeSource AncestorType=Window}}" 
           AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True"
           RowDetailsVisibilityMode="VisibleWhenSelected" Grid.ColumnSpan="2" Margin="0,28,0,0" Grid.RowSpan="2" MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
+
+                --><!-- Column for CallType --><!--
+                <DataGridTemplateColumn Header="Type of the call" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding CallType, Converter={StaticResource ConvertCallTypeToColorKey}}">
+                                <TextBlock Text="{Binding CallType}" Padding="5"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+
+                --><!-- Column for CallStatus --><!--
+                <DataGridTextColumn Binding="{Binding CallInListStatus}" Header="Status of the call" Width="Auto"/>
+
+                --><!-- Column for OpenTime --><!--
+                <DataGridTextColumn Binding="{Binding OpenTime}" Header="Opening time" Width="Auto"/>
+
+                --><!-- Column for TimeToEnd --><!--
+                <DataGridTextColumn Binding="{Binding TimeToEnd}" Header="Remaining time" Width="Auto"/>
+
+                --><!-- Column for LastName --><!--
+                <DataGridTextColumn Binding="{Binding LastName}" Header="Name of the last volunteer" Width="Auto"/>
+
+                --><!-- Column for TimeToCare --><!--
+                <DataGridTextColumn Binding="{Binding TimeToCare}" Header="Time to care" Width="Auto"/>
+
+                --><!-- Column for sum of assignments --><!--
+                <DataGridTextColumn Binding="{Binding NumberOfAssignment}" Header="Total of assignements" Width="Auto"/>
+                
+                
+                --><!--delete buttun--><!--
+                <DataGridTemplateColumn Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete"
+                                    Click="DeleteButton_Click"
+                                    Tag="{Binding CallId}"
+                                    Visibility="{Binding NumberOfAssignment, Converter={StaticResource ConverterDeleteAssignmentKey}}"/>
+                              
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+            </DataGrid.Columns>
+
+
+
+        </DataGrid>
+
+        <Button Content="Add" Grid.Row="1" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click" Grid.Column="1" Margin="0,490,0,0" Grid.RowSpan="2"/>
+
+
+
+
+
+    </Grid>
+</Window>-->
+<Window x:Class="PL.Call.CallListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL"
+        mc:Ignorable="d"
+        Title="CallListWindow" Height="450" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
+    <Window.Resources>
+        <local:ConverterAddUpdate x:Key="ConverterAddUpdateKey"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+    </Window.Resources>
+
+
+    <!--External Grid-->
+    <Grid Margin="0,24,0,0" >
+
+
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
+                <GradientStop Color="DarkBlue" Offset="0"/>
+                <GradientStop Color="#E6F2FF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!--Call List Lines-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- ComboBox row -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid row -->
+            <RowDefinition Height="Auto"/>
+            <!-- Add button row -->
+        </Grid.RowDefinitions>
+
+
+
+
+        <!-- Filters Section -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10" VerticalAlignment="Center">
+            <Label FontSize="12" Foreground="#D3D3D3" FontWeight="Bold" Content="Sort By:" Margin="0,0,10,0" VerticalAlignment="Center" Height="27" />
+            <ComboBox 
+                SelectedItem="{Binding SelectedSortBy, Mode=TwoWay}" 
+                ItemsSource="{Binding SortByOptions}" 
+                Width="150" 
+                Margin="0,0,10,0"/>
+
+            <Label FontSize="12" Foreground="#D3D3D3" FontWeight="Bold" Content="Filter By:" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <ComboBox 
+                SelectedItem="{Binding SelectedFilterBy, Mode=TwoWay}" 
+                ItemsSource="{Binding FilterByOptions}" 
+                Width="150" 
+                Margin="0,0,10,0"/>
+
+            <Label FontSize="12" Foreground="#D3D3D3" FontWeight="Bold" Content="Filter Value:" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <ComboBox 
+                SelectedItem="{Binding SelectedFilterValue, Mode=TwoWay}" 
+                ItemsSource="{Binding FilterValueOptions}" 
+                Width="150"/>
+        </StackPanel>
+
+
+
+
+
+
+
+
+        <!--datagrid of the list of the calls-->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding CallList, RelativeSource={RelativeSource AncestorType=Window}}" 
+          SelectedItem="{Binding SelectedCall, RelativeSource={RelativeSource AncestorType=Window}}" 
+          AutoGenerateColumns="False" IsReadOnly="True" EnableRowVirtualization="True"
+          RowDetailsVisibilityMode="VisibleWhenSelected" Grid.ColumnSpan="2"  Margin="10" MouseDoubleClick="DataGrid_MouseDoubleClick">
+
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Id of the call" Width="Auto"/>
 
@@ -123,8 +263,8 @@
 
                 <!-- Column for sum of assignments -->
                 <DataGridTextColumn Binding="{Binding NumberOfAssignment}" Header="Total of assignements" Width="Auto"/>
-                
-                
+
+
                 <!--delete buttun-->
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
@@ -133,7 +273,7 @@
                                     Click="DeleteButton_Click"
                                     Tag="{Binding CallId}"
                                     Visibility="{Binding NumberOfAssignment, Converter={StaticResource ConverterDeleteAssignmentKey}}"/>
-                              
+
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -141,15 +281,9 @@
 
             </DataGrid.Columns>
 
-
-
         </DataGrid>
 
-        <Button Content="Add" Grid.Row="1" HorizontalAlignment="Center" Height="50" Width="100" Click="AddButton_Click" Grid.Column="1" Margin="0,490,0,0" Grid.RowSpan="2"/>
-
-
-
-
+        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Width="100" Margin="0,4,0,10" Click="AddButton_Click"/>
 
     </Grid>
 </Window>

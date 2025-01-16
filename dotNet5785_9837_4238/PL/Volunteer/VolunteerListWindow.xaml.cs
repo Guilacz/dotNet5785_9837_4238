@@ -35,19 +35,42 @@ namespace PL.Volunteer
 
         public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
 
- 
-        private void queryVolunteerList()
-            => VolunteerList = (CallTypeSelected == BO.CallType.None) ?
-            s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
 
+        //private void queryVolunteerList()
+        //    => VolunteerList = (CallTypeSelected == BO.CallType.None) ?
+        //    s_bl?.Volunteer.GetVolunteerInLists()! : s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+
+        //private void VolunteerListObserver()
+        //    => queryVolunteerList();
+
+        //private void Window_Loaded(object sender, RoutedEventArgs e)
+        //    => s_bl.Volunteer.AddObserver(VolunteerListObserver);
+
+        //private void Window_Closed(object sender, EventArgs e)
+        //    => s_bl.Volunteer.RemoveObserver(VolunteerListObserver);
+        private void queryVolunteerList()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                VolunteerList = (CallTypeSelected == BO.CallType.None) ?
+                    s_bl?.Volunteer.GetVolunteerInLists()! :
+                    s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
+            });
+        }
         private void VolunteerListObserver()
-            => queryVolunteerList();
- 
+        {
+            Dispatcher.Invoke(() => queryVolunteerList());
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
-            => s_bl.Volunteer.AddObserver(VolunteerListObserver);
+        {
+            s_bl.Volunteer.AddObserver(VolunteerListObserver);  // רישום להשקפה על כל הרשימה
+        }
 
         private void Window_Closed(object sender, EventArgs e)
-            => s_bl.Volunteer.RemoveObserver(VolunteerListObserver);
+        {
+            s_bl.Volunteer.RemoveObserver(VolunteerListObserver);  // הסרת הרישום להשקפה על הרשימה
+        }
 
 
 
@@ -155,3 +178,4 @@ namespace PL.Volunteer
 
     }
 }
+
