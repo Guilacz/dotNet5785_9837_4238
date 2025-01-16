@@ -30,7 +30,7 @@ public class CallInProgress
 
     public string? Details { get; set; }
     public double distance { get; set; }
-    public CallInProgressStatus CallInProgressStatus;
+    public CallInProgressStatus CallInProgressStatus { get; set;  } 
 
     /// <summary>
     /// toString function 

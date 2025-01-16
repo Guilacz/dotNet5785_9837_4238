@@ -211,14 +211,14 @@
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCall.CallId}" IsReadOnly="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}" Margin="5,5,39,5"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Details:" VerticalAlignment="Center" Height="26"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCall.Details}" Margin="5,5,39,5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCall.Details}" IsReadOnly="{Binding CurrentCall.CallStatus, Converter={StaticResource CallStatusToStateConverterKey}}"  Margin="5,5,39,5"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Address:" VerticalAlignment="Center" Height="26"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentCall.Address}" Margin="5,5,39,5"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentCall.Address}" IsReadOnly="{Binding CurrentCall.CallStatus, Converter={StaticResource CallStatusToStateConverterKey}}" Margin="5,5,39,5"/>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Type of call:" VerticalAlignment="Center" Height="26"/>
         <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
-               SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="True" Margin="0,0,39,26" Grid.RowSpan="2"/>
+               SelectedValue="{Binding CurrentCall.CallType}" IsEnabled="{Binding CurrentCall.CallStatus, Converter={StaticResource CallStatusToStateConverterKey}}" Margin="0,0,39,26" Grid.RowSpan="2"/>
 
         <Label Grid.Row="4" Grid.Column="0" Content="Status:" VerticalAlignment="Center" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}" Height="26"/>
         <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CallInListStatusCollectionKey}}" 
@@ -229,7 +229,7 @@
         <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding CurrentCall.OpenTime}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}" Margin="0,0,39,26" Grid.RowSpan="2"/>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Maximum Time:" VerticalAlignment="Center" Height="26"/>
-        <DatePicker Grid.Row="6" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="True" Margin="94,7,39,6" Grid.ColumnSpan="2"/>
+        <DatePicker Grid.Row="6" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="{Binding CurrentCall.CallStatus, Converter={StaticResource ConverterToChangeMaxTimeKey}}" Margin="94,7,39,6" Grid.ColumnSpan="2"/>
 
 
 

@@ -12,6 +12,9 @@ public interface IVolunteer : IObservable
     BO.Role EnterSystemWithId(int id, string password);
     string NewPassword();
 
+    int sumOfCalls(int id);
+
+
 
     IEnumerable<BO.VolunteerInList> GetVolunteerInLists(bool? isActive = null, BO.VolunteerSortField? sort = null);
 

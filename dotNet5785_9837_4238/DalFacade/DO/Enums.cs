@@ -49,4 +49,5 @@ public enum CallType
     Grammary_Primary,
     Grammary_Middle,
     Grammary_High,
+    None
 }

@@ -224,4 +224,18 @@
     <Longitude>35.2152076</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
+  <Volunteer>
+    <VolunteerId>325464238</VolunteerId>
+    <Name>bracha K</Name>
+    <Phone>0550147896</Phone>
+    <Email>brasdfghha@gmail.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>akbzub@2225</Password>
+    <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
+    <Distance>45657</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
 </ArrayOfVolunteer>

@@ -15,8 +15,12 @@
         <local:OpenCallInListSortCollection x:Key="OpenCallInListSortCollection" />
         <local:CloseCallInListSortCollection x:Key="CloseCallInListSortCollection" />
         <local:ConverterDeleteAssignment x:Key="ConverterDeleteAssignmentKey" />
-        
-        
+        <local:CallStatusToStateConverter x:Key="CallStatusToStateConverterKey" />
+        <local:ConverterToChangeMaxTime x:Key="ConverterToChangeMaxTimeKey" />
+        <local:ConverterDeleteVolunteer x:Key="ConverterDeleteVolunteerKey" />
+
+
+
         <!--buttons style-->
             <Style TargetType="Button">
                 <Setter Property="Background" Value="LightGray"/>

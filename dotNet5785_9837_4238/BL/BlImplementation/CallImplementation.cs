@@ -209,6 +209,19 @@ internal class CallImplementation : ICall
             //{
             //    throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             //}
+            var volunteer = _dal.Volunteer.ReadAll()
+                .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol)) 
+                .FirstOrDefault(vol => vol.callInCaring.CallId == callId); 
+
+            // אם המתנדב נמצא, שלח לו מייל
+            if (volunteer != null && !string.IsNullOrEmpty(volunteer.Email))
+            {
+                Helpers.Tools.SendEmail(
+                    toAddress: volunteer.Email,
+                    subject: "Your call has been canceled",
+                    body: $"Hello {volunteer.Name},\n\nThe call with ID #{callId} that you were handling has been canceled.\nPlease contact us if you have any questions.\n\nThank you!"
+                );
+            }
 
             _dal.Call.Delete(callId);
             CallManager.Observers.NotifyListUpdated();
@@ -733,32 +746,89 @@ internal class CallImplementation : ICall
     /// <param name="openCall">Optional: The sorting criterion to apply (e.g., by CallId, CallType, Address, etc.).</param>
     /// <returns>A list of open calls as BO.OpenCallInList objects.</returns>
     /// <exception cref="BO.BlDoesNotExistException"></exception>
+    //public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
+    //{
+    //    try
+    //    {
+    //        IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+    //        IEnumerable<DO.Volunteer> volun = _dal.Volunteer.ReadAll();
+    //        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+
+    //        DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
+
+    //        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+
+    //        string volunteerAddress = boVolunteer.Address;
+
+    //        calls = calls.Where(call =>
+    //        {
+    //            var status = Helpers.CallManager.GetCallStatus(call, assignments);
+    //            return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk ;
+    //        });
+
+
+    //        if (type.HasValue)
+    //        {
+    //            calls = calls.Where(c => c.CallType == (DO.CallType)type);
+    //        }
+
+    //        var openCalls = calls.Select(c => new BO.OpenCallInList
+    //        {
+    //            CallId = c.CallId,
+    //            CallType = (BO.CallType)c.CallType,
+    //            Address = c.Address,
+    //            OpenTime = c.OpenTime,
+    //            MaxTime = c.MaxTime,
+    //            Details = c.Details,
+    //            Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
+    //        }).ToList();
+
+    //        var result = openCall switch
+    //        {
+    //            OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
+    //            OpenCallInListSort.CallType => openCalls.OrderBy(c => c.CallType).ToList(),
+    //            OpenCallInListSort.Address => openCalls.OrderBy(c => c.Address).ToList(),
+    //            OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
+    //            OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
+    //            OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
+    //            _ => openCalls.OrderBy(c => c.CallId).ToList() 
+    //        };
+
+    //        return result;
+    //    }
+    //    // in case of unexpected errors during processing
+    //    catch (Exception ex)
+    //    {
+    //        throw new BO.BlDoesNotExistException(ex.Message);
+    //    }
+    //}
+
     public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
     {
         try
         {
+            // Lire toutes les données nécessaires
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
-            IEnumerable<DO.Volunteer> volun = _dal.Volunteer.ReadAll();
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
+            // Obtenir l'adresse du volontaire
             DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
+            string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
 
-            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
-
-            string volunteerAddress = boVolunteer.Address;
-
+            // Filtrer les appels ouverts ou à risque
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
-                return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk || status == BO.CallInListStatus.InCare;
+                return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk;
             });
 
-
-            if (type.HasValue)
+            // Filtrage par type d'appel
+            if (type.HasValue && type != BO.CallType.None)
             {
                 calls = calls.Where(c => c.CallType == (DO.CallType)type);
             }
 
+            // Transformer les appels en BO
             var openCalls = calls.Select(c => new BO.OpenCallInList
             {
                 CallId = c.CallId,
@@ -770,6 +840,7 @@ internal class CallImplementation : ICall
                 Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
             }).ToList();
 
+            // Appliquer le tri
             var result = openCall switch
             {
                 OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
@@ -778,15 +849,14 @@ internal class CallImplementation : ICall
                 OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
                 OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
                 OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
-                _ => openCalls.OrderBy(c => c.CallId).ToList() 
+                _ => openCalls // Aucun tri si None
             };
 
             return result;
         }
-        // in case of unexpected errors during processing
         catch (Exception ex)
         {
-            throw new BO.BlDoesNotExistException(ex.Message);
+            throw new BO.BlDoesNotExistException($"Error in GetListOfOpenCall: {ex.Message}");
         }
     }
 

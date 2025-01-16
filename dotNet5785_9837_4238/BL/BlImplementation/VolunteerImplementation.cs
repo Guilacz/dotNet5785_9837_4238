@@ -528,6 +528,19 @@ internal class VolunteerImplementation : IVolunteer
 
     }
 
+    public int sumOfCalls(int id)
+    {
+        DO.Volunteer vol = _dal.Volunteer.Read(id);
+        BO.Volunteer vol2 = Helpers.VolunteerManager.ConvertVolToBO(vol);
+        IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+        IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+        int SumOfCaredCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
+        int SumOfCancelledCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer);
+        int SumOfCallExpired = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime);
+        return SumOfCallExpired + SumOfCancelledCall + SumOfCaredCall;
+
+
+    }
 
     /// <summary>
     /// Creates a new volunteer

@@ -174,7 +174,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Ligne pour les filtres -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="19,13,0,7" HorizontalAlignment="Left">
             <Label FontSize="14" Foreground="#D3D3D3" FontWeight="Bold" Content="Sort By:" VerticalAlignment="Center" Margin="0,0,10,0"/>
             <ComboBox ItemsSource="{Binding Source={StaticResource OpenCallInListSortCollection}}" 
@@ -213,7 +212,6 @@
 
         </DataGrid>
 
-        <!-- Affichage des détails de l'appel sélectionné -->
         <TextBlock Grid.Row="2" Text="{Binding CurrentCall.Details}" FontSize="16" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Center" Margin="10" TextWrapping="Wrap" />
 
         <!-- Bouton retour -->

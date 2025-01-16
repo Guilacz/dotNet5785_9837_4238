@@ -163,7 +163,12 @@ namespace PL.Volunteer
         private void lsvVolunteersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (SelectedVolunteer != null)
-                new VolunteerWindow(SelectedVolunteer.VolunteerId).Show();
+            {
+                BO.Volunteer vol = s_bl.Volunteer.Read(SelectedVolunteer.VolunteerId);
+                new VolunteerWindow(vol.VolunteerId).Show();
+            }
+              
+                
         }
 
 

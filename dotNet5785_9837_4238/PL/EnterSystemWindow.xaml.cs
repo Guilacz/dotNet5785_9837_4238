@@ -99,7 +99,7 @@ namespace PL
                     case BO.Role.Volunteer:
                         var volunteerWindow = new MainVolunteerWindow(userId);
                         volunteerWindow.Show();
-                        this.Close();
+                       
                         break;
 
                     case BO.Role.Manager:
@@ -120,7 +120,6 @@ namespace PL
                             volunteer2Window.Show();
                         }
 
-                        this.Close();
                         break;
 
 

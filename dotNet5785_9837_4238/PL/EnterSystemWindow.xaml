@@ -31,7 +31,7 @@
                        FontSize="45" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center" 
-                       Foreground="DarkBlue" />
+                       Foreground="DarkBlue" FontFamily="Kristen ITC" Height="80" Width="622" />
             <TextBlock Text="Volunteers Helping Kids Succeed" 
                        FontSize="20" 
                        FontStyle="Italic" 

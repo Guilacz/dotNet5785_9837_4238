@@ -9,38 +9,17 @@ using System.Windows;
 using DalApi;
 using DO;
 using System.Windows.Media;
+using System.Diagnostics.Eventing.Reader;
 
 namespace PL
 {
 
-    //public class ConverterDeleteAssignment : IMultiValueConverter
-    //{
-    //    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        if (values.Length == 2 &&
-    //            values[0] is int NumberOfAssignment &&
-    //            values[1] is string CallInListStatus)
-    //        {
-    //            // Bouton visible uniquement si `NumberOfAssignment` est 0 ET le statut est "Open" ou "OpenAtRisk"
-    //            if (NumberOfAssignment == 0 &&
-    //                (CallInListStatus != "Expired"))
-    //            {
-    //                return Visibility.Visible;
-    //            }
-    //        }
-    //        return Visibility.Collapsed;
-    //    }
 
-    //    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
-
+    /// <summary>
+    /// converter for the delete button in the call screen
+    /// </summary>
     public class ConverterDeleteAssignment : IValueConverter
     {
-
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -52,14 +31,35 @@ namespace PL
             return Visibility.Collapsed;
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
+    /// <summary>
+    /// converter for the delete button in the volunteer screen
+    /// </summary>
+    public class ConverterDeleteVolunteer : IValueConverter
+    {
+        static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if(value is int volId)
+                return s_bl.Volunteer.sumOfCalls(volId) == 0 ? Visibility.Visible : Visibility.Collapsed;
+            return false; 
+
+        }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
+
+
     class ConvertCallTypeToColor : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -183,5 +183,68 @@ namespace PL
             throw new NotImplementedException();
         }
     }
+
+ 
+    /// <summary>
+    /// converter to check according to the status of the call if we can change the value or not
+    /// </summary>
+    public class CallStatusToStateConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                
+                if (value is string callStatus)
+                {
+                // we sent the parameter according to if it is IsReadOnly, IsEnabled
+                string state = parameter as string;
+
+                    // Logic for IsEnabled
+                    if (state == "IsEnabled")
+                    {
+                        return callStatus == "Open" || callStatus == "OpenAtRisk";
+                    }
+
+                    // Logiב IsReadOnly
+                    if (state == "IsReadOnly")
+                    {
+                        return !(callStatus == "Open" || callStatus == "OpenAtRisk");
+                    }
+                }
+
+            return false; 
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+    /// <summary>
+    /// converter to check according to the status of the call if we can change the value or not
+    /// </summary>
+    public class ConverterToChangeMaxTime : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (value is string callStatus)
+            {
+               
+                    return callStatus == "Open" || callStatus == "OpenAtRisk" || callStatus == "InCare" || callStatus == "InCareAtRisk";
+                
+            }
+
+            return false;  
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+
 
 }
