@@ -106,6 +106,14 @@ internal class CallImplementation : ICall
 
     public void Create(BO.Call c)
     {
+        if (c.Latitude == null || c.Longitude == null)
+        {
+            var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
+            //c = c with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+            c.Latitude = coordinates.Latitude;
+            c.Longitude = coordinates.Longitude;
+
+        }
         if (!Helpers.CallManager.CheckCall(c))
         {
             throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
@@ -141,7 +149,8 @@ internal class CallImplementation : ICall
                 Latitude = c.Latitude.Value,
                 Longitude = c.Longitude.Value,
                 MaxTime = c.MaxTime,
-                OpenTime = c.OpenTime,
+                //OpenTime = c.OpenTime,
+                OpenTime = DateTime.Now,
                 Details = c.Details,
             };
 
@@ -1055,7 +1064,9 @@ internal class CallImplementation : ICall
 
             assignment = assignment with
             {
-                FinishTime = DateTime.Now,
+                // FinishTime = DateTime.Now,
+                FinishTime = null,
+
                 TypeOfEnd = (DO.TypeOfEnd)((id == requester.VolunteerId)
                     ? DO.TypeOfEnd.CancelledByVolunteer
                     : DO.TypeOfEnd.CancelledByManager)

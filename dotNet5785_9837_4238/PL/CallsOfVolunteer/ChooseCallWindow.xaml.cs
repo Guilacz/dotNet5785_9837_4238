@@ -28,17 +28,31 @@ namespace PL.CallsOfVolunteer
 
         private int volunteerId;
 
-        public IEnumerable<BO.Call> ListOfCalls
+        public IEnumerable<BO.OpenCallInList> ListOfCalls
         {
-            get { return (IEnumerable<BO.Call>)GetValue(ListOfCallsProperty); }
+            get { return (IEnumerable<BO.OpenCallInList>)GetValue(ListOfCallsProperty); }
             set { SetValue(ListOfCallsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ListOfCalls.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ListOfCallsProperty =
-            DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.Call>), typeof(ChooseCallWindow));
+            DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.OpenCallInList>), typeof(ChooseCallWindow));
 
-        public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
+
+
+
+        public BO.CallType CallTypeSelected
+        {
+            get { return (BO.CallType)GetValue(CallTypeSelectedProperty); }
+            set { SetValue(CallTypeSelectedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CallTypeSelected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CallTypeSelectedProperty =
+            DependencyProperty.Register("CallTypeSelected", typeof(BO.CallType), typeof(ChooseCallWindow));
+
+
+        //public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
         public OpenCallInListSort SortSelected { get; set; } = OpenCallInListSort.None;
 
 
@@ -75,21 +89,7 @@ namespace PL.CallsOfVolunteer
         {
             try
             {
-                // Fetch initial list of calls
-                var callIds = s_bl.Call.GetListOfCalls()
-                    .Where(call => call.CallInListStatus == BO.CallInListStatus.Open
-                                   || call.CallInListStatus == BO.CallInListStatus.OpenAtRisk)
-                    .Select(call => call.CallId)
-                    .ToList();
-
-
-                // Fetch full details for each call using GetCallDetails
-                var detailedCalls = callIds
-                    .Select(callId => s_bl.Call.GetCallDetails(callId))
-                    .ToList();
-
-                ApplyFilterAndSort(detailedCalls);
-                s_bl.Call.AddObserver(ChooseCallsObserver);
+                ListOfCalls = s_bl.Call.GetListOfOpenCall(volunteerId, CallTypeSelected, SortSelected);
 
             }
             catch (Exception ex)
@@ -98,56 +98,45 @@ namespace PL.CallsOfVolunteer
             }
         }
 
-        private void ApplyFilterAndSort(List<BO.Call> calls)
+        //private void ApplyFilterAndSort(List<BO.Call> calls)
+        //{
+        //    if (CallTypeSelected != BO.CallType.None)
+        //    {
+        //        calls = calls.Where(call => call.CallType == CallTypeSelected).ToList();
+        //    }
+
+        //    switch (SortSelected)
+        //    {
+        //        case OpenCallInListSort.CallId:
+        //            calls = calls.OrderBy(call => call.CallId).ToList();
+        //            break;
+        //        case OpenCallInListSort.CallType:
+        //            calls = calls.OrderBy(call => call.CallType).ToList();
+        //            break;
+        //        case OpenCallInListSort.Address:
+        //            calls = calls.OrderBy(call => call.Address).ToList();
+        //            break;
+        //        case OpenCallInListSort.OpenTime:
+        //            calls = calls.OrderBy(call => call.OpenTime).ToList();
+        //            break;
+        //        case OpenCallInListSort.MaxTime:
+        //            calls = calls.OrderBy(call => call.MaxTime).ToList();
+        //            break;
+        //        case OpenCallInListSort.Details:
+        //            calls = calls.OrderBy(call => call.Details).ToList();
+        //            break;
+        //        case OpenCallInListSort.None:
+        //            // no filter
+        //            break;
+        //    }
+
+        //    ListOfCalls = calls;
+        //}
+
+        // Event handler for when the CallType or Sort selection changes
+        private void FilterOrSortChanged(object sender, RoutedEventArgs e)
         {
-            if (CallTypeSelected != BO.CallType.None)
-            {
-                calls = calls.Where(call => call.CallType == CallTypeSelected).ToList();
-            }
-
-            switch (SortSelected)
-            {
-                case OpenCallInListSort.CallId:
-                    calls = calls.OrderBy(call => call.CallId).ToList();
-                    break;
-                case OpenCallInListSort.CallType:
-                    calls = calls.OrderBy(call => call.CallType).ToList();
-                    break;
-                case OpenCallInListSort.Address:
-                    calls = calls.OrderBy(call => call.Address).ToList();
-                    break;
-                case OpenCallInListSort.OpenTime:
-                    calls = calls.OrderBy(call => call.OpenTime).ToList();
-                    break;
-                case OpenCallInListSort.MaxTime:
-                    calls = calls.OrderBy(call => call.MaxTime).ToList();
-                    break;
-                case OpenCallInListSort.Details:
-                    calls = calls.OrderBy(call => call.Details).ToList();
-                    break;
-                case OpenCallInListSort.None:
-                    // no filter
-                    break;
-            }
-
-            ListOfCalls = calls;
-        }
-
-        private void ComboBoxSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            if (SortSelected != null)
-            {
-                ApplyFilterAndSort(ListOfCalls.ToList());
-            }
-        }
-
-        private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CallTypeSelected != BO.CallType.None)
-            {
-                ApplyFilterAndSort(ListOfCalls.ToList());
-            }
+            queryChooseCalls();
         }
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
@@ -159,16 +148,16 @@ namespace PL.CallsOfVolunteer
         }
 
         // DependencyProperty pour CurrentCall
-        public BO.Call CurrentCall
+        public BO.OpenCallInList CurrentCall
         {
-            get { return (BO.Call)GetValue(CurrentCallProperty); }
+            get { return (BO.OpenCallInList)GetValue(CurrentCallProperty); }
             set { SetValue(CurrentCallProperty, value); }
         }
 
         public static readonly DependencyProperty CurrentCallProperty =
-            DependencyProperty.Register("CurrentCall", typeof(BO.Call), typeof(ChooseCallWindow), new PropertyMetadata(null));
+            DependencyProperty.Register("CurrentCall", typeof(BO.OpenCallInList), typeof(ChooseCallWindow));
 
-        public ICommand SelectCallCommand => new RelayCommand<BO.Call>(call =>
+        public ICommand SelectCallCommand => new RelayCommand<BO.OpenCallInList>(call =>
         {
             try
             {

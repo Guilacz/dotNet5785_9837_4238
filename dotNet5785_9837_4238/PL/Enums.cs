@@ -46,7 +46,7 @@ internal class CallInListStatusCollection : IEnumerable
 
 internal class OpenCallInListSortCollection : IEnumerable
 {
-    static readonly IEnumerable<BO.CloseCallInListSort> s_enums = (Enum.GetValues(typeof(BO.CloseCallInListSort)) as IEnumerable<BO.CloseCallInListSort>)!;
+    static readonly IEnumerable<BO.OpenCallInListSort> s_enums = (Enum.GetValues(typeof(BO.OpenCallInListSort)) as IEnumerable<BO.OpenCallInListSort>)!;
 
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }

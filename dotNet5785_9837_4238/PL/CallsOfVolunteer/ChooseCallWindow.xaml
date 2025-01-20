@@ -179,13 +179,13 @@
             <ComboBox ItemsSource="{Binding Source={StaticResource OpenCallInListSortCollection}}" 
                       SelectedValue="{Binding Path=SortSelected, Mode=TwoWay}" 
                       Width="150" 
-                      SelectionChanged="ComboBoxSort_SelectionChanged" Margin="0,0,20,0"/>
+                      SelectionChanged="FilterOrSortChanged" Margin="0,0,20,0"/>
 
             <Label FontSize="14" Foreground="#D3D3D3" FontWeight="Bold" Content="Filter By:" VerticalAlignment="Center" Margin="0,0,10,0"/>
             <ComboBox ItemsSource="{Binding Source={StaticResource CallTypeCollectionKey}}" 
                       SelectedValue="{Binding Path=CallTypeSelected, Mode=TwoWay}" 
                       Width="150" 
-                      SelectionChanged="ComboBoxFilter_SelectionChanged"/>
+                      SelectionChanged="FilterOrSortChanged"/>
         </StackPanel>
 
         <!-- DataGrid -->

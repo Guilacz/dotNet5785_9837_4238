@@ -229,7 +229,7 @@
         <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding CurrentCall.OpenTime}" IsEnabled="True" Visibility="{Binding ButtonText2, Converter={StaticResource ConverterAddUpdateKey}}" Margin="0,0,39,26" Grid.RowSpan="2"/>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Maximum Time:" VerticalAlignment="Center" Height="26"/>
-        <DatePicker Grid.Row="6" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="{Binding CurrentCall.CallStatus, Converter={StaticResource ConverterToChangeMaxTimeKey}}" Margin="94,7,39,6" Grid.ColumnSpan="2"/>
+        <DatePicker Grid.Row="6" SelectedDate="{Binding CurrentCall.MaxTime}" IsEnabled="True" Margin="94,7,39,6" Grid.ColumnSpan="2"/>
 
 
 

@@ -74,10 +74,15 @@ internal class CallManager
             return BO.CallInListStatus.Closed;
 
 
-        // אם הקריאה בוטלה או פג תוקפה
+        //// אם הקריאה בוטלה או פג תוקפה
+        //if (lastAssignment.TypeOfEnd.HasValue)
+        //    return BO.CallInListStatus.Expired;
         if (lastAssignment.TypeOfEnd.HasValue)
-            return BO.CallInListStatus.Expired;
-
+        {
+            // אם הזמן המקסימלי עבר
+            if (DateTime.Now> call.MaxTime)
+                return BO.CallInListStatus.Expired;
+        }
         // מקרה ברירת מחדל - פתוח
         return BO.CallInListStatus.Open;
     }
