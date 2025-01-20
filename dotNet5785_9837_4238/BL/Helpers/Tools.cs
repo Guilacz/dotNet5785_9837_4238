@@ -59,78 +59,148 @@ public static class Tools
     /// as a tuple (latitude, longitude). If no results are found or if the request fails, 
     /// it throws an exception.
     /// /// </summary>
+    //public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    //{
+    //    if (string.IsNullOrWhiteSpace(address))
+    //    {
+    //        throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+    //    }
+
+    //    //braha
+    //   // const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+    //    ///guila
+    //  const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
+    //    const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+
+    //    string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+
+    //    using (var client = new HttpClient())
+    //    {
+    //        HttpResponseMessage response;
+    //        try
+    //        {
+    //            response = client.GetAsync(requestUrl).Result;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw new Exception("Error sending request to LocationIQ API.", ex);
+    //        }
+
+    //        if (!response.IsSuccessStatusCode)
+    //        {
+    //            throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}");
+    //        }
+
+    //        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+
+    //        var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+    //        if (locationData == null || locationData.Count == 0)
+    //        {
+    //            throw new Exception("No coordinates found for the provided address.");
+    //        }
+
+    //        var coordinates = locationData[0];
+
+
+    //        //bool isLatValid = double.TryParse(coordinates.lat, out double latitude);
+    //        //bool isLonValid = double.TryParse(coordinates.lon, out double longitude);
+
+    //        bool isLonValid = double.TryParse(coordinates.lon,
+    //                              System.Globalization.NumberStyles.Float,
+    //                              System.Globalization.CultureInfo.InvariantCulture,
+    //                              out double longitude);
+    //        bool isLatValid = double.TryParse(coordinates.lat,
+    //                                          System.Globalization.NumberStyles.Float,
+    //                                          System.Globalization.CultureInfo.InvariantCulture,
+    //                                          out double latitude);
+
+
+
+
+    //        if (isLatValid && isLonValid)
+    //        {
+    //            return (latitude, longitude);
+    //        }
+    //        else
+    //        {
+    //            throw new Exception($"Invalid coordinate data. Latitude valid: {isLatValid}, Longitude valid: {isLonValid}");
+    //        }
+    //    }
+    //}
+
+    private static readonly SemaphoreSlim _throttler = new SemaphoreSlim(1);
+
     public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
     {
-        if (string.IsNullOrWhiteSpace(address))
+        _throttler.Wait(); // סינכרוני במקום async
+        try
         {
-            throw new ArgumentException("Address cannot be null or empty.", nameof(address));
-        }
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                throw new ArgumentException("Address cannot be null or empty.", nameof(address));
+            }
 
-        //braha
-       // const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
-        ///guila
+            //const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+            ///guila
       const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
-        const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+            const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
+            string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
-        string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
+            using (var client = new HttpClient())
+            {
+                Thread.Sleep(1000); // סינכרוני במקום Task.Delay
 
-        using (var client = new HttpClient())
+                HttpResponseMessage response;
+                try
+                {
+                    response = client.GetAsync(requestUrl).Result;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error sending request to LocationIQ API.", ex);
+                }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}, Content: {content}");
+                }
+
+                string responseContent = response.Content.ReadAsStringAsync().Result;
+                var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
+
+                if (locationData == null || locationData.Count == 0)
+                {
+                    throw new Exception("No coordinates found for the provided address.");
+                }
+
+                var coordinates = locationData[0];
+                bool isLonValid = double.TryParse(coordinates.lon,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out double longitude);
+                bool isLatValid = double.TryParse(coordinates.lat,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out double latitude);
+
+                if (isLatValid && isLonValid)
+                {
+                    return (latitude, longitude);
+                }
+                else
+                {
+                    throw new Exception($"Invalid coordinate data. Latitude valid: {isLatValid}, Longitude valid: {isLonValid}");
+                }
+            }
+        }
+        finally
         {
-            HttpResponseMessage response;
-            try
-            {
-                response = client.GetAsync(requestUrl).Result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error sending request to LocationIQ API.", ex);
-            }
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}");
-            }
-
-            string responseContent = response.Content.ReadAsStringAsync().Result;
-
-
-            var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
-
-            if (locationData == null || locationData.Count == 0)
-            {
-                throw new Exception("No coordinates found for the provided address.");
-            }
-
-            var coordinates = locationData[0];
-
-
-            //bool isLatValid = double.TryParse(coordinates.lat, out double latitude);
-            //bool isLonValid = double.TryParse(coordinates.lon, out double longitude);
-
-            bool isLonValid = double.TryParse(coordinates.lon,
-                                  System.Globalization.NumberStyles.Float,
-                                  System.Globalization.CultureInfo.InvariantCulture,
-                                  out double longitude);
-            bool isLatValid = double.TryParse(coordinates.lat,
-                                              System.Globalization.NumberStyles.Float,
-                                              System.Globalization.CultureInfo.InvariantCulture,
-                                              out double latitude);
-
-
-
-
-            if (isLatValid && isLonValid)
-            {
-                return (latitude, longitude);
-            }
-            else
-            {
-                throw new Exception($"Invalid coordinate data. Latitude valid: {isLatValid}, Longitude valid: {isLonValid}");
-            }
+            _throttler.Release();
         }
     }
-
-    
 
     /// <summary>
     /// class to get the latitude and longitude of a LocationIqResponse

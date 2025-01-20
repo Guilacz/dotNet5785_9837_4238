@@ -64,7 +64,7 @@ internal class CallImplementation : ICall
             if (isCallAlreadyHandled)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
 
-            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null && a.TypeOfEnd!= DO.TypeOfEnd.CancelledByManager && a.TypeOfEnd != DO.TypeOfEnd.CancelledByVolunteer);
+            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null );
             if (isCallInProcess)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
 
@@ -1101,12 +1101,13 @@ internal class CallImplementation : ICall
     /// </summary>
     /// <param name="id">The volunteer ID of the requester.</param>
     /// <param name="assiId">The assignment ID to be marked as finished.</param>
-    public void UpdateCallFinished(int id, int assiId)
+    public void UpdateCallFinished(int id, int assiId, int callId)
     {
         try
         {
             var assignments = _dal.Assignment.ReadAll();
             var volunteers = _dal.Volunteer.ReadAll();
+            var call = Read(callId); 
 
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
             if (assignment == null)
@@ -1139,6 +1140,15 @@ internal class CallImplementation : ICall
             };
 
             _dal.Assignment.Update(assignment);
+
+
+            
+            if (call != null)
+            {
+                call.CallStatus = CallInListStatus.Closed; 
+                Update(call);
+            }
+
             CallManager.Observers.NotifyItemUpdated(assiId);
             CallManager.Observers.NotifyListUpdated();
         }

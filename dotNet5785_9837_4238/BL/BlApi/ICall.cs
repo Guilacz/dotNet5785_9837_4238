@@ -27,7 +27,7 @@ public interface ICall : IObservable
 
     IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null);
 
-    void UpdateCallFinished(int volId, int callId);
+    void UpdateCallFinished(int volId, int assignId, int callId );
 
     void UpdateCallCancelled(int id, int assiId);
 

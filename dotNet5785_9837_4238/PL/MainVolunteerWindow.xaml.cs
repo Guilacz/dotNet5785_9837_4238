@@ -161,7 +161,7 @@ namespace PL
         {
             try
             {
-                s_bl.Call.UpdateCallFinished(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id);
+                s_bl.Call.UpdateCallFinished(CurrentVolunteer!.VolunteerId, CurrentVolunteer.callInCaring!.Id, CurrentVolunteer.callInCaring!.CallId);
                 MessageBox.Show("The call has been successfully finished.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var volunteerWindow = new MainVolunteerWindow(CurrentVolunteer!.VolunteerId);
                 volunteerWindow.Show();

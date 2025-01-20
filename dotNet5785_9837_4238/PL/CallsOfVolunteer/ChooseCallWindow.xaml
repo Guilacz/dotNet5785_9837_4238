@@ -192,7 +192,7 @@
         <DataGrid Grid.Row="1" ItemsSource="{Binding ListOfCalls}" 
                   AutoGenerateColumns="False" IsReadOnly="True" 
                   RowDetailsVisibilityMode="VisibleWhenSelected" 
-                  SelectedItem="{Binding CurrentCall, Mode=TwoWay}" Margin="10">
+                  SelectedItem="{Binding CurrentCall, Mode=TwoWay}" Margin="10,10,10,115" Grid.RowSpan="3">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding CallId}" Header="Call ID" Width="Auto"/>
@@ -200,6 +200,7 @@
                 <DataGridTextColumn Binding="{Binding Address}" Header="Address" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding OpenTime}" Header="Open Time" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding MaxTime}" Header="Max Time" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Distance}" Header="Distance" Width="Auto"/>
                 <!--<DataGridTextColumn Binding="{Binding Details}" Header="Details" Width="Auto"/>-->
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>

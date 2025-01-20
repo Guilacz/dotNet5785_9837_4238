@@ -322,17 +322,40 @@ internal class VolunteerImplementation : IVolunteer
             IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
 
-            var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
+            //var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
+            //{
+            //    VolunteerId = v.VolunteerId,
+            //    Name = v.Name,
+            //    IsActive = v.IsActive,
+            //    SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
+            //    SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
+            //    SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
+            //    CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
+            //    CallType = _dal.Call.Read(assignment.Where(call => call.VolunteerId == v.VolunteerId)
+            //    .Select(call => call.CallId).FirstOrDefault()) is DO.Call callId && callId != null ? (BO.CallType) callId.CallType : BO.CallType.None
+            //});
+
+            var volunteerInLists = volunteers.Select(v =>
             {
-                VolunteerId = v.VolunteerId,
-                Name = v.Name,
-                IsActive = v.IsActive,
-                SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
-                SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
-                SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
-                CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
-                CallType = _dal.Call.Read(assignment.Where(call => call.VolunteerId == v.VolunteerId)
-                .Select(call => call.CallId).FirstOrDefault()) is DO.Call callId && callId != null ? (BO.CallType) callId.CallType : BO.CallType.None
+                var currentAssignment = assignment.FirstOrDefault(a => a.VolunteerId == v.VolunteerId &&
+                                                                       a.FinishTime == null &&
+                                                                       a.TypeOfEnd == null); // משימה פעילה ללא סיום
+
+                var currentCall = currentAssignment != null
+                    ? calls.FirstOrDefault(c => c.CallId == currentAssignment.CallId)
+                    : null;
+
+                return new BO.VolunteerInList
+                {
+                    VolunteerId = v.VolunteerId,
+                    Name = v.Name,
+                    IsActive = v.IsActive,
+                    SumOfCaredCall = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
+                    SumOfCancelledCall = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
+                    SumOfCallExpired = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
+                    CallId = currentCall?.CallId , // אם יש קריאה פעילה, מחזיר את מזהה הקריאה, אחרת 0
+                    CallType = currentCall != null ? (BO.CallType)currentCall.CallType : BO.CallType.None // אם יש קריאה פעילה, מחזיר את סוג הקריאה
+                };
             });
 
 
@@ -492,6 +515,17 @@ internal class VolunteerImplementation : IVolunteer
             double longitude = coordinates.Longitude;
             vol.Latitude = latitude;
             vol.Longitude = longitude;
+
+            if (volun.RoleType == DO.Role.Manager)
+            {
+                var managers = _dal.Volunteer.ReadAll().Count(v => v.RoleType == DO.Role.Manager);
+
+                if (managers <= 1)
+                {
+                    throw new BO.BlInvalidValueException("Cannot change role: System must have at least one manager.");
+                }
+            }
+
             if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
                 throw new BO.BlInvalidValueException("Password not strong enough.");
 
