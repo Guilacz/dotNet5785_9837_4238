@@ -560,4 +560,12 @@
     <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
     <FinishTime />
   </Assignment>
+  <Assignment>
+    <Id>120</Id>
+    <CallId>56</CallId>
+    <VolunteerId>979662525</VolunteerId>
+    <StartTime>2025-01-20T14:44:16.1180505+02:00</StartTime>
+    <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
+    <FinishTime />
+  </Assignment>
 </Assignments>

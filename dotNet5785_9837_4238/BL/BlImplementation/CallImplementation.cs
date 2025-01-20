@@ -1,7 +1,7 @@
 ﻿namespace BlImplementation;
 using BlApi;
 using BO;
-
+ 
 using Helpers;
 
 
@@ -64,7 +64,7 @@ internal class CallImplementation : ICall
             if (isCallAlreadyHandled)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
 
-            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null && a.TypeOfEnd!= DO.TypeOfEnd.CancelledByManager && a.TypeOfEnd != DO.TypeOfEnd.CancelledByVolunteer);
             if (isCallInProcess)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
 
