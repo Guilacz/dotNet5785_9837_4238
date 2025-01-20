@@ -576,4 +576,44 @@
     <TypeOfEnd>Fulfilled</TypeOfEnd>
     <FinishTime>2025-01-20T20:35:32.9668981+02:00</FinishTime>
   </Assignment>
+  <Assignment>
+    <Id>122</Id>
+    <CallId>6</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-20T22:57:15.6094249+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-20T22:57:24.8205294+02:00</FinishTime>
+  </Assignment>
+  <Assignment>
+    <Id>123</Id>
+    <CallId>52</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-20T22:59:00.0468651+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-20T22:59:25.5271537+02:00</FinishTime>
+  </Assignment>
+  <Assignment>
+    <Id>124</Id>
+    <CallId>55</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-20T23:04:55.2792046+02:00</StartTime>
+    <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
+    <FinishTime />
+  </Assignment>
+  <Assignment>
+    <Id>125</Id>
+    <CallId>54</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-20T23:06:13.1014770+02:00</StartTime>
+    <TypeOfEnd>CancelledByVolunteer</TypeOfEnd>
+    <FinishTime />
+  </Assignment>
+  <Assignment>
+    <Id>126</Id>
+    <CallId>54</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-20T23:08:02.1987427+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-20T23:08:24.7285830+02:00</FinishTime>
+  </Assignment>
 </Assignments>

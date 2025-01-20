@@ -19,15 +19,6 @@
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
-    <CallId>6</CallId>
-    <CallType>Math_Primary</CallType>
-    <Address>50 HaNevi'im Street, Jerusalem</Address>
-    <Latitude>35.221665622205705</Latitude>
-    <Longitude>31.78391107912798</Longitude>
-    <OpenTime>2025-01-13T19:27:48</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
     <CallId>7</CallId>
     <CallType>Grammary_Primary</CallType>
     <Address>60 Gaza Street, Jerusalem</Address>
@@ -452,16 +443,6 @@
     <Details>bla bla bla</Details>
   </Call>
   <Call>
-    <CallId>52</CallId>
-    <CallType>Math_Primary</CallType>
-    <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <OpenTime>0001-01-01T00:00:00</OpenTime>
-    <MaxTime xsi:nil="true" />
-    <Details>zertyhj</Details>
-  </Call>
-  <Call>
     <CallId>53</CallId>
     <CallType>Math_Primary</CallType>
     <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
@@ -470,16 +451,6 @@
     <OpenTime>0001-01-01T00:00:00</OpenTime>
     <MaxTime>2026-11-12T00:00:00</MaxTime>
     <Details>test</Details>
-  </Call>
-  <Call>
-    <CallId>54</CallId>
-    <CallType>Math_Primary</CallType>
-    <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
-    <Latitude>31.759595</Latitude>
-    <Longitude>35.215315</Longitude>
-    <OpenTime>2025-01-20T13:53:07.8652008+02:00</OpenTime>
-    <MaxTime xsi:nil="true" />
-    <Details>blablabla</Details>
   </Call>
   <Call>
     <CallId>55</CallId>
@@ -500,5 +471,34 @@
     <OpenTime>2025-01-20T14:26:22.6263617+02:00</OpenTime>
     <MaxTime>2026-07-04T00:00:00</MaxTime>
     <Details>test56</Details>
+  </Call>
+  <Call>
+    <CallId>6</CallId>
+    <CallType>Math_Primary</CallType>
+    <Address>50 HaNevi'im Street, Jerusalem</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <OpenTime>2025-01-13T19:27:48</OpenTime>
+    <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>52</CallId>
+    <CallType>Math_Primary</CallType>
+    <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <OpenTime>0001-01-01T00:00:00</OpenTime>
+    <MaxTime xsi:nil="true" />
+    <Details>zertyhj</Details>
+  </Call>
+  <Call>
+    <CallId>54</CallId>
+    <CallType>Math_Primary</CallType>
+    <Address>13 Keren Hayesod Street, Jerusalem, Israel</Address>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
+    <OpenTime>2025-01-20T13:53:07.8652008+02:00</OpenTime>
+    <MaxTime xsi:nil="true" />
+    <Details>blablabla</Details>
   </Call>
 </ArrayOfCall>

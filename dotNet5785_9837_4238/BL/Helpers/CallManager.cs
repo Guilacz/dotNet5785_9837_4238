@@ -40,9 +40,64 @@ internal class CallManager
         return true;
     }
 
+    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
+    //{
+    //    var now = DateTime.Now;
+
+    //    // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
+    //    var callAssignments = assignments
+    //        .Where(a => a.CallId == call.CallId)
+    //        .OrderByDescending(a => a.StartTime);
+
+    //    var lastAssignment = callAssignments.FirstOrDefault();
+
+    //    // אם אין הקצאות בכלל
+    //    if (lastAssignment == null)
+    //    {
+    //        // אם עבר יותר משעה מפתיחת הקריאה
+    //        if (now > call.OpenTime.AddHours(1))
+    //            return BO.CallInListStatus.OpenAtRisk;
+    //        return BO.CallInListStatus.Open;
+    //    }
+
+    //    // אם ההקצאה האחרונה פתוחה (בטיפול)
+    //    if (lastAssignment.FinishTime == null && !lastAssignment.TypeOfEnd.HasValue)
+    //    {
+    //        // אם עבר יותר משעה מתחילת הטיפול
+    //        if (now > lastAssignment.StartTime.AddHours(1))
+    //            return BO.CallInListStatus.InCareAtRisk;
+    //        return BO.CallInListStatus.InCare;
+    //    }
+
+    //    // אם הקריאה הסתיימה
+    //    if (lastAssignment.TypeOfEnd.HasValue && lastAssignment.TypeOfEnd.Value.Equals(TypeOfEnd.Fulfilled))
+    //        return BO.CallInListStatus.Closed;
+
+
+    //    //// אם הקריאה בוטלה או פג תוקפה
+    //    //if (lastAssignment.TypeOfEnd.HasValue)
+    //    //    return BO.CallInListStatus.Expired;
+    //    if (lastAssignment.TypeOfEnd.HasValue)
+    //    {
+    //        // אם הזמן המקסימלי עבר
+    //        if (DateTime.Now> call.MaxTime)
+    //            return BO.CallInListStatus.Expired;
+    //    }
+    //    // מקרה ברירת מחדל - פתוח
+    //    return BO.CallInListStatus.Open;
+    //}
     internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
         var now = DateTime.Now;
+
+        if (assignments.Any(a =>
+     a.CallId == call.CallId &&
+     a.TypeOfEnd.HasValue && // בדיקה אם יש ערך
+     (BO.TypeOfEnd)a.TypeOfEnd == BO.TypeOfEnd.Fulfilled))
+
+        {
+            return BO.CallInListStatus.Closed;
+        }
 
         // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
         var callAssignments = assignments
@@ -80,7 +135,7 @@ internal class CallManager
         if (lastAssignment.TypeOfEnd.HasValue)
         {
             // אם הזמן המקסימלי עבר
-            if (DateTime.Now> call.MaxTime)
+            if (DateTime.Now > call.MaxTime)
                 return BO.CallInListStatus.Expired;
         }
         // מקרה ברירת מחדל - פתוח

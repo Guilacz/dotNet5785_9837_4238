@@ -60,12 +60,21 @@ internal class CallImplementation : ICall
 
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
-            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+            //  bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && );
+            //if (isCallAlreadyHandled)
+            //    throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
+            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
             if (isCallAlreadyHandled)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
 
-            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null );
-            if (isCallInProcess)
+
+            //bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null );
+            //if (isCallInProcess)
+            //    throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
+            // בדוק אם הקריאה נמצאת בסטטוס "InCare"
+            var status = Helpers.CallManager.GetCallStatus(call, assignments);
+
+            if (status == BO.CallInListStatus.InCare || status == BO.CallInListStatus.InCareAtRisk)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
 
             var newAssignment = new DO.Assignment
@@ -81,6 +90,8 @@ internal class CallImplementation : ICall
             );
 
             _dal.Assignment.Create(newAssignment);
+            CallManager.Observers.NotifyItemUpdated(callId);
+            CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -1107,8 +1118,8 @@ internal class CallImplementation : ICall
         {
             var assignments = _dal.Assignment.ReadAll();
             var volunteers = _dal.Volunteer.ReadAll();
-            var call = Read(callId); 
-
+            var call = Read(callId);
+            DO.Call call2 = _dal.Call.Read(callId);
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
             if (assignment == null)
             {
@@ -1141,15 +1152,15 @@ internal class CallImplementation : ICall
 
             _dal.Assignment.Update(assignment);
 
-
+            call.CallStatus = Helpers.CallManager.GetCallStatus(call2, assignments);
             
             if (call != null)
             {
-                call.CallStatus = CallInListStatus.Closed; 
+             //   call.CallStatus = CallInListStatus.Closed; 
                 Update(call);
             }
 
-            CallManager.Observers.NotifyItemUpdated(assiId);
+            CallManager.Observers.NotifyItemUpdated(callId);
             CallManager.Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
