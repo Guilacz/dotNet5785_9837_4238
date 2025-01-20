@@ -25,6 +25,9 @@ namespace PL.Volunteer
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
+        //---------------------Dependency properties---------------------------
+
+
         /// <summary>
         /// dependency property of the add/update button
         /// </summary>
@@ -51,11 +54,17 @@ namespace PL.Volunteer
 
 
         /// <summary>
-        /// definition of the comboBox RoleType
+        /// roleType selected in the combobox
         /// </summary>
         public BO.Role RoleTypeSelected { get; set; } = BO.Role.Volunteer;
 
 
+        //---------------------FUNCTIONS---------------------------
+
+
+        /// <summary>
+        /// constructor for VolunteerWindow
+        /// </summary>
         public VolunteerWindow(int volunteerId = 0)
         {
             ButtonText = volunteerId == 0 ? "Add" : "Update";
@@ -87,22 +96,29 @@ namespace PL.Volunteer
 
         }
 
+        /// <summary>
+        /// function wich gives an option to generate a password
+        /// </summary>
         private void GeneratePassword_Click(object sender, RoutedEventArgs e)
         {
-            // כאן נקרא לפונקציה שמחזירה סיסמה אקראית
             string generatedPassword = s_bl.Volunteer.NewPassword();
 
-            // מעדכנים את ה-TextBox
             CurrentVolunteer.Password = generatedPassword;
         }
 
+
+        /// <summary>
+        /// Event handler for when the window is loaded
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             s_bl.Volunteer.AddObserver(CurrentVolunteer.VolunteerId, VolunteerObserver);
-
-
         }
 
+
+        /// <summary>
+        /// Event handler for when the window is closed
+        /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             if (CurrentVolunteer != null && CurrentVolunteer.VolunteerId != 0)
@@ -116,8 +132,10 @@ namespace PL.Volunteer
             int id = CurrentVolunteer!.VolunteerId;
             CurrentVolunteer = null;
             CurrentVolunteer = s_bl.Volunteer.Read(id);
-
         }
+
+
+        //------------------BUTTONS---------------------------
 
         /// <summary>
         /// function of the AddUpdate button

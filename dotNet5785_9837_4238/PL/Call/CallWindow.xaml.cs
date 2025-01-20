@@ -18,6 +18,11 @@ namespace PL.Call
     {
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+
+        //---------------------Dependency properties---------------------------
+
+
+        //dependency property for the text of the button
         public string ButtonText2
         {
             get { return (string)GetValue(ButtonText2Property); }
@@ -27,6 +32,7 @@ namespace PL.Call
         public static readonly DependencyProperty ButtonText2Property =
             DependencyProperty.Register("ButtonText2", typeof(string), typeof(CallWindow));
 
+        //dependency property for the current call
         public BO.Call CurrentCall
         {
             get { return (BO.Call)GetValue(CurrentCallProperty); }
@@ -36,6 +42,8 @@ namespace PL.Call
         public static readonly DependencyProperty CurrentCallProperty =
             DependencyProperty.Register("CurrentCall", typeof(BO.Call), typeof(CallWindow));
 
+
+        //dependency property for the current assignment
         public BO.CallAssignInList? SelectedAssignment
         {
             get { return (BO.CallAssignInList)GetValue(SelectedAssignmentProperty); }
@@ -44,6 +52,10 @@ namespace PL.Call
 
         public static readonly DependencyProperty SelectedAssignmentProperty =
             DependencyProperty.Register("SelectedAssignment", typeof(BO.CallAssignInList), typeof(CallWindow));
+
+
+        //---------------------FUNCTIONS---------------------------
+
         private void CallObserver()
         {
             int id = CurrentCall!.CallId;
@@ -51,13 +63,19 @@ namespace PL.Call
             CurrentCall = s_bl.Call.Read(id);
 
         }
+
+        /// <summary>
+        /// Event handler for when the window is loaded
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             s_bl.Call.AddObserver(CurrentCall.CallId, CallObserver);
-
-
         }
 
+
+        /// <summary>
+        /// Event handler for when the window is closed
+        /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             if (CurrentCall != null && CurrentCall.CallId != 0)
@@ -65,6 +83,10 @@ namespace PL.Call
                 s_bl.Call.RemoveObserver(CurrentCall.CallId, CallObserver);
             }
         }
+
+        /// <summary>
+        /// Constructor of the window
+        /// </summary>
         public CallWindow(int Id = 0)
         {
             ButtonText2 = Id == 0 ? "Add" : "Update";
@@ -92,8 +114,10 @@ namespace PL.Call
                 CurrentCall = new BO.Call();
             }
 
-           // DataContext = this;
         }
+
+
+        //---------------------BUTTONS---------------------------
 
         private void btnAddUpdate_Click(object sender, RoutedEventArgs e)
         {

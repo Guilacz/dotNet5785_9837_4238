@@ -25,6 +25,10 @@ namespace PL.Call
         protected virtual void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+
+        //---------------------Properties / Dependency properties---------------------------
+
+
         // Properties for filtering and sorting
         private string _selectedFilterBy;
         public string SelectedFilterBy
@@ -89,6 +93,7 @@ namespace PL.Call
             }
         }
 
+        //instead of taking the enum, we added an enumerable of strings
         private IEnumerable<string> _filterValueOptions;
         public IEnumerable<string> FilterValueOptions
         {
@@ -99,13 +104,13 @@ namespace PL.Call
                 OnPropertyChanged(nameof(FilterValueOptions));
             }
         }
-        public IEnumerable<string> FilterByOptions { get; } = new[] { "CallType", "CallInListStatus" }; // לא כוללים תאריך
+        public IEnumerable<string> FilterByOptions { get; } = new[] { "CallType", "CallInListStatus" }; 
 
-        public IEnumerable<string> SortByOptions { get; } = new[] { "CallId", "OpenTime", "LastName" }; // אפשרויות למיון
+        public IEnumerable<string> SortByOptions { get; } = new[] { "CallId", "OpenTime", "LastName" }; 
 
  
 
-        private DateTime? _startDate; // תאריך התחלה
+        private DateTime? _startDate; 
         public DateTime? StartDate
         {
             get => _startDate;
@@ -135,17 +140,31 @@ namespace PL.Call
             }
         }
 
+
+
+        //---------------------FUNCTIONS---------------------------
+
+
+
+
+
+        /// <summary>
+        /// FILTER WITH VALUE FUNCTION
+        /// </summary>
         private void UpdateFilterValueOptions()
         {
             FilterValueOptions = SelectedFilterBy switch
             {
                 "CallType" => Enum.GetNames(typeof(BO.CallType)),
                 "CallInListStatus" => Enum.GetNames(typeof(BO.CallInListStatus)),
-                "Date" => Array.Empty<string>(), // סינון לפי תאריך לא מצריך ערכים
+                "Date" => Array.Empty<string>(),
                 _ => Array.Empty<string>()
             };
         }
 
+        /// <summary>
+        /// query function of the screen
+        /// </summary>
         private void QueryCallList()
         {
             BO.CallInListSort? sortType = null;
@@ -180,6 +199,8 @@ namespace PL.Call
             };
 
         }
+
+
         // Function to be called whenever the filter or sort option changes
         private void CallListObserver()
         {
@@ -187,18 +208,25 @@ namespace PL.Call
 
         }
 
-        // Window Loaded event handler
+        /// <summary>
+        /// Event handler for when the window is loaded
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             s_bl.Call.AddObserver(CallListObserver);
         }
 
-        // Window Closed event handler
+        /// <summary>
+        /// Event handler for when the window is closed
+        /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             s_bl.Call.RemoveObserver(CallListObserver);
         }
 
+        /// <summary>
+        /// constructor of the window
+        /// </summary>
         public CallListWindow()
         {
             InitializeComponent();
@@ -210,6 +238,11 @@ namespace PL.Call
 
 
 
+        //-------------------BUTTONS-------------------------
+
+        /// <summary>
+        /// delete button
+        /// </summary>
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is int callId)
@@ -243,6 +276,9 @@ namespace PL.Call
             }
         }
 
+        /// <summary>
+        /// add button
+        /// </summary>
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             new CallWindow().Show();
@@ -254,6 +290,7 @@ namespace PL.Call
             QueryCallList();
         }
 
+        //Event for when we click on the grid
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (SelectedCall != null)

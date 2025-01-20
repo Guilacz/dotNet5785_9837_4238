@@ -26,6 +26,10 @@ namespace PL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
+
+        //---------------------Dependency properties---------------------------
+
+
         /// <summary>
         /// dependency property of the current volunteer
         /// </summary>
@@ -36,16 +40,6 @@ namespace PL
         }
         public static readonly DependencyProperty CurrentVolunteerProperty =
             DependencyProperty.Register("CurrentVolunteer", typeof(BO.Volunteer), typeof(MainVolunteerWindow), new PropertyMetadata(null));
-
-
-        private void GeneratePassword_Click(object sender, RoutedEventArgs e)
-        {
-            // כאן נקרא לפונקציה שמחזירה סיסמה אקראית
-            string generatedPassword = s_bl.Volunteer.NewPassword();
-
-            // מעדכנים את ה-TextBox
-            CurrentVolunteer.Password = generatedPassword;
-        }
 
 
         public BO.CallInProgress CurrentCall
@@ -60,7 +54,14 @@ namespace PL
 
 
 
+        //---------------------FUNCTIONS---------------------------
 
+        //function to receive a password
+        private void GeneratePassword_Click(object sender, RoutedEventArgs e)
+        {
+            string generatedPassword = s_bl.Volunteer.NewPassword();
+            CurrentVolunteer.Password = generatedPassword;
+        }
 
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace PL
         }
 
         /// <summary>
-        /// This method loads the window.
+        /// Event handler for when the window is loaded
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -85,11 +86,8 @@ namespace PL
         }
 
         /// <summary>
-        /// This method closes the window.
+        /// Event handler for when the window is closed
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-
         private void Window_Closed(object sender, EventArgs e)
         {
             s_bl.Volunteer.RemoveObserver(CurrentVolunteer!.VolunteerId, volunteerObserver);
@@ -97,7 +95,9 @@ namespace PL
 
 
 
-
+        /// <summary>
+        /// constructor of the window
+        /// </summary>
         public MainVolunteerWindow(int id)
         {
 

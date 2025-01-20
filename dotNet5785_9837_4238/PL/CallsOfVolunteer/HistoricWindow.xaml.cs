@@ -33,6 +33,10 @@ namespace PL.CallsOfVolunteer
         // Access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+
+        //---------------------Properties/ Dependency properties---------------------------
+
+
         // DependencyProperty for the list of closed calls
         public IEnumerable<BO.ClosedCallInList> ListOfCalls
         {
@@ -42,14 +46,22 @@ namespace PL.CallsOfVolunteer
         public static readonly DependencyProperty ListOfCallsProperty =
             DependencyProperty.Register("ListOfCalls", typeof(IEnumerable<BO.ClosedCallInList>), typeof(HistoricWindow));
 
+
         // Selected sort field
         public BO.CloseCallInListSort SortSelected { get; set; } = BO.CloseCallInListSort.None;
+
 
         // Selected filter type
         public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
 
+
         // The ID of the volunteer for which the history is displayed
         private int _volunteerId;
+
+
+
+        //---------------------FUNCTIONS---------------------------
+
 
         /// <summary>
         /// Constructor for HistoricWindow
@@ -62,7 +74,6 @@ namespace PL.CallsOfVolunteer
             _volunteerId = volunteerId;
             InitializeComponent();
             
-
             // Load the data and set up observers
             queryClosedCalls();
             Loaded += Window_Loaded;
@@ -92,9 +103,10 @@ namespace PL.CallsOfVolunteer
         }
 
         /// <summary>
-        /// Observer to refresh the list of calls
+        /// Observer to actualize the list of calls
         /// </summary>
         private void ClosedCallsObserver() => queryClosedCalls();
+
 
         /// <summary>
         /// Event handler for when the window is loaded
@@ -127,6 +139,10 @@ namespace PL.CallsOfVolunteer
         {
             queryClosedCalls();
         }
+
+
+        //---------------------BUTTONS---------------------------
+
 
         /// <summary>
         /// Return button click event

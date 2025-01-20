@@ -24,30 +24,10 @@ namespace PL
 
 
 
-        private void btnAddOneMinute_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.Admin.ForwardClock(BO.TimeUnit.minute);
-        }
-        private void btnAddOneHour_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.Admin.ForwardClock(BO.TimeUnit.hour);
-        }
-        private void btnAddOneDay_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.Admin.ForwardClock(BO.TimeUnit.day);
-        }
-        private void btnAddOneMonth_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.Admin.ForwardClock(BO.TimeUnit.month);
-        }
-        private void btnAddOneYear_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.Admin.ForwardClock(BO.TimeUnit.year);
-        }
 
 
 
-
+        //-------------------------Dependency properties-------------------------------------------------
 
         /// <summary>
         /// dependency property of CurrentTime
@@ -73,7 +53,26 @@ namespace PL
         public static readonly DependencyProperty RiskRangePropertyProperty =
             DependencyProperty.Register("RiskRangeProperty", typeof(TimeSpan), typeof(MainWindow), new PropertyMetadata(TimeSpan.Zero));
 
-       
+
+
+        //-------------------------FUNCTIONS-------------------------------------------------
+
+        //observers
+        private void ClockObserver()
+        {
+            CurrentTime = s_bl.Admin.GetClock();
+        }
+        private void ConfigObserver()
+        {
+            RiskRangeProperty = s_bl.Admin.GetMaxRange();
+        }
+
+        //constructor of the window
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.Loaded += OnMainWindow_Loaded;
+        }
 
         /// <summary>
         /// function to update the riskRange
@@ -83,8 +82,9 @@ namespace PL
             s_bl.Admin.SetMaxRange(RiskRangeProperty);
         }
 
+
         /// <summary>
-        /// function to initialize data and register observers on load
+        /// Event handler for when the window is loaded
         /// </summary>
         private void OnMainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -108,6 +108,36 @@ namespace PL
         }
 
 
+
+
+        //---------------------------------------------------------------------------BUTTONS--------------------------------------------------
+
+
+        //BUTTONS TO ADD TIME------------------------
+        private void btnAddOneMinute_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.Admin.ForwardClock(BO.TimeUnit.minute);
+        }
+        private void btnAddOneHour_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.Admin.ForwardClock(BO.TimeUnit.hour);
+        }
+        private void btnAddOneDay_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.Admin.ForwardClock(BO.TimeUnit.day);
+        }
+        private void btnAddOneMonth_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.Admin.ForwardClock(BO.TimeUnit.month);
+        }
+        private void btnAddOneYear_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.Admin.ForwardClock(BO.TimeUnit.year);
+        }
+
+        //------------------------------------
+
+
         /// <summary>
         /// function to open a screen of the list of volunteers
         /// </summary>
@@ -128,25 +158,7 @@ namespace PL
 
 
 
-
-        private void ClockObserver()
-        {
-            CurrentTime = s_bl.Admin.GetClock();
-        }
-
-        private void ConfigObserver()
-        {
-            RiskRangeProperty = s_bl.Admin.GetMaxRange();
-        }
-
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            this.Loaded += OnMainWindow_Loaded; 
-           
-
-        }
+        //Button to reset the database
 
         private void btnResetDB_Click(object sender, RoutedEventArgs e)
         {
@@ -180,6 +192,8 @@ namespace PL
             }
         }
 
+
+        //button to initialize the database
         private void btnInit_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(

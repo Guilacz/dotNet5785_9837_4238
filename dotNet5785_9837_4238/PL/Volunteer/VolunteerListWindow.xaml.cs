@@ -23,6 +23,10 @@ namespace PL.Volunteer
         //access to the BL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+
+        //---------------------Properties/ Dependency properties---------------------------
+
+
         //DependencyProperty of the Volunteer list
         public IEnumerable<BO.VolunteerInList> VolunteerList
         {
@@ -33,7 +37,18 @@ namespace PL.Volunteer
             DependencyProperty.Register("VolunteerList", typeof(IEnumerable<BO.VolunteerInList>), typeof(VolunteerListWindow));
 
 
+        /// <summary>
+        /// selected call type in the combobox
+        /// </summary>
         public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
+        
+        /// <summary>
+        /// selected volunteer on the grid
+        /// </summary>
+        public BO.VolunteerInList? SelectedVolunteer { get; set; }
+
+
+        //---------------------FUNCTIONS---------------------------
 
 
         //private void queryVolunteerList()
@@ -57,16 +72,23 @@ namespace PL.Volunteer
                     s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
             });
         }
+
         private void VolunteerListObserver()
         {
             Dispatcher.Invoke(() => queryVolunteerList());
         }
 
+        /// <summary>
+        /// Event handler for when the window is loaded
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             s_bl.Volunteer.AddObserver(VolunteerListObserver);  // רישום להשקפה על כל הרשימה
         }
 
+        /// <summary>
+        /// Event handler for when the window is closed
+        /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             s_bl.Volunteer.RemoveObserver(VolunteerListObserver);  // הסרת הרישום להשקפה על הרשימה
@@ -75,10 +97,6 @@ namespace PL.Volunteer
 
 
 
-        /// <summary>
-        /// link between the selected element to its details
-        /// </summary>
-        public BO.VolunteerInList? SelectedVolunteer { get; set; }
 
 
 
@@ -103,7 +121,7 @@ namespace PL.Volunteer
         ///-----------------------------------------BUTTONS------------------------------------
 
         /// <summary>
-        /// delete function
+        /// delete function of the button
         /// </summary>
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -172,7 +190,6 @@ namespace PL.Volunteer
         }
 
 
-    
         /// <summary>
         /// add  button
         /// </summary>

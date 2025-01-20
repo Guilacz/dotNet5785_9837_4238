@@ -26,6 +26,9 @@ namespace PL
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
 
+        //---------------------Dependency properties---------------------------
+
+
 
         public string TzValue
         {
@@ -52,8 +55,9 @@ namespace PL
 
 
 
+        //---------------------FUNCTIONS---------------------------
 
-
+        //constructor
         public EnterSystemWindow()
         {
             InitializeComponent();
