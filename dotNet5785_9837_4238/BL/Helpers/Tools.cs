@@ -132,9 +132,9 @@ public static class Tools
 
     private static readonly SemaphoreSlim _throttler = new SemaphoreSlim(1);
 
-    public static (double Latitude, double Longitude) GetAddressCoordinates(string address)
+    public static async Task <(double Latitude, double Longitude)> GetAddressCoordinatesAsync(string address)
     {
-        _throttler.Wait(); // סינכרוני במקום async
+        await _throttler.WaitAsync();
         try
         {
             if (string.IsNullOrWhiteSpace(address))
@@ -142,20 +142,22 @@ public static class Tools
                 throw new ArgumentException("Address cannot be null or empty.", nameof(address));
             }
 
-            //const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
             ///guila
-      const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
+   //   const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
             const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
             string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
             using (var client = new HttpClient())
             {
-                Thread.Sleep(1000); // סינכרוני במקום Task.Delay
+                await Task.Delay(1000); 
 
                 HttpResponseMessage response;
                 try
                 {
-                    response = client.GetAsync(requestUrl).Result;
+                    // response = client.GetAsync(requestUrl).Result;
+                    response = await client.GetAsync(requestUrl);
+
                 }
                 catch (Exception ex)
                 {
@@ -164,11 +166,13 @@ public static class Tools
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var content = response.Content.ReadAsStringAsync().Result;
+                    //var content = response.Content.ReadAsStringAsync().Result;
+                    var content = await response.Content.ReadAsStringAsync();
+
                     throw new Exception($"Error fetching data from LocationIQ: {response.ReasonPhrase}, Content: {content}");
                 }
 
-                string responseContent = response.Content.ReadAsStringAsync().Result;
+                string responseContent = await response.Content.ReadAsStringAsync();
                 var locationData = System.Text.Json.JsonSerializer.Deserialize<List<LocationIqResponse>>(responseContent);
 
                 if (locationData == null || locationData.Count == 0)
@@ -215,14 +219,14 @@ public static class Tools
     /// function that checks if the coordinates of a volunteer match the coordinates based on his address. 
     /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
     /// </summary>
-    public static bool CheckAddressVolunteer(Volunteer vol)
+    public static async Task<bool> CheckAddressVolunteer(Volunteer vol)
     {
         if (vol.Latitude == null || vol.Longitude == null)
         {
             throw new Exception("Latitude or Longitude is null.");
         }
 
-        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(vol.Address);
+        var (expectedLatitude, expectedLongitude) =await Tools.GetAddressCoordinatesAsync(vol.Address);
 
         const double tolerance = 0.0001;
         bool isLatitudeMatch = Math.Abs(vol.Latitude.Value - expectedLatitude) < tolerance;
@@ -235,14 +239,14 @@ public static class Tools
     /// function that checks if the coordinates of a call match the coordinates based on his address. 
     /// we use the function GetAddressCoordinates to compare the expected coordinates with the received , allowing a small tolerance
     /// </summary>
-    public static bool CheckAddressCall(Call c)
+    public static async Task< bool> CheckAddressCall(Call c)
     {
         if (!c.Latitude.HasValue || !c.Longitude.HasValue)
         {
             throw new Exception("Latitude or Longitude is null for the call.");
         }
 
-        var (expectedLatitude, expectedLongitude) = Tools.GetAddressCoordinates(c.Address);
+        var (expectedLatitude, expectedLongitude) =await Tools.GetAddressCoordinatesAsync(c.Address);
         const double tolerance = 0.0001;
         bool isLatitudeMatch = Math.Abs(c.Latitude.Value - expectedLatitude) < tolerance;
         bool isLongitudeMatch = Math.Abs(c.Longitude.Value - expectedLongitude) < tolerance;
@@ -254,10 +258,10 @@ public static class Tools
     ///  function to calculate the distance between two addresses
     ///  we use Haversine formula
     /// </summary>
-    public static double CalculateDistanceBetweenAddresses(string address1, string address2)
+    public static async Task<double> CalculateDistanceBetweenAddresses(string address1, string address2)
     {
-        var (latitude1, longitude1) = GetAddressCoordinates(address1);
-        var (latitude2, longitude2) = GetAddressCoordinates(address2);
+        var (latitude1, longitude1) =await GetAddressCoordinatesAsync(address1);
+        var (latitude2, longitude2) =await GetAddressCoordinatesAsync(address2);
 
         const double EarthRadiusKm = 6371.0;
 
@@ -293,7 +297,7 @@ public static class Tools
     /// </summary>
     public static class DistanceCalculator
     {
-        public static double CalculateDistance(string address1, string address2, DistanceType distanceType)
+        public static async Task <double> CalculateDistance(string address1, string address2, DistanceType distanceType)
         {
             if (string.IsNullOrWhiteSpace(address1) || string.IsNullOrWhiteSpace(address2))
             {
@@ -303,7 +307,7 @@ public static class Tools
             switch (distanceType)
             {
                 case DistanceType.AirDistance:
-                    return CalculateAirDistance(address1, address2);
+                    return await CalculateAirDistance(address1, address2);
 
 
                 default:
@@ -314,10 +318,10 @@ public static class Tools
         /// <summary>
         /// calulate the air distance with the coordinates
         /// </summary>
-        private static double CalculateAirDistance(string address1, string address2)
+        private static async Task<double> CalculateAirDistance(string address1, string address2)
         {
-            var (latitude1, longitude1) = GetAddressCoordinates(address1);
-            var (latitude2, longitude2) = GetAddressCoordinates(address2);
+            var (latitude1, longitude1) =await GetAddressCoordinatesAsync(address1);
+            var (latitude2, longitude2) =await GetAddressCoordinatesAsync(address2);
 
             return CalculateDistanceBetweenCoordinates(latitude1, longitude1, latitude2, longitude2);
         }
@@ -370,7 +374,7 @@ public static class Tools
         return config.RiskRange;
     }
 
-    public static void SendEmail(string toAddress, string subject, string body)
+    public static async Task SendEmail(string toAddress, string subject, string body)
     {
         // כתובת המייל והשדות של השולח
         string fromAddress = "brachakal2225@gmail.com"; // כתובת המייל שלך
@@ -394,7 +398,10 @@ public static class Tools
 
         try
         {
-            smtp.Send(mail); // שליחת המייל
+
+            //   smtp.Send(mail); // שליחת המייל
+            await smtp.SendMailAsync(mail); // אסינכרוני
+
             Console.WriteLine($"Email was sended to: {toAddress}");
         }
         catch (Exception ex)

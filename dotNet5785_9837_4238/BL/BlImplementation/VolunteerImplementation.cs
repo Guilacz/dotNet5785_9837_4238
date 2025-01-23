@@ -61,9 +61,17 @@ internal class VolunteerImplementation : IVolunteer
             BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
             if (!Helpers.CallManager.CheckCall(boCall))
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+            if (!Helpers.Tools.CheckAddressCall(boCall))// בדיקת תקינות כתובת
+              throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
             BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
             if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
                 throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
+            if (!Helpers.Tools.CheckAddressVolunteer(boVolunteer))// בדיקת תקינות כתובת
+                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
+
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
             bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
             if (isCallAlreadyHandled)
@@ -109,16 +117,16 @@ internal class VolunteerImplementation : IVolunteer
 
         //if ( vol.callInCaring != null)
         //    throw new BO.BlDeletionImpossible("cant delete this volunteer.");
-        if (vol.Latitude == null || vol.Longitude == null)
-        {
-            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-            vol.Latitude = coordinates.Latitude;
-            vol.Longitude = coordinates.Longitude;
-        }
-        if (!Helpers.VolunteerManager.CheckVolunteer(vol))
-        {
-            throw new BO.BlInvalidValueException("Invalid volunteer data.");
-        }
+        //if (vol.Latitude == null || vol.Longitude == null)
+        //{
+        //    var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+        //    vol.Latitude = coordinates.Latitude;
+        //    vol.Longitude = coordinates.Longitude;
+        //}
+        //if (!Helpers.VolunteerManager.CheckVolunteer(vol))
+        //{
+        //    throw new BO.BlInvalidValueException("Invalid volunteer data.");
+        //}
         try
         {
             lock (AdminManager.BlMutex) ; //stage 7
@@ -146,60 +154,78 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="name">The name of the volunteer.</param>
     /// <param name="password">The password of the volunteer.</param>
     /// <returns>The role of the authenticated volunteer.</returns>
-    public BO.Role EnterSystem(string name, string password)
-    {
-        try
-        {
-            lock (AdminManager.BlMutex) ;  //stage 7
+    //public BO.Role EnterSystem(string name, string password)
+    //{
+    //    try
+    //    {
+    //        lock (AdminManager.BlMutex) ;  //stage 7
 
-            var volunteersFromDal = _dal.Volunteer.ReadAll();
-            string passwordAsString = password.ToString();
-            var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
+    //        var volunteersFromDal = _dal.Volunteer.ReadAll();
+    //        string passwordAsString = password.ToString();
+    //        var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
 
-            if (vol == null)
-            {
-                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
-            }
-            if (vol.Latitude == null || vol.Longitude == null)
-            {
-                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-                vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
-            }
+    //        if (vol == null)
+    //        {
+    //            throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+    //        }
+    //        //if (vol.Latitude == null || vol.Longitude == null)
+    //        //{
+    //        //    var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+    //        //    vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+    //        //}
 
-            if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
-            {
-                VolunteerId = vol.VolunteerId,
-                Name = vol.Name,
-                Phone = vol.Phone,
-                Email = vol.Email,
-                RoleType = (BO.Role)vol.RoleType,
-                DistanceType = (BO.DistanceType)vol.DistanceType,
-                Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
-                //Password = vol.Password,
-                Address = vol.Address,
-                Distance = vol.Distance,
-                Latitude = vol.Latitude,
-                Longitude = vol.Longitude,
-                IsActive = vol.IsActive,
-            }))
+    //        if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
+    //        {
+    //            VolunteerId = vol.VolunteerId,
+    //            Name = vol.Name,
+    //            Phone = vol.Phone,
+    //            Email = vol.Email,
+    //            RoleType = (BO.Role)vol.RoleType,
+    //            DistanceType = (BO.DistanceType)vol.DistanceType,
+    //            Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+    //            //Password = vol.Password,
+    //            Address = vol.Address,
+    //            Distance = vol.Distance,
+    //            Latitude = vol.Latitude,
+    //            Longitude = vol.Longitude,
+    //            IsActive = vol.IsActive,
+    //        }))
+    //            if (!Helpers.Tools.CheckAddressVolunteer(new BO.Volunteer
+    //            {
+    //                VolunteerId = vol.VolunteerId,
+    //                Name = vol.Name,
+    //                Phone = vol.Phone,
+    //                Email = vol.Email,
+    //                RoleType = (BO.Role)vol.RoleType,
+    //                DistanceType = (BO.DistanceType)vol.DistanceType,
+    //                Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+    //                //Password = vol.Password,
+    //                Address = vol.Address,
+    //                Distance = vol.Distance,
+    //                Latitude = vol.Latitude,
+    //                Longitude = vol.Longitude,
+    //                IsActive = vol.IsActive,
+    //            }))// בדיקת תקינות כתובת
+    //                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
-            {
-                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
-            }
-            return (BO.Role)vol.RoleType;
-        }
+    //        {
+    //            throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+    //        }
 
-        catch (DO.DalArgumentNullException ex)
-        {
-            // This handles the specific case where the volunteer is not found or password is incorrect
-            throw new BO.BlArgumentNullException(ex.Message);
-        }
-        catch (DO.DalInvalidValueException ex)
-        {
-            // This handles the specific case where the volunteer data is invalid
-            throw new BO.BlInvalidValueException(ex.Message);
-        }
-    }
+    //        return (BO.Role)vol.RoleType;
+    //    }
+
+    //    catch (DO.DalArgumentNullException ex)
+    //    {
+    //        // This handles the specific case where the volunteer is not found or password is incorrect
+    //        throw new BO.BlArgumentNullException(ex.Message);
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        // This handles the specific case where the volunteer data is invalid
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+    //}
 
     public BO.Role EnterSystemWithId(int id, string password)
     {
@@ -216,11 +242,11 @@ internal class VolunteerImplementation : IVolunteer
             //{
             //    throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
             //}
-            if (vol.Latitude == null || vol.Longitude == null)
-            {
-                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-                vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
-            }
+            //if (vol.Latitude == null || vol.Longitude == null)
+            //{
+            //    var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+            //    vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+            //}
             if (vol == null)
             {
                 throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
@@ -241,10 +267,8 @@ internal class VolunteerImplementation : IVolunteer
                 Longitude = vol.Longitude,
                 IsActive = vol.IsActive,
             }))
-
-            {
-                throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
-            }
+                    throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+          
             return (BO.Role)vol.RoleType;
 
         }
@@ -307,6 +331,9 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlInvalidValueException("Invalid volunteer data.");
             }
+            if (!Helpers.Tools.CheckAddressVolunteer(boVolunteer)// בדיקת תקינות כתובת
+                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
             return boVolunteer;
         }
 
@@ -571,6 +598,9 @@ internal class VolunteerImplementation : IVolunteer
             {
                 if (!Helpers.VolunteerManager.CheckVolunteer(vol))
                     throw new BO.BlInvalidValueException("Invalid volunteer data.");
+                if (!Helpers.Tools.CheckAddressVolunteer(vol))// בדיקת תקינות כתובת
+                    throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
                 else
                 {
                     lock (AdminManager.BlMutex)   //stage 7
@@ -641,6 +671,9 @@ internal class VolunteerImplementation : IVolunteer
         {
             throw new BO.BlInvalidValueException("Invalid volunteer data.");
         }
+        if (!Helpers.Tools.CheckAddressVolunteer(vol))// בדיקת תקינות כתובת
+            throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
         if (!Helpers.VolunteerManager.CheckValidityOfPassword(vol.Password))
             throw new BO.BlInvalidValueException("Password not strong enough .");
         vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password);

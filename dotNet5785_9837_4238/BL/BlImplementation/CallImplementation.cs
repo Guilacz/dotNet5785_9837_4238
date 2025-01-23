@@ -37,52 +37,108 @@ internal class CallImplementation : ICall
     /// <exception cref="BO.BlDoesNotExistException"></exception>
     /// <exception cref="BO.BlInvalidValueException"></exception>
 
-    
 
 
+
+    //public void ChoiceOfCallToCare(int volId, int callId)
+    //{
+    //    Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+    //    try
+    //    {
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+    //        if (call == null)
+    //            throw new BO.BlDoesNotExistException($"Call with ID {callId} does not exist or could not be found in the database.");
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+    //        if (volunteer == null)
+    //            throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist. ");
+    //        var coordinates = Helpers.Tools.GetAddressCoordinates(call.Address);
+    //        call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
+    //        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+    //        if (!Helpers.CallManager.CheckCall(boCall))
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //        if (!Helpers.Tools.CheckAddressCall(boCall))// בדיקת תקינות כתובת
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+    //        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
+    //        if (isCallAlreadyHandled)
+    //            throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
+    //          var status = Helpers.CallManager.GetCallStatus(call, assignments);
+    //        if (status == BO.CallInListStatus.InCare || status == BO.CallInListStatus.InCareAtRisk)
+    //            throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        var newAssignment = new DO.Assignment
+    //        (
+    //            Id: assignments.Any()
+    //                ? assignments.Max(a => a.Id) + 1
+    //                : 1,
+    //            CallId: callId,
+    //            VolunteerId: volId,
+    //            StartTime: DateTime.Now,
+    //            TypeOfEnd: null,
+    //            FinishTime: null
+    //        );
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        _dal.Assignment.Create(newAssignment);
+    //        CallManager.Observers.NotifyItemUpdated(callId);
+    //        CallManager.Observers.NotifyListUpdated();
+
+    //    }
+    //    catch (DO.DalDoesNotExistException ex)
+    //    {
+    //        throw new BO.BlDoesNotExistException(ex.Message);
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+    //}
     public void ChoiceOfCallToCare(int volId, int callId)
     {
         Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
         try
         {
-            lock (AdminManager.BlMutex) ; //stage 7
-            DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
-            if (call == null)
-                throw new BO.BlDoesNotExistException($"Call with ID {callId} does not exist or could not be found in the database.");
-            lock (AdminManager.BlMutex) ; //stage 7
-            DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
-            if (volunteer == null)
-                throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist. ");
-            var coordinates = Helpers.Tools.GetAddressCoordinates(call.Address);
-            call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
-            BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
-            if (!Helpers.CallManager.CheckCall(boCall))
-                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-            lock (AdminManager.BlMutex) ; //stage 7
-            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
-            if (isCallAlreadyHandled)
-                throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
-              var status = Helpers.CallManager.GetCallStatus(call, assignments);
-            if (status == BO.CallInListStatus.InCare || status == BO.CallInListStatus.InCareAtRisk)
-                throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
-            lock (AdminManager.BlMutex) ; //stage 7
-            var newAssignment = new DO.Assignment
-            (
-                Id: assignments.Any()
-                    ? assignments.Max(a => a.Id) + 1
-                    : 1,
-                CallId: callId,
-                VolunteerId: volId,
-                StartTime: DateTime.Now,
-                TypeOfEnd: null,
-                FinishTime: null
-            );
-            lock (AdminManager.BlMutex) ; //stage 7
-            _dal.Assignment.Create(newAssignment);
-            CallManager.Observers.NotifyItemUpdated(callId);
-            CallManager.Observers.NotifyListUpdated();
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+                if (call == null)
+                    throw new BO.BlDoesNotExistException($"Call with ID {callId} does not exist or could not be found in the database.");
 
+                DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+                if (volunteer == null)
+                    throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist. ");
+
+                IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+                bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
+                if (isCallAlreadyHandled)
+                    throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
+
+                var status = Helpers.CallManager.GetCallStatus(call, assignments);
+                if (status == BO.CallInListStatus.InCare || status == BO.CallInListStatus.InCareAtRisk)
+                    throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
+
+                var newAssignment = new DO.Assignment
+                (
+                    Id: assignments.Any()
+                        ? assignments.Max(a => a.Id) + 1
+                        : 1,
+                    CallId: callId,
+                    VolunteerId: volId,
+                    StartTime: DateTime.Now,
+                    TypeOfEnd: null,
+                    FinishTime: null
+                );
+
+                _dal.Assignment.Create(newAssignment);
+                CallManager.Observers.NotifyItemUpdated(callId);
+                CallManager.Observers.NotifyListUpdated();
+            }
+
+            // Async coordinate and address validation
+            UpdateCallDetailsAsync(callId);
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -94,6 +150,39 @@ internal class CallImplementation : ICall
         }
     }
 
+    private async Task UpdateCallDetailsAsync(int callId)
+    {
+        try
+        {
+            DO.Call? call = _dal.Call.Read(callId);
+            if (call == null) return;
+
+            var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(call.Address);
+            call = call with
+            {
+                Latitude = coordinates.Item1,
+                Longitude = coordinates.Item2
+            };
+
+            BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+
+            // Validate address asynchronously
+            if (!await Helpers.Tools.CheckAddressCall(boCall))
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                _dal.Call.Update(call);
+            }
+
+            CallManager.Observers.NotifyItemUpdated(callId);
+            CallManager.Observers.NotifyListUpdated();
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Failed to update call details: {ex.Message}");
+        }
+    }
 
 
     /// <summary>
@@ -106,85 +195,74 @@ internal class CallImplementation : ICall
     /// <exception cref="BO.BlInvalidValueException"></exception>
     /// <exception cref="BO.BlAlreadyExistException"></exception>
 
-    public void Create(BO.Call c)
-    {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+    //public void Create(BO.Call c)
+    //{
+    //    Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
-        if (c.Latitude == null || c.Longitude == null)
-        {
-            var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
-            //c = c with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
-            c.Latitude = coordinates.Latitude;
-            c.Longitude = coordinates.Longitude;
+    //    if (c.Latitude == null || c.Longitude == null)
+    //    {
+    //        var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
+    //        //c = c with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+    //        c.Latitude = coordinates.Latitude;
+    //        c.Longitude = coordinates.Longitude;
 
-        }
-        if (!Helpers.CallManager.CheckCall(c))
-        {
-            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-        }
+    //    }
+    //    if (!Helpers.CallManager.CheckCall(c))
+    //    {
+    //        throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //    }
+    //    if (!Helpers.Tools.CheckAddressCall(c))// בדיקת תקינות כתובת
+    //        throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
 
-        if (c.Latitude == null || c.Longitude == null)
-        {
-            throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
-        }
+    //    if (c.Latitude == null || c.Longitude == null)
+    //    {
+    //        throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
+    //    }
 
-        try
-        {
-            //_dal.Call.Create(new DO.Call
-            //{
-            //    CallId = c.CallId,
-            //    CallType = (DO.CallType)c.CallType,
-            //    Address = c.Address,
-            //    Latitude = c.Latitude.Value, 
-            //    Longitude = c.Longitude.Value, 
-            // // OpenTime = c.OpenTime,
-            //    MaxTime = c.MaxTime,
-            //    OpenTime = c.OpenTime,
+    //    try
+    //    {
+        
+    //        lock (AdminManager.BlMutex)  //stage 7
+    //        {
+    //            var newCall = new DO.Call
+    //            {
+    //                CallId = c.CallId,
+    //                CallType = (DO.CallType)c.CallType,
+    //                Address = c.Address,
+    //                Latitude = c.Latitude.Value,
+    //                Longitude = c.Longitude.Value,
+    //                MaxTime = c.MaxTime,
+    //                //OpenTime = c.OpenTime,
+    //                OpenTime = DateTime.Now,
+    //                Details = c.Details,
+    //            };
 
-            //    Details = c.Details,
-
-            //});
-            lock (AdminManager.BlMutex)  //stage 7
-            {
-                var newCall = new DO.Call
-                {
-                    CallId = c.CallId,
-                    CallType = (DO.CallType)c.CallType,
-                    Address = c.Address,
-                    Latitude = c.Latitude.Value,
-                    Longitude = c.Longitude.Value,
-                    MaxTime = c.MaxTime,
-                    //OpenTime = c.OpenTime,
-                    OpenTime = DateTime.Now,
-                    Details = c.Details,
-                };
-
-                // הוספה ל-DAL
-                _dal.Call.Create(newCall);
-                // המרה ל-BO
-                var convertedCall = Helpers.CallManager.ConvertCallToBO(newCall, _dal);
-                CallManager.Observers.NotifyListUpdated();
-                _dal.Volunteer.ReadAll()
-                    .Where(vol =>
-                        !string.IsNullOrEmpty(vol.Email) &&
-                        !string.IsNullOrEmpty(vol.Address) &&
-                        Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
-                    .ToList()
-                    .ForEach(vol => Helpers.Tools.SendEmail(
-                        toAddress: vol.Email,
-                        subject: "new call in your area",
-                        body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
-                    ));
-            }
-        }
+    //            // הוספה ל-DAL
+    //            _dal.Call.Create(newCall);
+    //            // המרה ל-BO
+    //            var convertedCall = Helpers.CallManager.ConvertCallToBO(newCall, _dal);
+    //            CallManager.Observers.NotifyListUpdated();
+    //            _dal.Volunteer.ReadAll()
+    //                .Where(vol =>
+    //                    !string.IsNullOrEmpty(vol.Email) &&
+    //                    !string.IsNullOrEmpty(vol.Address) &&
+    //                    Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
+    //                .ToList()
+    //                .ForEach(vol => Helpers.Tools.SendEmail(
+    //                    toAddress: vol.Email,
+    //                    subject: "new call in your area",
+    //                    body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
+    //                ));
+    //        }
+    //    }
 
 
 
-        catch (DO.DalInvalidValueException ex)
-        {
-            throw new BO.BlInvalidValueException(ex.Message);
-        }
-    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+    //}
 
 
 
@@ -220,10 +298,7 @@ internal class CallImplementation : ICall
                 throw new BO.BlDeletionImpossible("Can't delete this call.");
             }
 
-            //if (!Helpers.CallManager.CheckCall(c))
-            //{
-            //    throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-            //}
+          
             lock (AdminManager.BlMutex) ; //stage 7
             var volunteer = _dal.Volunteer.ReadAll()
                 .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol)) 
@@ -822,6 +897,146 @@ internal class CallImplementation : ICall
     //    }
     //}
 
+    //public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
+    //{
+    //    try
+    //    {
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
+    //        string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
+
+    //        calls = calls.Where(call =>
+    //        {
+    //            var status = Helpers.CallManager.GetCallStatus(call, assignments);
+    //            return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk;
+    //        });
+
+    //        if (type.HasValue && type != BO.CallType.None)
+    //        {
+    //            calls = calls.Where(c => c.CallType == (DO.CallType)type);
+    //        }
+
+    //        var openCalls = calls.Select(c => new BO.OpenCallInList
+    //        {
+    //            CallId = c.CallId,
+    //            CallType = (BO.CallType)c.CallType,
+    //            Address = c.Address,
+    //            OpenTime = c.OpenTime,
+    //            MaxTime = c.MaxTime,
+    //            Details = c.Details,
+    //            Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
+    //        }).ToList();
+
+    //        var result = openCall switch
+    //        {
+    //            OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
+    //            OpenCallInListSort.CallType => openCalls.OrderBy(c => c.CallType).ToList(),
+    //            OpenCallInListSort.Address => openCalls.OrderBy(c => c.Address).ToList(),
+    //            OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
+    //            OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
+    //            OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
+    //            _ => openCalls 
+    //        };
+
+    //        return result;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new BO.BlDoesNotExistException($"Error in GetListOfOpenCall: {ex.Message}");
+    //    }
+    //}
+
+    public void Create(BO.Call c)
+    {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
+        try
+        {
+            lock (AdminManager.BlMutex)  //stage 7
+            {
+                var newCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude ?? 0, // Temporary value
+                    Longitude = c.Longitude ?? 0, // Temporary value
+                    MaxTime = c.MaxTime,
+                    OpenTime = DateTime.Now,
+                    Details = c.Details,
+                };
+
+                _dal.Call.Create(newCall);
+                CallManager.Observers.NotifyListUpdated();
+                NotifyVolunteersAsync(c);
+            }
+
+            UpdateCallDetailsAsync(c);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+    }
+
+    private async Task UpdateCallDetailsAsync(BO.Call c)
+    {
+        try
+        {
+            var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(c.Address);
+            c.Latitude = coordinates.Latitude;
+            c.Longitude = coordinates.Longitude;
+
+            if (!Helpers.CallManager.CheckCall(c) || !await Helpers.Tools.CheckAddressCall(c))
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
+            lock (AdminManager.BlMutex)  //stage 7
+            {
+                var updatedCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude.Value,
+                    Longitude = c.Longitude.Value,
+                    MaxTime = c.MaxTime,
+                    OpenTime = c.OpenTime,
+                    Details = c.Details,
+                };
+
+                _dal.Call.Update(updatedCall);
+            }
+
+            CallManager.Observers.NotifyItemUpdated(c.CallId);
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Failed to update call details: {ex.Message}");
+        }
+    }
+
+    private async Task NotifyVolunteersAsync(BO.Call c)
+    {
+        Task.Run(() =>
+        {
+             _dal.Volunteer.ReadAll()
+                .Where( vol =>
+                    !string.IsNullOrEmpty(vol.Email) &&
+                    !string.IsNullOrEmpty(vol.Address) &&
+                   await Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
+                .ToList()
+                .ForEach(vol => Helpers.Tools.SendEmail(
+                    toAddress: vol.Email,
+                    subject: "new call in your area",
+                    body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
+                ));
+        });
+    }
+
     public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
     {
         try
@@ -832,8 +1047,11 @@ internal class CallImplementation : ICall
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
             lock (AdminManager.BlMutex) ; //stage 7
             DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
-            string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
 
+            // Async validation of addresses will happen here
+            Task.Run(() => ValidateOpenCallAddressesAsync(calls));
+
+            string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
@@ -845,7 +1063,7 @@ internal class CallImplementation : ICall
                 calls = calls.Where(c => c.CallType == (DO.CallType)type);
             }
 
-            var openCalls = calls.Select(c => new BO.OpenCallInList
+            var openCalls = calls.Select(async c => new BO.OpenCallInList
             {
                 CallId = c.CallId,
                 CallType = (BO.CallType)c.CallType,
@@ -853,10 +1071,10 @@ internal class CallImplementation : ICall
                 OpenTime = c.OpenTime,
                 MaxTime = c.MaxTime,
                 Details = c.Details,
-                Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
+                Distance = await Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
             }).ToList();
 
-            var result = openCall switch
+            return openCall switch
             {
                 OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
                 OpenCallInListSort.CallType => openCalls.OrderBy(c => c.CallType).ToList(),
@@ -864,10 +1082,8 @@ internal class CallImplementation : ICall
                 OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
                 OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
                 OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
-                _ => openCalls 
+                _ => openCalls
             };
-
-            return result;
         }
         catch (Exception ex)
         {
@@ -875,8 +1091,31 @@ internal class CallImplementation : ICall
         }
     }
 
+    private async Task ValidateOpenCallAddressesAsync(IEnumerable<DO.Call> calls)
+    {
+        foreach (var call in calls)
+        {
+            try
+            {
+                var boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+                var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(call.Address);
 
-    /// <summary>
+                boCall.Latitude = coordinates.Latitude;
+                boCall.Longitude = coordinates.Longitude;
+
+                if (!await Helpers.Tools.CheckAddressCall(boCall))
+                {
+                    // Log or handle invalid address
+                    // Potentially mark call as invalid or remove from processing
+                }
+            }
+            catch (Exception)
+            {
+                // Log or handle coordinate/validation errors
+            }
+        }
+    }
+    ///////// <summary>
     /// function to read a call
     /// steps : 
     /// 1.read the call data using the provided call ID.
@@ -961,73 +1200,148 @@ internal class CallImplementation : ICall
     /// <param name="c">The call object containing updated data.</param>
     /// <exception cref="BO.BlInvalidValueException">Thrown if the provided call data is invalid.</exception>
     /// <exception cref="BO.BlDoesNotExistException">Thrown for any other errors that occur during the update process.</exception>
+    //public void Update(Call c)
+    //{
+    //    Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
+    //    try
+    //    {
+    //        var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
+    //        double latitude = coordinates.Latitude;
+    //        double longitude = coordinates.Longitude;
+    //        c.Latitude = latitude;
+    //        c.Longitude = longitude;
+    //        if (!Helpers.CallManager.CheckCall(c))
+    //        {
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //        }
+
+    //        if (c.Latitude == null || c.Longitude == null)
+    //        {
+    //            throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
+    //        }
+
+    //        try
+    //        {
+
+    //            lock (AdminManager.BlMutex)  //stage 7
+    //            {
+    //                var updatedCall = new DO.Call
+    //                {
+    //                    CallId = c.CallId,
+    //                    CallType = (DO.CallType)c.CallType,
+    //                    Address = c.Address,
+    //                    Latitude = c.Latitude.Value,
+    //                    Longitude = c.Longitude.Value,
+    //                    OpenTime = c.OpenTime,
+    //                    MaxTime = c.MaxTime,
+    //                    Details = c.Details,
+    //                };
+
+    //                // עדכון ב-DAL
+    //                _dal.Call.Update(updatedCall);
+
+    //                // המרה ל-BO
+    //                var convertedCall = Helpers.CallManager.ConvertCallToBO(updatedCall, _dal);
+    //            }
+    //            CallManager.Observers.NotifyItemUpdated(c.CallId);
+    //            CallManager.Observers.NotifyListUpdated(); 
+
+
+    //        }
+    //        catch (DO.DalDoesNotExistException ex)
+    //        {
+    //            throw new BO.BlDoesNotExistException(ex.Message);
+    //        }
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
+    //    }
+    //}
     public void Update(Call c)
     {
         Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
-            var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
-            double latitude = coordinates.Latitude;
-            double longitude = coordinates.Longitude;
-            c.Latitude = latitude;
-            c.Longitude = longitude;
+            // נעדכן את כל השדות שאינם דורשים חישוב רשת
             if (!Helpers.CallManager.CheckCall(c))
             {
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             }
 
-            if (c.Latitude == null || c.Longitude == null)
+            lock (AdminManager.BlMutex) //stage 7
             {
-                throw new BO.BlInvalidValueException("Latitude and Longitude must not be null.");
-            }
-
-            try
-            {
-                //_dal.Call.Update(new DO.Call
-                //{
-                //    CallId = c.CallId,
-                //    CallType = (DO.CallType)c.CallType,
-                //    Address = c.Address,
-                //    Latitude = c.Latitude.Value, 
-                //    Longitude = c.Longitude.Value, 
-                //    OpenTime = c.OpenTime,
-                //    MaxTime = c.MaxTime,
-                //    Details = c.Details,
-                //});
-                lock (AdminManager.BlMutex)  //stage 7
+                var updatedCall = new DO.Call
                 {
-                    var updatedCall = new DO.Call
-                    {
-                        CallId = c.CallId,
-                        CallType = (DO.CallType)c.CallType,
-                        Address = c.Address,
-                        Latitude = c.Latitude.Value,
-                        Longitude = c.Longitude.Value,
-                        OpenTime = c.OpenTime,
-                        MaxTime = c.MaxTime,
-                        Details = c.Details,
-                    };
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude ?? 0, // ערך זמני אם לא מחושב עדיין
+                    Longitude = c.Longitude ?? 0, // ערך זמני אם לא מחושב עדיין
+                    OpenTime = c.OpenTime,
+                    MaxTime = c.MaxTime,
+                    Details = c.Details,
+                };
 
-                    // עדכון ב-DAL
-                    _dal.Call.Update(updatedCall);
+                // עדכון ב-DAL ללא שדות Latitude ו-Longitude
+                _dal.Call.Update(updatedCall);
 
-                    // המרה ל-BO
-                    var convertedCall = Helpers.CallManager.ConvertCallToBO(updatedCall, _dal);
-                }
+                // נעדכן את התצפיתנים
                 CallManager.Observers.NotifyItemUpdated(c.CallId);
-                CallManager.Observers.NotifyListUpdated(); 
-
-
+                CallManager.Observers.NotifyListUpdated();
             }
-            catch (DO.DalDoesNotExistException ex)
-            {
-                throw new BO.BlDoesNotExistException(ex.Message);
-            }
+
+            // הפעלה של המתודה C (אסינכרונית)
+            UpdateCoordinatesAsync(c);
         }
         catch (DO.DalInvalidValueException ex)
         {
             throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException(ex.Message);
+        }
+    }
+    private async Task UpdateCoordinatesAsync(Call c)
+    {
+        try
+        {
+            // חישוב ערכי Latitude ו-Longitude באמצעות מתודה אסינכרונית
+            var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(c.Address);
+            c.Latitude = coordinates.Latitude;
+            c.Longitude = coordinates.Longitude;
+            if (! await Helpers.Tools.CheckAddressCall(c))// בדיקת תקינות כתובת
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
+            // עדכון מחדש של הקריאה ב-DAL עם כל הערכים
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                var updatedCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude.Value,
+                    Longitude = c.Longitude.Value,
+                    OpenTime = c.OpenTime,
+                    MaxTime = c.MaxTime,
+                    Details = c.Details,
+                };
+
+                _dal.Call.Update(updatedCall);
+            }
+
+            // עדכון תצפיתנים מחדש
+            CallManager.Observers.NotifyItemUpdated(c.CallId);
+            CallManager.Observers.NotifyListUpdated();
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Invalid call data: {ex.Message}");
+
         }
     }
 

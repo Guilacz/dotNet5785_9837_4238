@@ -22,8 +22,8 @@ internal class CallManager
     {
         if (CheckTime(c) == false)
             return false;
-        if (!Tools.CheckAddressCall(c))
-            return false;
+        //if (!Tools.CheckAddressCall(c))
+        //    return false;
 
         return true;
     }
