@@ -303,7 +303,7 @@ internal static class AdminManager //stage 4
 
             // סימולציה של מתנדבים
             if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
-                _simulateTask = Task.Run(() => VolunteerManager.SimulateVolunteerRegistrationAndGrade());
+                _simulateTask = Task.Run(() => VolunteerManager.SimulateVolunteerRegistrationToCall());
 
             try
             {
