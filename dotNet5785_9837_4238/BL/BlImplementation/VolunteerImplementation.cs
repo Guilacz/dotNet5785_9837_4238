@@ -44,11 +44,17 @@ internal class VolunteerImplementation : IVolunteer
     /// </summary>
     public void ChoiceOfCallToCare(int volId, int callId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
-            DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+            lock (AdminManager.BlMutex) ; //stage 7
+
+                DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
             if (call == null)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
+            lock (AdminManager.BlMutex) ; //stage 7
+
             DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
             if (volunteer == null)
                 throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
@@ -65,18 +71,21 @@ internal class VolunteerImplementation : IVolunteer
             bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
             if (isCallInProcess)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} is already in process by another volunteer.");
-            var newAssignment = new DO.Assignment
-            (
-                Id: assignments.Any()
-                    ? assignments.Max(a => a.Id) + 1
-                    : 1,
-                CallId: callId,
-                VolunteerId: volId,
-                StartTime: DateTime.Now,
-                TypeOfEnd: null,
-                FinishTime: null
-            );
-            _dal.Assignment.Create(newAssignment);
+            lock (AdminManager.BlMutex) ; //stage 7
+            {
+                var newAssignment = new DO.Assignment
+                (
+                    Id: assignments.Any()
+                        ? assignments.Max(a => a.Id) + 1
+                        : 1,
+                    CallId: callId,
+                    VolunteerId: volId,
+                    StartTime: DateTime.Now,
+                    TypeOfEnd: null,
+                    FinishTime: null
+                );
+                _dal.Assignment.Create(newAssignment);
+            }
         }
         catch (DO.DalInvalidValueException ex)
         {
@@ -94,6 +103,8 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="volId">The ID of the volunteer to delete.</param>
     public void Delete(int volId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         BO.Volunteer? vol = Read(volId);
 
         //if ( vol.callInCaring != null)
@@ -110,6 +121,7 @@ internal class VolunteerImplementation : IVolunteer
         }
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             _dal.Volunteer.Delete(volId);
             VolunteerManager.Observers.NotifyListUpdated();
             VolunteerManager.Observers.NotifyItemUpdated(volId);
@@ -138,9 +150,10 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
+            lock (AdminManager.BlMutex) ;  //stage 7
+
             var volunteersFromDal = _dal.Volunteer.ReadAll();
             string passwordAsString = password.ToString();
-
             var vol = volunteersFromDal.FirstOrDefault(v => v.Name == name && v.Password == passwordAsString);
 
             if (vol == null)
@@ -169,11 +182,13 @@ internal class VolunteerImplementation : IVolunteer
                 Longitude = vol.Longitude,
                 IsActive = vol.IsActive,
             }))
+
             {
                 throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
             }
             return (BO.Role)vol.RoleType;
         }
+
         catch (DO.DalArgumentNullException ex)
         {
             // This handles the specific case where the volunteer is not found or password is incorrect
@@ -190,6 +205,8 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
+            lock (AdminManager.BlMutex) ;  //stage 7
+
             var volunteersFromDal = _dal.Volunteer.ReadAll();
             string passwordAsString = password.ToString();
 
@@ -224,10 +241,12 @@ internal class VolunteerImplementation : IVolunteer
                 Longitude = vol.Longitude,
                 IsActive = vol.IsActive,
             }))
+
             {
                 throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
             }
             return (BO.Role)vol.RoleType;
+
         }
         catch (DO.DalArgumentNullException ex)
         {
@@ -318,8 +337,14 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
+            lock (AdminManager.BlMutex) ;  //stage 7
+
             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+            lock (AdminManager.BlMutex) ;  //stage 7
+
             IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+            lock (AdminManager.BlMutex) ;  //stage 7
+
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
 
             //var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
@@ -353,7 +378,7 @@ internal class VolunteerImplementation : IVolunteer
                     SumOfCaredCall = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
                     SumOfCancelledCall = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
                     SumOfCallExpired = assignment.Count(a => a.VolunteerId == v.VolunteerId && a.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
-                    CallId = currentCall?.CallId , // אם יש קריאה פעילה, מחזיר את מזהה הקריאה, אחרת 0
+                    CallId = currentCall?.CallId, // אם יש קריאה פעילה, מחזיר את מזהה הקריאה, אחרת 0
                     CallType = currentCall != null ? (BO.CallType)currentCall.CallType : BO.CallType.None // אם יש קריאה פעילה, מחזיר את סוג הקריאה
                 };
             });
@@ -378,6 +403,7 @@ internal class VolunteerImplementation : IVolunteer
             };
 
             return volunteerInLists.ToList();
+
         }
         catch (Exception ex)
         {
@@ -392,41 +418,42 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="callType">The CallType to filter and sort by.</param>
     public IEnumerable<VolunteerInList> GetVolunteersListByCallType(BO.CallType callType)
     {
-        var allVolunteers = _dal.Volunteer.ReadAll();
-
-        return allVolunteers
-            .Where(v =>
-            {
-                var currentAssignment = _dal.Assignment.ReadAll()
-                    .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
-
-                if (currentAssignment == null) return false;
-
-                var currentCall = _dal.Call.ReadAll()
-                    .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
-
-                return currentCall != null && (BO.CallType)currentCall.CallType == callType;
-            })
-            .Select(v =>
-            {
-                var currentAssignment = _dal.Assignment.ReadAll()
-                    .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
-
-                var currentCall = _dal.Call.ReadAll()
-                    .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
-
-                return new BO.VolunteerInList
+        lock (AdminManager.BlMutex)  //stage 7
+        {
+            var allVolunteers = _dal.Volunteer.ReadAll();
+            return allVolunteers
+                .Where(v =>
                 {
-                    VolunteerId = v.VolunteerId,
-                    Name = v.Name,
-                    IsActive = v.IsActive,
-                    CallType = currentCall != null ? (BO.CallType)currentCall.CallType : BO.CallType.None
-                };
-            })
-            .OrderBy(v => v.CallType) // Sort by CallType
-            .ToList();
-    }
+                    var currentAssignment = _dal.Assignment.ReadAll()
+                        .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
 
+                    if (currentAssignment == null) return false;
+
+                    var currentCall = _dal.Call.ReadAll()
+                        .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
+
+                    return currentCall != null && (BO.CallType)currentCall.CallType == callType;
+                })
+                .Select(v =>
+                {
+                    var currentAssignment = _dal.Assignment.ReadAll()
+                        .FirstOrDefault(a => a.VolunteerId == v.VolunteerId && a.FinishTime == null);
+
+                    var currentCall = _dal.Call.ReadAll()
+                        .FirstOrDefault(c => c.CallId == currentAssignment.CallId);
+
+                    return new BO.VolunteerInList
+                    {
+                        VolunteerId = v.VolunteerId,
+                        Name = v.Name,
+                        IsActive = v.IsActive,
+                        CallType = currentCall != null ? (BO.CallType)currentCall.CallType : BO.CallType.None
+                    };
+                })
+                .OrderBy(v => v.CallType) // Sort by CallType
+                .ToList();
+        }
+    }
 
 
 
@@ -449,8 +476,12 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            DO.Volunteer volu = _dal.Volunteer.Read(volId);
-            BO.Volunteer volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
+            BO.Volunteer volunteer;
+            lock (AdminManager.BlMutex) //stage 7        
+            {
+                DO.Volunteer volu = _dal.Volunteer.Read(volId);
+                volunteer = Helpers.VolunteerManager.ConvertVolToBO(volu);
+            }
             if (volunteer == null)
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} was not found.");
@@ -506,26 +537,31 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BO.BlInvalidValueException"/>
     public void Update(int volId, BO.Volunteer vol)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
             vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
+            lock (AdminManager.BlMutex) ; //stage 7        
+
             var volun = _dal.Volunteer.Read(volId);
             var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-            double latitude = coordinates.Latitude; 
+            double latitude = coordinates.Latitude;
             double longitude = coordinates.Longitude;
             vol.Latitude = latitude;
             vol.Longitude = longitude;
-
-            if (volun.RoleType == DO.Role.Manager)
+            lock (AdminManager.BlMutex) ;  //stage 7
             {
-                var managers = _dal.Volunteer.ReadAll().Count(v => v.RoleType == DO.Role.Manager);
-
-                if (managers <= 1)
+                if (volun.RoleType == DO.Role.Manager)
                 {
-                    throw new BO.BlInvalidValueException("Cannot change role: System must have at least one manager.");
+                    var managers = _dal.Volunteer.ReadAll().Count(v => v.RoleType == DO.Role.Manager);
+
+                    if (managers <= 1)
+                    {
+                        throw new BO.BlInvalidValueException("Cannot change role: System must have at least one manager.");
+                    }
                 }
             }
-
             if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
                 throw new BO.BlInvalidValueException("Password not strong enough.");
 
@@ -537,22 +573,26 @@ internal class VolunteerImplementation : IVolunteer
                     throw new BO.BlInvalidValueException("Invalid volunteer data.");
                 else
                 {
-                    if (vol.RoleType == 0)
+                    lock (AdminManager.BlMutex)   //stage 7
                     {
-                        DO.Volunteer DOvolunteer = VolunteerManager.DOManeger(vol);
-                        _dal.Volunteer.Update(DOvolunteer);
-                    }
-                    else
-                    {
-                        DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
-                        _dal.Volunteer.Update(DOvolunteer);
-                        //CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
-                        //CallManager.Observers.NotifyListUpdated();
+                        if (vol.RoleType == 0)
+                        {
+                            DO.Volunteer DOvolunteer = VolunteerManager.DOManeger(vol);
+                            _dal.Volunteer.Update(DOvolunteer);
+                        }
+                        else
+                        {
+                            DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
+                            _dal.Volunteer.Update(DOvolunteer);
+                            //CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+                            //CallManager.Observers.NotifyListUpdated();
+                        }
                     }
                     VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
                     VolunteerManager.Observers.NotifyListUpdated();
                 }
             }
+
         }
 
         catch (DO.DalInvalidValueException ex)
@@ -564,16 +604,18 @@ internal class VolunteerImplementation : IVolunteer
 
     public int sumOfCalls(int id)
     {
-        DO.Volunteer vol = _dal.Volunteer.Read(id);
-        BO.Volunteer vol2 = Helpers.VolunteerManager.ConvertVolToBO(vol);
-        IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
-        IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
-        int SumOfCaredCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
-        int SumOfCancelledCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer);
-        int SumOfCallExpired = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime);
-        return SumOfCallExpired + SumOfCancelledCall + SumOfCaredCall;
+        lock (AdminManager.BlMutex) //stage 7        
+        {
+            DO.Volunteer vol = _dal.Volunteer.Read(id);
+            BO.Volunteer vol2 = Helpers.VolunteerManager.ConvertVolToBO(vol);
+            IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
+            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
+            int SumOfCaredCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
+            int SumOfCancelledCall = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer);
+            int SumOfCallExpired = assignment.Count(call => call.VolunteerId == vol2.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime);
+            return SumOfCallExpired + SumOfCancelledCall + SumOfCaredCall;
 
-
+        }
     }
 
     /// <summary>
@@ -590,6 +632,8 @@ internal class VolunteerImplementation : IVolunteer
     /// <exception cref="BO.BlAlreadyExistException"/>
     public void Create(BO.Volunteer vol)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
         vol.Latitude = coordinates.Latitude;
         vol.Longitude = coordinates.Longitude;
@@ -602,22 +646,25 @@ internal class VolunteerImplementation : IVolunteer
         vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password);
         try
         {
-            _dal.Volunteer.Create(new DO.Volunteer
+            lock (AdminManager.BlMutex) //stage 7        
             {
-                VolunteerId = vol.VolunteerId,
-                RoleType = (DO.Role)vol.RoleType,
-                DistanceType = (DO.Distance)vol.DistanceType,
-                Name = vol.Name,
-                Latitude = vol.Latitude,
-                Longitude = vol.Longitude,
-                Phone = vol.Phone,
-                Email = vol.Email,
-                Password = vol.Password,
-                Address = vol.Address,
-                IsActive = vol.IsActive,
-                Distance = vol.Distance,
-            });
-            VolunteerManager.Observers.NotifyListUpdated();
+                _dal.Volunteer.Create(new DO.Volunteer
+                {
+                    VolunteerId = vol.VolunteerId,
+                    RoleType = (DO.Role)vol.RoleType,
+                    DistanceType = (DO.Distance)vol.DistanceType,
+                    Name = vol.Name,
+                    Latitude = vol.Latitude,
+                    Longitude = vol.Longitude,
+                    Phone = vol.Phone,
+                    Email = vol.Email,
+                    Password = vol.Password,
+                    Address = vol.Address,
+                    IsActive = vol.IsActive,
+                    Distance = vol.Distance,
+                });
+                VolunteerManager.Observers.NotifyListUpdated();
+            }
         }
         catch (DO.DalAlreadyExistException ex)
         {

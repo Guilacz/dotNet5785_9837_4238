@@ -3,14 +3,17 @@ using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 internal class AssignmentImplementation : IAssignment
 {
     private const string AssignmentsXmlFile = Config.s_assignments_xml;
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     private XElement createAssignmentElement(Assignment assignment)
     {
+
         return new XElement("Assignment",
             new XElement("Id", assignment.Id),
             new XElement("CallId", assignment.CallId),
@@ -20,7 +23,7 @@ internal class AssignmentImplementation : IAssignment
             new XElement("FinishTime", assignment.FinishTime?.ToString("o"))
         );
     }
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     static Assignment getAssignment(XElement a)
     {
         return new DO.Assignment()
@@ -48,6 +51,7 @@ internal class AssignmentImplementation : IAssignment
       }
 
       */
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Assignment item)
     {
         // אם ID הוא 0, נדרש לקבל מזהה חדש מ-Config
@@ -66,7 +70,7 @@ internal class AssignmentImplementation : IAssignment
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
 
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
@@ -80,27 +84,27 @@ internal class AssignmentImplementation : IAssignment
         assignmentToDelete.Remove();
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XElement assignmentRootElem = new XElement("Assignments"); 
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
 
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(int id)
     {
         XElement? assignmentElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().FirstOrDefault(assign =>(int?)assign.Element("Id") == id);
         return assignmentElem is null ? null : getAssignment(assignmentElem);
     }
-    
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(Func<Assignment, bool>? filter)
     {
         return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign =>
         getAssignment(assign)).FirstOrDefault(filter);
     }
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
 
@@ -113,6 +117,7 @@ internal class AssignmentImplementation : IAssignment
                 return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign => getAssignment(assign)).Where(filter);
             }
     }
+    [MethodImpl(MethodImplOptions.Synchronized)]
 
     public string ToString(Assignment a)
     {
@@ -134,7 +139,7 @@ internal class AssignmentImplementation : IAssignment
     //    assignmentRootElem.Add(new XElement("Assignment", createAssignmentElement(item)));
     //    XMLTools.SaveListToXMLElement(assignmentRootElem, Config.s_assignments_xml);
     //}
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Assignment item)
     {
         XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(Config.s_assignments_xml);

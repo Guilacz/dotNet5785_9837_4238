@@ -36,62 +36,53 @@ internal class CallImplementation : ICall
     /// <param name="callId">The ID of the call to be assigned.</param>
     /// <exception cref="BO.BlDoesNotExistException"></exception>
     /// <exception cref="BO.BlInvalidValueException"></exception>
+
+    
+
+
     public void ChoiceOfCallToCare(int volId, int callId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
             if (call == null)
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} does not exist or could not be found in the database.");
-
+            lock (AdminManager.BlMutex) ; //stage 7
             DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
             if (volunteer == null)
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist. ");
-
             var coordinates = Helpers.Tools.GetAddressCoordinates(call.Address);
-
             call = call with { Latitude = coordinates.Item1, Longitude = coordinates.Item2 };
-
             BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
-
             if (!Helpers.CallManager.CheckCall(boCall))
                 throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-
-
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-
-            //  bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && );
-            //if (isCallAlreadyHandled)
-            //    throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
             bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.TypeOfEnd == DO.TypeOfEnd.Fulfilled);
             if (isCallAlreadyHandled)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled and cannot be reassigned.");
-
-
-            //bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null );
-            //if (isCallInProcess)
-            //    throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
-            // בדוק אם הקריאה נמצאת בסטטוס "InCare"
-            var status = Helpers.CallManager.GetCallStatus(call, assignments);
-
+              var status = Helpers.CallManager.GetCallStatus(call, assignments);
             if (status == BO.CallInListStatus.InCare || status == BO.CallInListStatus.InCareAtRisk)
                 throw new BO.BlInvalidValueException($"Call with ID {callId} is currently being handled by another volunteer.");
-
+            lock (AdminManager.BlMutex) ; //stage 7
             var newAssignment = new DO.Assignment
             (
                 Id: assignments.Any()
                     ? assignments.Max(a => a.Id) + 1
-                    : 1, 
+                    : 1,
                 CallId: callId,
                 VolunteerId: volId,
                 StartTime: DateTime.Now,
-                TypeOfEnd: null, 
+                TypeOfEnd: null,
                 FinishTime: null
             );
-
+            lock (AdminManager.BlMutex) ; //stage 7
             _dal.Assignment.Create(newAssignment);
             CallManager.Observers.NotifyItemUpdated(callId);
             CallManager.Observers.NotifyListUpdated();
+
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -117,6 +108,8 @@ internal class CallImplementation : ICall
 
     public void Create(BO.Call c)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         if (c.Latitude == null || c.Longitude == null)
         {
             var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
@@ -151,38 +144,38 @@ internal class CallImplementation : ICall
             //    Details = c.Details,
 
             //});
-
-            var newCall = new DO.Call
+            lock (AdminManager.BlMutex)  //stage 7
             {
-                CallId = c.CallId,
-                CallType = (DO.CallType)c.CallType,
-                Address = c.Address,
-                Latitude = c.Latitude.Value,
-                Longitude = c.Longitude.Value,
-                MaxTime = c.MaxTime,
-                //OpenTime = c.OpenTime,
-                OpenTime = DateTime.Now,
-                Details = c.Details,
-            };
+                var newCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude.Value,
+                    Longitude = c.Longitude.Value,
+                    MaxTime = c.MaxTime,
+                    //OpenTime = c.OpenTime,
+                    OpenTime = DateTime.Now,
+                    Details = c.Details,
+                };
 
-            // הוספה ל-DAL
-            _dal.Call.Create(newCall);
-
-            // המרה ל-BO
-            var convertedCall = Helpers.CallManager.ConvertCallToBO(newCall, _dal);
-            CallManager.Observers.NotifyListUpdated();
-            _dal.Volunteer.ReadAll()
-                .Where(vol =>
-                    !string.IsNullOrEmpty(vol.Email) &&
-                    !string.IsNullOrEmpty(vol.Address) &&
-                    Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
-                .ToList()
-                .ForEach(vol => Helpers.Tools.SendEmail(
-                    toAddress: vol.Email,
-                    subject: "new call in your area",
-                    body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
-                ));
-
+                // הוספה ל-DAL
+                _dal.Call.Create(newCall);
+                // המרה ל-BO
+                var convertedCall = Helpers.CallManager.ConvertCallToBO(newCall, _dal);
+                CallManager.Observers.NotifyListUpdated();
+                _dal.Volunteer.ReadAll()
+                    .Where(vol =>
+                        !string.IsNullOrEmpty(vol.Email) &&
+                        !string.IsNullOrEmpty(vol.Address) &&
+                        Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
+                    .ToList()
+                    .ForEach(vol => Helpers.Tools.SendEmail(
+                        toAddress: vol.Email,
+                        subject: "new call in your area",
+                        body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
+                    ));
+            }
         }
 
 
@@ -208,6 +201,8 @@ internal class CallImplementation : ICall
 
     public void Delete(int callId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
             BO.Call? c = Read(callId);
@@ -216,7 +211,7 @@ internal class CallImplementation : ICall
             {
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
-
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
 
             if (c.CallStatus != 0 ||
@@ -229,6 +224,7 @@ internal class CallImplementation : ICall
             //{
             //    throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
             //}
+            lock (AdminManager.BlMutex) ; //stage 7
             var volunteer = _dal.Volunteer.ReadAll()
                 .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol)) 
                 .FirstOrDefault(vol => vol.callInCaring.CallId == callId); 
@@ -242,7 +238,7 @@ internal class CallImplementation : ICall
                     body: $"Hello {volunteer.Name},\n\nThe call with ID #{callId} that you were handling has been canceled.\nPlease contact us if you have any questions.\n\nThank you!"
                 );
             }
-
+            lock (AdminManager.BlMutex) ; //stage 7
             _dal.Call.Delete(callId);
             CallManager.Observers.NotifyListUpdated();
         }
@@ -316,8 +312,11 @@ internal class CallImplementation : ICall
     {
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
 
 
@@ -328,6 +327,7 @@ internal class CallImplementation : ICall
 
             if (assignments == null)
             {
+                lock (AdminManager.BlMutex) ; //stage 7
                 assignments = Enumerable.Empty<DO.Assignment>();
             }
 
@@ -384,6 +384,7 @@ internal class CallImplementation : ICall
                     .FirstOrDefault();
 
                 // אם מצאנו הקצאה אחרונה, נחפש את המתנדב שקשור לה
+                lock (AdminManager.BlMutex) ; //stage 7
                 var lastVolunteerName = lastAssignment != null
                     ? _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == lastAssignment.VolunteerId)?.Name
                     : null;
@@ -676,16 +677,14 @@ internal class CallImplementation : ICall
 
     public IEnumerable<BO.ClosedCallInList> GetListOfClosedCall(int volId, BO.CallType? type = null, BO.CloseCallInListSort? sort = null)
     {
-        // Vérifier si le volontaire existe
+        lock (AdminManager.BlMutex) ; //stage 7
         var volunteer = _dal.Volunteer.Read(volId)
                        ?? throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} does not exist.");
-
-        // Récupérer les affectations pour ce volontaire
+        lock (AdminManager.BlMutex) ; //stage 7
         var assignments = _dal.Assignment.ReadAll(a => a.VolunteerId == volunteer.VolunteerId);
         if (assignments == null || !assignments.Any())
             return Enumerable.Empty<BO.ClosedCallInList>();
 
-        // Récupérer les appels fermés
         var closedCallsOfVolunteer =
             from assignment in assignments
             let call = _dal.Call.Read(assignment.CallId)
@@ -827,28 +826,25 @@ internal class CallImplementation : ICall
     {
         try
         {
-            // Lire toutes les données nécessaires
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-
-            // Obtenir l'adresse du volontaire
+            lock (AdminManager.BlMutex) ; //stage 7
             DO.Volunteer volunteer = _dal.Volunteer.Read(volId);
             string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
 
-            // Filtrer les appels ouverts ou à risque
             calls = calls.Where(call =>
             {
                 var status = Helpers.CallManager.GetCallStatus(call, assignments);
                 return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk;
             });
 
-            // Filtrage par type d'appel
             if (type.HasValue && type != BO.CallType.None)
             {
                 calls = calls.Where(c => c.CallType == (DO.CallType)type);
             }
 
-            // Transformer les appels en BO
             var openCalls = calls.Select(c => new BO.OpenCallInList
             {
                 CallId = c.CallId,
@@ -860,7 +856,6 @@ internal class CallImplementation : ICall
                 Distance = Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
             }).ToList();
 
-            // Appliquer le tri
             var result = openCall switch
             {
                 OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
@@ -869,7 +864,7 @@ internal class CallImplementation : ICall
                 OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
                 OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
                 OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
-                _ => openCalls // Aucun tri si None
+                _ => openCalls 
             };
 
             return result;
@@ -896,6 +891,7 @@ internal class CallImplementation : ICall
     {
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             DO.Call call = _dal.Call.Read(callId);
 
             if (call == null)
@@ -930,7 +926,9 @@ internal class CallImplementation : ICall
     {
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             var calls = _dal.Call.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             var assignments = _dal.Assignment.ReadAll();
 
             int[] countOfCalls = calls
@@ -965,6 +963,8 @@ internal class CallImplementation : ICall
     /// <exception cref="BO.BlDoesNotExistException">Thrown for any other errors that occur during the update process.</exception>
     public void Update(Call c)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
             var coordinates = Helpers.Tools.GetAddressCoordinates(c.Address);
@@ -995,23 +995,26 @@ internal class CallImplementation : ICall
                 //    MaxTime = c.MaxTime,
                 //    Details = c.Details,
                 //});
-                var updatedCall = new DO.Call
+                lock (AdminManager.BlMutex)  //stage 7
                 {
-                    CallId = c.CallId,
-                    CallType = (DO.CallType)c.CallType,
-                    Address = c.Address,
-                    Latitude = c.Latitude.Value,
-                    Longitude = c.Longitude.Value,
-                    OpenTime = c.OpenTime,
-                    MaxTime = c.MaxTime,
-                    Details = c.Details,
-                };
+                    var updatedCall = new DO.Call
+                    {
+                        CallId = c.CallId,
+                        CallType = (DO.CallType)c.CallType,
+                        Address = c.Address,
+                        Latitude = c.Latitude.Value,
+                        Longitude = c.Longitude.Value,
+                        OpenTime = c.OpenTime,
+                        MaxTime = c.MaxTime,
+                        Details = c.Details,
+                    };
 
-                // עדכון ב-DAL
-                _dal.Call.Update(updatedCall);
+                    // עדכון ב-DAL
+                    _dal.Call.Update(updatedCall);
 
-                // המרה ל-BO
-                var convertedCall = Helpers.CallManager.ConvertCallToBO(updatedCall, _dal);
+                    // המרה ל-BO
+                    var convertedCall = Helpers.CallManager.ConvertCallToBO(updatedCall, _dal);
+                }
                 CallManager.Observers.NotifyItemUpdated(c.CallId);
                 CallManager.Observers.NotifyListUpdated(); 
 
@@ -1043,9 +1046,13 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be cancelled.</param>
     public void UpdateCallCancelled(int id, int assiId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             var assignments = _dal.Assignment.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             var volunteers = _dal.Volunteer.ReadAll();
 
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
@@ -1082,7 +1089,7 @@ internal class CallImplementation : ICall
                     ? DO.TypeOfEnd.CancelledByVolunteer
                     : DO.TypeOfEnd.CancelledByManager)
             };
-
+            lock (AdminManager.BlMutex) ; //stage 7
             _dal.Assignment.Update(assignment);
             CallManager.Observers.NotifyItemUpdated(assiId);
             CallManager.Observers.NotifyListUpdated();
@@ -1114,11 +1121,16 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be marked as finished.</param>
     public void UpdateCallFinished(int id, int assiId, int callId)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
+            lock (AdminManager.BlMutex) ; //stage 7
             var assignments = _dal.Assignment.ReadAll();
+            lock (AdminManager.BlMutex) ; //stage 7
             var volunteers = _dal.Volunteer.ReadAll();
             var call = Read(callId);
+            lock (AdminManager.BlMutex) ; //stage 7
             DO.Call call2 = _dal.Call.Read(callId);
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
             if (assignment == null)
@@ -1149,7 +1161,7 @@ internal class CallImplementation : ICall
                 FinishTime = DateTime.Now,
                 TypeOfEnd = (DO.TypeOfEnd)DO.TypeOfEnd.Fulfilled
             };
-
+            lock (AdminManager.BlMutex) ; //stage 7
             _dal.Assignment.Update(assignment);
 
             call.CallStatus = Helpers.CallManager.GetCallStatus(call2, assignments);

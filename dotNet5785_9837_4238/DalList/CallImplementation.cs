@@ -2,6 +2,7 @@
 using DalApi;
 using DO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 ///Implement the properties and methods defined in the `ICall` interface to manage configurations related to the "call" entity.
@@ -12,7 +13,7 @@ internal class CallImplementation : ICall
     /// function create new item :
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Call item)//The new ID of the new object added to the list should be returned as a return value.
 
     {
@@ -22,13 +23,13 @@ internal class CallImplementation : ICall
         //return currentId;
 
     }
-  
+
 
 
     /// <summary>
     /// delete function : delete if the item is in the list
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         Call? CallToDelete = Read(id);
@@ -42,6 +43,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// function deleteAll: clears all the list
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         DataSource.Calls.Clear();
@@ -52,7 +54,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// function read: checks and return the wanted element
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Call? Read(int callId)
     {
         return DataSource.Calls.FirstOrDefault(call => call.CallId == callId);
@@ -65,6 +67,7 @@ internal class CallImplementation : ICall
     /// </summary>
 
     /// <exception cref="NotImplementedException"></exception>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Call? Read(Func<Call, bool>? filter)
     {
         return DataSource.Calls?.FirstOrDefault(filter);
@@ -74,6 +77,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// function readall: returns the items
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
         if (filter != null)
@@ -90,7 +94,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// update function : checks if the element exists, delete it, create it with new details
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Call item)
     {
         Call? CallToUpdate = Read(item.CallId);
@@ -111,6 +115,8 @@ internal class CallImplementation : ICall
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+
     string ICall.ToString(Call item)
     {
         var details = new System.Text.StringBuilder();

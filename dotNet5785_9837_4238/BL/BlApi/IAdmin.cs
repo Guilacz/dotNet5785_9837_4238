@@ -18,5 +18,8 @@ public interface IAdmin
     void RemoveConfigObserver(Action configObserver);
     void AddClockObserver(Action clockObserver);
     void RemoveClockObserver(Action clockObserver);
+    void StartSimulator(int interval); //stage 7
+    void StopSimulator(); //stage 7
+
     #endregion Stage 5
 }

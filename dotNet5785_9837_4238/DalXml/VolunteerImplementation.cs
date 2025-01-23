@@ -3,6 +3,7 @@ using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 internal class VolunteerImplementation : IVolunteer
 {
@@ -10,6 +11,7 @@ internal class VolunteerImplementation : IVolunteer
     /// Function to create a new volunteer in the XML file.
     /// </summary>
     /// <param name="item">Call object to create.</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Volunteer item)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -26,6 +28,7 @@ internal class VolunteerImplementation : IVolunteer
     /// </summary>
     /// <param name="id"></param>
     /// <exception cref="DalDoesNotExistException"></exception>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         List<Volunteer> Volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -38,6 +41,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// delete all elements from the xml file
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         List<Volunteer> Volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -59,6 +63,7 @@ internal class VolunteerImplementation : IVolunteer
         }
         return volunteers.FirstOrDefault(volunteer => volunteer.VolunteerId == volunteerId);
     }*/
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(int volunteerId)
     {
       //  Console.WriteLine($"Searching for VolunteerId: {volunteerId}");
@@ -89,6 +94,7 @@ internal class VolunteerImplementation : IVolunteer
     /// read a volunteer based on a filter delegate
     /// </summary>
     /// <returns>The first volunteer matching the filter, or null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -101,6 +107,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Read a specific volunteer using a filter delegate.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(Func<Volunteer, bool>? filter)
     {
         List<Volunteer> volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);
@@ -111,6 +118,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// to string function 
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
 
     public string ToString(Volunteer item)
     {
@@ -135,6 +143,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// Function to update a volunteer in the XML file.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Volunteer item)
     {
         List<Volunteer> Volunteers = XMLTools.LoadListFromXMLSerializer<Volunteer>(Config.s_volunteers_xml);

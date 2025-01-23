@@ -83,9 +83,13 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
+        lock (AdminManager.BlMutex) ; //stage 7
         IEnumerable<DO.Volunteer> volunteers = s_dal.Volunteer.ReadAll();
+        lock (AdminManager.BlMutex) ; //stage 7
         IEnumerable<DO.Assignment> assignment = s_dal.Assignment.ReadAll();
+        lock (AdminManager.BlMutex) ; //stage 7
         IEnumerable<DO.Call> calls = s_dal.Call.ReadAll();
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Assignment assi = assignment.LastOrDefault(a => a.VolunteerId == volunteer.VolunteerId && a.FinishTime == null);
         return new BO.Volunteer
         {
@@ -122,9 +126,11 @@ internal class VolunteerManager
             return null;
 
         // Try to read the call; return null if it doesn't exist
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Call? call = s_dal.Call.Read(assignment.CallId);
         if (call == null)
             return null;
+        lock (AdminManager.BlMutex) ; //stage 7
         IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
 
         //BO.CallStatus status = Helpers.CallManager.GetCallStatus(call, assignmentss);
@@ -231,7 +237,9 @@ internal class VolunteerManager
         string FullName = vol.Name;
         string Phone = vol.Phone;
         string Email = vol.Email;
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Role Role = (DO.Role)vol.RoleType;
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol.IsActive;
         string? Password = vol.Password;
@@ -239,6 +247,7 @@ internal class VolunteerManager
         double? Distance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
+        lock (AdminManager.BlMutex) ; //stage 7
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
     }
 
@@ -255,7 +264,9 @@ internal class VolunteerManager
         string FullName = vol.Name;
         string Phone = vol.Phone;
         string Email = vol.Email;
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Role Role = (DO.Role)vol1.RoleType;
+        lock (AdminManager.BlMutex) ; //stage 7
         DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol1.IsActive;
         string? Password = EncryptPassword(vol.Password);
@@ -263,6 +274,7 @@ internal class VolunteerManager
         double? MaxDistance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
+        lock (AdminManager.BlMutex) ; //stage 7
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
 
     }

@@ -3,6 +3,7 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 ///Implement the properties and methods defined in the `IVolunteer` interface to manage configurations related to the "Volunteer" entity.
@@ -14,7 +15,7 @@ internal class VolunteerImplementation : IVolunteer
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
 
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Volunteer item)
     {
         if (Read(item.VolunteerId) != null)
@@ -27,7 +28,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// delete function : delete if the item is in the list
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         Volunteer? volunteerToDelete = Read(id);
@@ -38,11 +39,12 @@ internal class VolunteerImplementation : IVolunteer
         DataSource.Volunteers.Remove(volunteerToDelete);
     }
 
-  
+
 
     /// <summary>
     /// function deleteAll: clears all the list
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         DataSource.Volunteers.Clear();
@@ -52,7 +54,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// function read: checks and return the wanted element
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(int volunteerId)
     {
         return DataSource.Volunteers.FirstOrDefault(volunteer => volunteer.VolunteerId == volunteerId);
@@ -61,8 +63,9 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// new function Read which goes according to a delegate function
     /// </summary>
- 
+
     /// <exception cref="NotImplementedException"></exception>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Volunteer? Read(Func<Volunteer, bool>? filter)
     {
         
@@ -74,6 +77,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// function readall: returns the items
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Volunteer> ReadAll(Func<Volunteer, bool>? filter = null)
     {
         if (filter != null)
@@ -90,7 +94,7 @@ internal class VolunteerImplementation : IVolunteer
     /// <summary>
     /// update function : checks if the element exists, delete it, create it with new details
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Volunteer item)
     {
         Volunteer? volunteerToUpdate = Read(item.VolunteerId);
@@ -124,6 +128,8 @@ internal class VolunteerImplementation : IVolunteer
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+
     string IVolunteer.ToString(Volunteer item)
     {
         var details = new System.Text.StringBuilder();

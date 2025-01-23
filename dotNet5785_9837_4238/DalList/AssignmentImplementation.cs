@@ -2,6 +2,7 @@
 using DalApi;
 using DO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 
 /// <summary>
@@ -13,7 +14,7 @@ internal class AssignmentImplementation : IAssignment
     /// function create new item :
     /// checks if the item already exists in the list, if not, create it
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Assignment item)
     {
         int currentId = Config.NextAssignmentId; // Get the next unique Id for the Assignment
@@ -25,7 +26,7 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// delete function : delete if the item is in the list
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         Assignment? AssignmentToDelete = Read(id);
@@ -40,6 +41,7 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// function deleteAll: clears all the list
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         DataSource.Assignments.Clear();
@@ -49,7 +51,7 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// function read: checks and return the wanted element
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(int Id)
     {
         return DataSource.Assignments.FirstOrDefault(assignment => assignment.Id == Id);
@@ -60,6 +62,7 @@ internal class AssignmentImplementation : IAssignment
     /// </summary>
 
     /// <exception cref="NotImplementedException"></exception>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(Func<Assignment, bool>? filter)
     {
         return DataSource.Assignments?.FirstOrDefault(filter);
@@ -71,6 +74,7 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// function readall: returns the items
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Assignment> ReadAll(Func <Assignment, bool>? filter = null)
     {
         if (filter!= null)
@@ -87,7 +91,7 @@ internal class AssignmentImplementation : IAssignment
     /// <summary>
     /// update function : checks if the element exists, delete it, create it with new details
     /// </summary>
-
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Assignment item)
     {
         Assignment? AssignmentToUpdate = Read(item.Id);
@@ -109,6 +113,8 @@ internal class AssignmentImplementation : IAssignment
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+
     public string ToString(Assignment item)
     {
 

@@ -32,6 +32,8 @@ internal class AdminImplementation : IAdmin
     /// <param name="unit">The time unit to advance</param>
     public void ForwardClock(TimeUnit unit)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         try
         {
             DateTime newTime;
@@ -91,18 +93,21 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDB()
     {
-        try
-        {
-            ResetDB();
-            DalTest.Initialization.Do();
-            AdminManager.UpdateClock(AdminManager.Now);
-            AdminManager.RiskRange = AdminManager.RiskRange;
-        }
-        // Thrown in case of unexpected errors during processing
-        catch (Exception ex)
-        {
-            throw new BO.BlArgumentNullException(ex.Message);
-        }
+        //try
+        //{
+        //    ResetDB();
+        //    DalTest.Initialization.Do();
+        //    AdminManager.UpdateClock(AdminManager.Now);
+        //    AdminManager.RiskRange = AdminManager.RiskRange;
+        //}
+        //// Thrown in case of unexpected errors during processing
+        //catch (Exception ex)
+        //{
+        //    throw new BO.BlArgumentNullException(ex.Message);
+        //}
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.InitializeDB(); //stage 7
+
     }
 
 
@@ -111,15 +116,20 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void ResetDB()
     {
-        _dal.Config.Reset();
-        var allAssignments = _dal.Assignment.ReadAll().ToList();
-        _dal.Assignment.DeleteAll(); 
-        var allCalls = _dal.Call.ReadAll().ToList();
-        _dal.Call.DeleteAll(); 
-        var allVolunteers = _dal.Volunteer.ReadAll().ToList();
-        _dal.Volunteer.DeleteAll();
-        AdminManager.UpdateClock(AdminManager.Now);
-        AdminManager.RiskRange = AdminManager.RiskRange;
+        //_dal.Config.Reset();
+        //var allAssignments = _dal.Assignment.ReadAll().ToList();
+        //_dal.Assignment.DeleteAll(); 
+        //var allCalls = _dal.Call.ReadAll().ToList();
+        //_dal.Call.DeleteAll(); 
+        //var allVolunteers = _dal.Volunteer.ReadAll().ToList();
+        //_dal.Volunteer.DeleteAll();
+        //AdminManager.UpdateClock(AdminManager.Now);
+        //AdminManager.RiskRange = AdminManager.RiskRange;
+
+            AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+            AdminManager.ResetDB(); //stage 7
+        
+
     }
 
 
@@ -129,10 +139,19 @@ internal class AdminImplementation : IAdmin
     /// <param name="maxRange"></param>
     public void SetMaxRange(TimeSpan maxRange)
     {
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
         //IConfig config = _dal.Config;
         //config.RiskRange = maxRange;
         //Tools.RiskTime(config);
         AdminManager.RiskRange = maxRange;
     }
+    public void StartSimulator(int interval)  //stage 7
+    {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.Start(interval); //stage 7
+    }
+    public void StopSimulator()
+        => AdminManager.Stop(); //stage 7
 
 }

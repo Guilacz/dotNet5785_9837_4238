@@ -12,6 +12,7 @@ internal class ConfigImplementation : IConfig
     /// Gets or sets the current clock time for the configuration.
     /// This property interacts with the `Config.Clock` field to get or set the value.
     /// </summary>
+    
     public DateTime Clock
     {
         get => Config.Clock;

@@ -7,11 +7,12 @@ using System.Runtime.CompilerServices;
 
 internal class CallImplementation : ICall
 {
-  
+
     /// <summary>
     /// Function to create a new call in the XML file.
     /// </summary>
     /// <param name="item">Call object to create.</param>
+    /// [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Call item)
     {
         
@@ -31,6 +32,7 @@ internal class CallImplementation : ICall
     /// </summary>
     /// <param name="id"></param>
     /// <exception cref="DalDoesNotExistException"></exception>
+     [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         List<Call> Calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -42,6 +44,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// delete all elements from the xml file
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         List<Call> Calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -53,6 +56,7 @@ internal class CallImplementation : ICall
     /// read a call by its ID from the XML file.
     /// </summary>
     /// <returns>The requested call if found, or null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Call? Read(int id)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -63,6 +67,7 @@ internal class CallImplementation : ICall
     /// read a call based on a filter delegate
     /// </summary>
     /// <returns>The first call matching the filter, or null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Call? Read(Func<Call, bool>? filter)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -73,6 +78,7 @@ internal class CallImplementation : ICall
     /// Function to read all calls with filter.
     /// </summary>
     /// <returns>All calls matching the filter, or all calls if no filter is provided.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Call> ReadAll(Func<Call, bool>? filter = null)
     {
         List<Call> calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);
@@ -82,7 +88,8 @@ internal class CallImplementation : ICall
     /// <summary>
     /// to string function 
     /// </summary>
-    
+    [MethodImpl(MethodImplOptions.Synchronized)]
+
     string ICall.ToString(Call item)
     {
         var details = new System.Text.StringBuilder();
@@ -102,7 +109,7 @@ internal class CallImplementation : ICall
     /// <summary>
     /// Function to update a call in the XML file.
     /// </summary>
-    
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Call item)
     {
         List<Call> Calls = XMLTools.LoadListFromXMLSerializer<Call>(Config.s_calls_xml);

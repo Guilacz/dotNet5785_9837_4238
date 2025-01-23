@@ -1,4 +1,6 @@
-﻿namespace Dal;
+﻿using System.Runtime.CompilerServices;
+
+namespace Dal;
 
 static internal class Config
 {
@@ -13,13 +15,21 @@ static internal class Config
     /// </summary>
     internal static int NextCallId
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         get => XMLTools.GetAndIncreaseConfigIntVal(s_data_config_xml, "NextCallId");
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         private set => XMLTools.SetConfigIntVal(s_data_config_xml, "NextCallId", value);
     }
 
     internal static int NextAssignmentId
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         get => XMLTools.GetAndIncreaseConfigIntVal(s_data_config_xml, "NextAssignmentId");
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         private set => XMLTools.SetConfigIntVal(s_data_config_xml, "NextAssignmentId", value);
     }
 
@@ -27,13 +37,21 @@ static internal class Config
 
     internal static DateTime Clock
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         get => XMLTools.GetConfigDateVal(s_data_config_xml, "Clock");
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         set => XMLTools.SetConfigDateVal(s_data_config_xml, "Clock", value);
     }
 
     internal static TimeSpan RiskRange
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         get => XMLTools.GetConfigRiskRange(s_data_config_xml, "RiskRange");
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+
         set => XMLTools.SetConfigTimeSpan(s_data_config_xml, "RiskRange", value);
     }
 
@@ -41,6 +59,7 @@ static internal class Config
     /// <summary>
     /// new reset function
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
 
     internal static void Reset()
     {
