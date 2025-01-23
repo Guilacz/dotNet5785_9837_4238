@@ -411,7 +411,7 @@ class Program
                     volId = int.Parse(Console.ReadLine());
                     Console.WriteLine("Enter the ID of the call:");
                     callId = int.Parse(Console.ReadLine());
-                    s_bl.Call.UpdateCallFinished(volId, callId);
+                    //s_bl.Call.UpdateCallFinished(volId, callId);
                     Console.WriteLine("Updated");
                     break;
                 case "9":

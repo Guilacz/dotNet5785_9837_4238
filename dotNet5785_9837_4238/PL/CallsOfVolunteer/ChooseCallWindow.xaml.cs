@@ -167,10 +167,8 @@ namespace PL.CallsOfVolunteer
                     return;
                 }
 
-                // Appeler la méthode du BL pour attribuer l'appel
                 s_bl.Call.ChoiceOfCallToCare(volunteerId, call.CallId);
 
-                // Supprimer l'appel de la liste
                 var updatedCalls = ListOfCalls.ToList();
                 updatedCalls.Remove(call);
                 ListOfCalls = updatedCalls;
@@ -209,14 +207,12 @@ namespace PL.CallsOfVolunteer
                     return;
                 }
 
-                // Appeler la méthode du BL pour ajouter l'appel au bénévole
                 s_bl.Call.ChoiceOfCallToCare(volunteerId, CurrentCall.CallId);
 
                 MessageBox.Show($"Call {CurrentCall.CallId} has been successfully assigned to volunteer {volunteerId}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Mettre à jour la liste après l'ajout
                 var updatedCalls = ListOfCalls.ToList();
-                updatedCalls.Remove(CurrentCall); // Supprime l'appel assigné de la liste
+                updatedCalls.Remove(CurrentCall); 
                 ListOfCalls = updatedCalls;
             }
             catch (Exception ex)
