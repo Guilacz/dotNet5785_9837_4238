@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL
 {
@@ -54,6 +55,15 @@ namespace PL
 
 
 
+
+
+        //--------------------- Dispatcher Operation ---------------------------
+
+        private volatile DispatcherOperation? _observerOperation = null;
+
+
+
+
         //---------------------FUNCTIONS---------------------------
 
         //function to receive a password
@@ -64,17 +74,24 @@ namespace PL
         }
 
 
+
         /// <summary>
         /// This method calls the volunteer observer.
         /// </summary>
+        /// 
         private void volunteerObserver()
         {
-            int id = CurrentVolunteer!.VolunteerId;
-            CurrentVolunteer = null;
-            CurrentVolunteer = s_bl.Volunteer.Read(id);
-
-
+            if (_observerOperation is null || _observerOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _observerOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    int id = CurrentVolunteer!.VolunteerId;
+                    CurrentVolunteer = null;
+                    CurrentVolunteer = s_bl.Volunteer.Read(id);
+                });
+            }
         }
+      
 
         /// <summary>
         /// Event handler for when the window is loaded

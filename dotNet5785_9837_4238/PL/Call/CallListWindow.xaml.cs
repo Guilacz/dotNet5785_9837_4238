@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL.Call
 {
@@ -201,12 +202,24 @@ namespace PL.Call
         }
 
 
-        // Function to be called whenever the filter or sort option changes
+        private volatile DispatcherOperation? _callListOperation = null;
+
+        /// <summary>
+        /// observer of the page
+        /// </summary>
         private void CallListObserver()
         {
-            Dispatcher.Invoke(() => QueryCallList());
-
+            if (_callListOperation is null || _callListOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _callListOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    QueryCallList();
+                });
+            }
         }
+
+
+       
 
         /// <summary>
         /// Event handler for when the window is loaded

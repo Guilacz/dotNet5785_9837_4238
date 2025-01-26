@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL
 {
@@ -53,26 +54,53 @@ namespace PL
         public static readonly DependencyProperty RiskRangePropertyProperty =
             DependencyProperty.Register("RiskRangeProperty", typeof(TimeSpan), typeof(MainWindow), new PropertyMetadata(TimeSpan.Zero));
 
+        //------------------------- Dispatcher Operations -------------------------------------------------
+        private volatile DispatcherOperation? _clockObserverOperation = null;
+        private volatile DispatcherOperation? _configObserverOperation = null;
 
 
-        //-------------------------FUNCTIONS-------------------------------------------------
+        //------------------------- Constructor -----------------------------------------------------------
 
-        //observers
-        private void ClockObserver()
-        {
-            CurrentTime = s_bl.Admin.GetClock();
-        }
-        private void ConfigObserver()
-        {
-            RiskRangeProperty = s_bl.Admin.GetMaxRange();
-        }
-
-        //constructor of the window
         public MainWindow()
         {
             InitializeComponent();
             this.Loaded += OnMainWindow_Loaded;
+            Closed += OnMainWindow_Closed;
         }
+
+
+
+        //-------------------------FUNCTIONS-------------------------------------------------
+
+        //observer to update the current time
+        private void ClockObserver()
+        {
+            if (_clockObserverOperation is null || _clockObserverOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _clockObserverOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    CurrentTime = s_bl.Admin.GetClock();
+                });
+            }
+        }
+
+
+        /// <summary>
+        /// Observer to update the risk range
+        /// </summary>
+        private void ConfigObserver()
+        {
+            if (_configObserverOperation is null || _configObserverOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _configObserverOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    RiskRangeProperty = s_bl.Admin.GetMaxRange();
+                });
+            }
+        }
+
+
+
 
         /// <summary>
         /// function to update the riskRange
@@ -206,9 +234,10 @@ namespace PL
             {
                 try
                 {
+                    //close all windows except this one and the login window
                     foreach (Window window in Application.Current.Windows)
                     {
-                        if (window != this)
+                        if (window != this && window.GetType() != typeof(EnterSystemWindow))
                             window.Close();
                     }
 

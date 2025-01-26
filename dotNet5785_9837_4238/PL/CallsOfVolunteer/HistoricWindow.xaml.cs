@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace PL.CallsOfVolunteer
 {
@@ -57,6 +58,12 @@ namespace PL.CallsOfVolunteer
 
         // The ID of the volunteer for which the history is displayed
         private int _volunteerId;
+
+
+        //--------------------- Dispatcher Operation ---------------------------
+        private volatile DispatcherOperation? _observerOperation = null;
+
+
 
 
 
@@ -105,7 +112,17 @@ namespace PL.CallsOfVolunteer
         /// <summary>
         /// Observer to actualize the list of calls
         /// </summary>
-        private void ClosedCallsObserver() => queryClosedCalls();
+        //private void ClosedCallsObserver() => queryClosedCalls(); stage 6
+        private void ClosedCallsObserver()
+        {
+            if (_observerOperation is null || _observerOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _observerOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    queryClosedCalls();
+                });
+            }
+        }
 
 
         /// <summary>

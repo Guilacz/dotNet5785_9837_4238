@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL.Call
 {
@@ -56,13 +57,22 @@ namespace PL.Call
 
         //---------------------FUNCTIONS---------------------------
 
+
+        private volatile DispatcherOperation? _observerOperation = null;
         private void CallObserver()
         {
-            int id = CurrentCall!.CallId;
-            CurrentCall = null;
-            CurrentCall = s_bl.Call.Read(id);
-
+            
+            if (_observerOperation is null || _observerOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _observerOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    int id = CurrentCall!.CallId;
+                    CurrentCall = null;  
+                    CurrentCall = s_bl.Call.Read(id);  
+                });
+            }
         }
+       
 
         /// <summary>
         /// Event handler for when the window is loaded
@@ -113,6 +123,10 @@ namespace PL.Call
             {
                 CurrentCall = new BO.Call();
             }
+
+
+            Loaded += Window_Loaded;
+            Closed += Window_Closed;
 
         }
 

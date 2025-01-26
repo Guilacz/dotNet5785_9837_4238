@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL.Volunteer
 {
@@ -50,6 +51,7 @@ namespace PL.Volunteer
 
         //---------------------FUNCTIONS---------------------------
 
+        private volatile DispatcherOperation? _volunteerListUpdateOperation = null;
 
         //private void queryVolunteerList()
         //    => VolunteerList = (CallTypeSelected == BO.CallType.None) ?
@@ -65,25 +67,31 @@ namespace PL.Volunteer
         //    => s_bl.Volunteer.RemoveObserver(VolunteerListObserver);
         private void queryVolunteerList()
         {
-            Dispatcher.Invoke(() =>
-            {
                 VolunteerList = (CallTypeSelected == BO.CallType.None) ?
                     s_bl?.Volunteer.GetVolunteerInLists()! :
                     s_bl?.Volunteer.GetVolunteerInLists(null, BO.VolunteerSortField.CallType)!;
-            });
         }
+
 
         private void VolunteerListObserver()
         {
-            Dispatcher.Invoke(() => queryVolunteerList());
+            if (_volunteerListUpdateOperation is null || _volunteerListUpdateOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _volunteerListUpdateOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    queryVolunteerList();
+                });
+            }
         }
+
+
 
         /// <summary>
         /// Event handler for when the window is loaded
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            s_bl.Volunteer.AddObserver(VolunteerListObserver);  // רישום להשקפה על כל הרשימה
+            s_bl.Volunteer.AddObserver(VolunteerListObserver);  
         }
 
         /// <summary>
@@ -91,7 +99,7 @@ namespace PL.Volunteer
         /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
-            s_bl.Volunteer.RemoveObserver(VolunteerListObserver);  // הסרת הרישום להשקפה על הרשימה
+            s_bl.Volunteer.RemoveObserver(VolunteerListObserver);  
         }
 
 

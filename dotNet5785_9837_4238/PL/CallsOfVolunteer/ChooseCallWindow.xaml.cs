@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL.CallsOfVolunteer
 {
@@ -28,6 +29,10 @@ namespace PL.CallsOfVolunteer
 
         private int volunteerId;
 
+
+
+        //---------------------Properties/ Dependency properties---------------------------
+
         public IEnumerable<BO.OpenCallInList> ListOfCalls
         {
             get { return (IEnumerable<BO.OpenCallInList>)GetValue(ListOfCallsProperty); }
@@ -40,13 +45,22 @@ namespace PL.CallsOfVolunteer
 
 
 
+        // DependencyProperty for CurrentCall
+        public BO.OpenCallInList CurrentCall
+        {
+            get { return (BO.OpenCallInList)GetValue(CurrentCallProperty); }
+            set { SetValue(CurrentCallProperty, value); }
+        }
+
+        public static readonly DependencyProperty CurrentCallProperty =
+            DependencyProperty.Register("CurrentCall", typeof(BO.OpenCallInList), typeof(ChooseCallWindow));
+
 
         public BO.CallType CallTypeSelected
         {
             get { return (BO.CallType)GetValue(CallTypeSelectedProperty); }
             set { SetValue(CallTypeSelectedProperty, value); }
         }
-
         // Using a DependencyProperty as the backing store for CallTypeSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CallTypeSelectedProperty =
             DependencyProperty.Register("CallTypeSelected", typeof(BO.CallType), typeof(ChooseCallWindow));
@@ -55,6 +69,12 @@ namespace PL.CallsOfVolunteer
         //public BO.CallType CallTypeSelected { get; set; } = BO.CallType.None;
         public OpenCallInListSort SortSelected { get; set; } = OpenCallInListSort.None;
 
+
+        //--------------------- Dispatcher Operation ---------------------------
+        private volatile DispatcherOperation? _observerOperation = null;
+
+
+        //---------------------FUNCTIONS---------------------------
 
 
         public ChooseCallWindow(int id)
@@ -81,16 +101,24 @@ namespace PL.CallsOfVolunteer
             s_bl.Call.RemoveObserver(ChooseCallsObserver);
         }
 
-        private void ChooseCallsObserver() => queryChooseCalls();
+        
+        private void ChooseCallsObserver()
+        {
+            if (_observerOperation is null || _observerOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _observerOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    queryChooseCalls();
+                });
+            }
+        }
 
-        //private void queryChooseCalls(object sender, RoutedEventArgs e)
+
         private void queryChooseCalls()
-
         {
             try
             {
                 ListOfCalls = s_bl.Call.GetListOfOpenCall(volunteerId, CallTypeSelected, SortSelected);
-
             }
             catch (Exception ex)
             {
@@ -134,10 +162,18 @@ namespace PL.CallsOfVolunteer
         //}
 
         // Event handler for when the CallType or Sort selection changes
+
+
         private void FilterOrSortChanged(object sender, RoutedEventArgs e)
         {
             queryChooseCalls();
         }
+
+
+
+
+        //---------------------BUTTONS---------------------------
+
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
@@ -147,15 +183,7 @@ namespace PL.CallsOfVolunteer
 
         }
 
-        // DependencyProperty pour CurrentCall
-        public BO.OpenCallInList CurrentCall
-        {
-            get { return (BO.OpenCallInList)GetValue(CurrentCallProperty); }
-            set { SetValue(CurrentCallProperty, value); }
-        }
 
-        public static readonly DependencyProperty CurrentCallProperty =
-            DependencyProperty.Register("CurrentCall", typeof(BO.OpenCallInList), typeof(ChooseCallWindow));
 
         public ICommand SelectCallCommand => new RelayCommand<BO.OpenCallInList>(call =>
         {
@@ -220,11 +248,7 @@ namespace PL.CallsOfVolunteer
                 MessageBox.Show($"An error occurred while assigning the call: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-
         }
-
-
-
 
     }
 }

@@ -46,15 +46,6 @@
     <MaxTime xsi:nil="true" />
   </Call>
   <Call>
-    <CallId>7</CallId>
-    <CallType>Math_Primary</CallType>
-    <Address>60 Gaza Street, Jerusalem</Address>
-    <Latitude>35.21205714918638</Latitude>
-    <Longitude>31.771053788166768</Longitude>
-    <OpenTime>2025-01-26T16:30:24</OpenTime>
-    <MaxTime xsi:nil="true" />
-  </Call>
-  <Call>
     <CallId>9</CallId>
     <CallType>Math_High</CallType>
     <Address>40 Masliansky Street, Jerusalem</Address>
@@ -447,6 +438,15 @@
     <Address>4 Herzl Boulevard, Jerusalem</Address>
     <Latitude>42.653755</Latitude>
     <Longitude>-77.068831</Longitude>
+    <OpenTime>2025-01-26T16:30:24</OpenTime>
+    <MaxTime xsi:nil="true" />
+  </Call>
+  <Call>
+    <CallId>7</CallId>
+    <CallType>Math_Primary</CallType>
+    <Address>60 Gaza Street, Jerusalem</Address>
+    <Latitude>31.870383</Latitude>
+    <Longitude>35.448549</Longitude>
     <OpenTime>2025-01-26T16:30:24</OpenTime>
     <MaxTime xsi:nil="true" />
   </Call>

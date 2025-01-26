@@ -43,20 +43,6 @@
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
-    <VolunteerId>327598595</VolunteerId>
-    <Name>Ivy Kidron</Name>
-    <Phone>0535678901</Phone>
-    <Email>Ivy@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>AirDistance</DistanceType>
-    <Password>strong@pw</Password>
-    <Address>Herzl Boulevard 89, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>22766</Longitude>
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
     <VolunteerId>565353679</VolunteerId>
     <Name>Esteria Eisenberg</Name>
     <Phone>0771234567</Phone>
@@ -222,6 +208,20 @@
     <Distance>31.900083</Distance>
     <Latitude>35.179287</Latitude>
     <Longitude>31997</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>327598595</VolunteerId>
+    <Name>Ivy Kidrone</Name>
+    <Phone>0535678901</Phone>
+    <Email>Ivy@blablabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>jiknov@mf</Password>
+    <Address>Herzl Boulevard 89, Jerusalem</Address>
+    <Distance>31.759595</Distance>
+    <Latitude>0</Latitude>
+    <Longitude>0</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
 </ArrayOfVolunteer>

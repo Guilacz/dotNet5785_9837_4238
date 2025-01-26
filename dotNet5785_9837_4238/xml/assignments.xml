@@ -416,4 +416,12 @@
     <TypeOfEnd>Fulfilled</TypeOfEnd>
     <FinishTime>2025-01-26T16:32:20.4335108+02:00</FinishTime>
   </Assignment>
+  <Assignment>
+    <Id>52</Id>
+    <CallId>7</CallId>
+    <VolunteerId>147142541</VolunteerId>
+    <StartTime>2025-01-26T17:56:58.4055133+02:00</StartTime>
+    <TypeOfEnd>Fulfilled</TypeOfEnd>
+    <FinishTime>2025-01-26T17:57:10.5321884+02:00</FinishTime>
+  </Assignment>
 </Assignments>

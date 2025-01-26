@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PL.Volunteer
 {
@@ -127,12 +128,24 @@ namespace PL.Volunteer
             }
         }
 
+
+        private volatile DispatcherOperation? _volunteerOperation = null;
+
+       
+
         private void VolunteerObserver()
         {
-            int id = CurrentVolunteer!.VolunteerId;
-            CurrentVolunteer = null;
-            CurrentVolunteer = s_bl.Volunteer.Read(id);
+            if (_volunteerOperation is null || _volunteerOperation.Status == DispatcherOperationStatus.Completed)
+            {
+                _volunteerOperation = Dispatcher.BeginInvoke(() =>
+                {
+                    int id = CurrentVolunteer!.VolunteerId;
+                    CurrentVolunteer = null;
+                    CurrentVolunteer = s_bl.Volunteer.Read(id);
+                });
+            }
         }
+
 
 
         //------------------BUTTONS---------------------------
