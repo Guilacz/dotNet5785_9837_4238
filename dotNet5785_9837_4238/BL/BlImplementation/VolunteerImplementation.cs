@@ -42,64 +42,64 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="volId">The ID of the volunteer.</param>
     /// <param name="callId">The ID of the call.</param>
     /// </summary>
-    public void ChoiceOfCallToCare(int volId, int callId)
-    {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+    //public void ChoiceOfCallToCare(int volId, int callId)
+    //{
+    //    Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
-        try
-        {
-            lock (AdminManager.BlMutex) ; //stage 7
+    //    try
+    //    {
+    //        lock (AdminManager.BlMutex) ; //stage 7
 
-                DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
-            if (call == null)
-                throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
-            lock (AdminManager.BlMutex) ; //stage 7
+    //        DO.Call? call = _dal.Call.ReadAll().FirstOrDefault(c => c.CallId == callId);
+    //        if (call == null)
+    //            throw new BO.BlInvalidValueException($"Call with ID {callId} does not exist.");
+    //        lock (AdminManager.BlMutex) ; //stage 7
 
-            DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
-            if (volunteer == null)
-                throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
-            BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
-            if (!Helpers.CallManager.CheckCall(boCall))
-                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
-            if (!Helpers.Tools.CheckAddressCall(boCall))// בדיקת תקינות כתובת
-              throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //        DO.Volunteer? volunteer = _dal.Volunteer.ReadAll().FirstOrDefault(v => v.VolunteerId == volId);
+    //        if (volunteer == null)
+    //            throw new BO.BlInvalidValueException($"Volunteer with ID {volId} does not exist.");
+    //        BO.Call boCall = Helpers.CallManager.ConvertCallToBO(call, _dal);
+    //        if (!Helpers.CallManager.CheckCall(boCall))
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+    //        if (!Helpers.Tools.CheckAddressCall(boCall))// בדיקת תקינות כתובת
+    //            throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
 
-            BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
-            if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
-                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+    //        BO.Volunteer boVolunteer = Helpers.VolunteerManager.ConvertVolToBO(volunteer);
+    //        if (!Helpers.VolunteerManager.CheckVolunteer(boVolunteer))
+    //            throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
-            if (!Helpers.Tools.CheckAddressVolunteer(boVolunteer))// בדיקת תקינות כתובת
-                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+    //        if (!Helpers.Tools.CheckAddressVolunteer(boVolunteer))// בדיקת תקינות כתובת
+    //            throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
 
-            IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
-            bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
-            if (isCallAlreadyHandled)
-                throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled.");
-            bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
-            if (isCallInProcess)
-                throw new BO.BlInvalidValueException($"Call with ID {callId} is already in process by another volunteer.");
-            lock (AdminManager.BlMutex) ; //stage 7
-            {
-                var newAssignment = new DO.Assignment
-                (
-                    Id: assignments.Any()
-                        ? assignments.Max(a => a.Id) + 1
-                        : 1,
-                    CallId: callId,
-                    VolunteerId: volId,
-                    StartTime: DateTime.Now,
-                    TypeOfEnd: null,
-                    FinishTime: null
-                );
-                _dal.Assignment.Create(newAssignment);
-            }
-        }
-        catch (DO.DalInvalidValueException ex)
-        {
-            throw new BO.BlInvalidValueException(ex.Message);
-        }
-    }
+    //        IEnumerable<DO.Assignment> assignments = _dal.Assignment.ReadAll();
+    //        bool isCallAlreadyHandled = assignments.Any(a => a.CallId == callId && a.FinishTime != null);
+    //        if (isCallAlreadyHandled)
+    //            throw new BO.BlInvalidValueException($"Call with ID {callId} has already been handled.");
+    //        bool isCallInProcess = assignments.Any(a => a.CallId == callId && a.FinishTime == null);
+    //        if (isCallInProcess)
+    //            throw new BO.BlInvalidValueException($"Call with ID {callId} is already in process by another volunteer.");
+    //        lock (AdminManager.BlMutex) ; //stage 7
+    //        {
+    //            var newAssignment = new DO.Assignment
+    //            (
+    //                Id: assignments.Any()
+    //                    ? assignments.Max(a => a.Id) + 1
+    //                    : 1,
+    //                CallId: callId,
+    //                VolunteerId: volId,
+    //                StartTime: DateTime.Now,
+    //                TypeOfEnd: null,
+    //                FinishTime: null
+    //            );
+    //            _dal.Assignment.Create(newAssignment);
+    //        }
+    //    }
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+    //}
 
 
     /// <summary>
@@ -129,7 +129,7 @@ internal class VolunteerImplementation : IVolunteer
         //}
         try
         {
-            lock (AdminManager.BlMutex) ; //stage 7
+            lock (AdminManager.BlMutex)  //stage 7
             _dal.Volunteer.Delete(volId);
             VolunteerManager.Observers.NotifyListUpdated();
             VolunteerManager.Observers.NotifyItemUpdated(volId);
@@ -231,45 +231,49 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            lock (AdminManager.BlMutex) ;  //stage 7
-
-            var volunteersFromDal = _dal.Volunteer.ReadAll();
-            string passwordAsString = password.ToString();
-
-            var vol = volunteersFromDal.FirstOrDefault(v => v.VolunteerId == id && v.Password == passwordAsString);
-
-            //if (vol == null)
-            //{
-            //    throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
-            //}
-            //if (vol.Latitude == null || vol.Longitude == null)
-            //{
-            //    var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-            //    vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
-            //}
-            if (vol == null)
+            lock (AdminManager.BlMutex)
             {
-                throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
-            }
-            if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
-            {
-                VolunteerId = vol.VolunteerId,
-                Name = vol.Name,
-                Phone = vol.Phone,
-                Email = vol.Email,
-                RoleType = (BO.Role)vol.RoleType,
-                DistanceType = (BO.DistanceType)vol.DistanceType,
-                Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
-                //Password = vol.Password,
-                Address = vol.Address,
-                Distance = vol.Distance,
-                Latitude = vol.Latitude,
-                Longitude = vol.Longitude,
-                IsActive = vol.IsActive,
-            }))
+
+                var volunteersFromDal = _dal.Volunteer.ReadAll();
+                string passwordAsString = password.ToString();
+
+                var vol = volunteersFromDal.FirstOrDefault(v => v.VolunteerId == id && v.Password == passwordAsString);
+
+
+                //if (vol == null)
+                //{
+                //    throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+                //}
+                //if (vol.Latitude == null || vol.Longitude == null)
+                //{
+                //    var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+                //    vol = vol with { Latitude = coordinates.Latitude, Longitude = coordinates.Longitude };
+                //}
+                if (vol == null)
+                {
+                    throw new BO.BlArgumentNullException("Volunteer not found or incorrect password.");
+                }
+                if (!Helpers.VolunteerManager.CheckVolunteer(new BO.Volunteer
+                {
+                    VolunteerId = vol.VolunteerId,
+                    Name = vol.Name,
+                    Phone = vol.Phone,
+                    Email = vol.Email,
+                    RoleType = (BO.Role)vol.RoleType,
+                    DistanceType = (BO.DistanceType)vol.DistanceType,
+                    Password = Helpers.VolunteerManager.DecryptPassword(vol.Password),
+                    //Password = vol.Password,
+                    Address = vol.Address,
+                    Distance = vol.Distance,
+                    Latitude = vol.Latitude,
+                    Longitude = vol.Longitude,
+                    IsActive = vol.IsActive,
+                }))
                     throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
-          
-            return (BO.Role)vol.RoleType;
+
+                return (BO.Role)vol.RoleType;
+
+            }
 
         }
         catch (DO.DalArgumentNullException ex)
@@ -301,12 +305,7 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} not found.");
             }
-            if (vol.Latitude == null || vol.Longitude == null)
-            {
-                var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-                vol.Latitude = coordinates.Latitude;
-                vol.Longitude = coordinates.Longitude;
-            }
+           
             BO.Volunteer boVolunteer = new BO.Volunteer
             {
                 VolunteerId = vol.VolunteerId,
@@ -331,7 +330,10 @@ internal class VolunteerImplementation : IVolunteer
             {
                 throw new BO.BlInvalidValueException("Invalid volunteer data.");
             }
-            if (!Helpers.Tools.CheckAddressVolunteer(boVolunteer)// בדיקת תקינות כתובת
+
+            bool isAddressValid = Task.Run(() => Helpers.Tools.CheckAddressVolunteer(vol)).GetAwaiter().GetResult();
+
+            if (!isAddressValid)
                 throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
 
             return boVolunteer;
@@ -364,15 +366,17 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            lock (AdminManager.BlMutex) ;  //stage 7
+            IEnumerable<DO.Volunteer> volunteers; 
+            lock (AdminManager.BlMutex)   //stage 7
+                volunteers = _dal.Volunteer.ReadAll();
 
-            IEnumerable<DO.Volunteer> volunteers = _dal.Volunteer.ReadAll();
-            lock (AdminManager.BlMutex) ;  //stage 7
+            IEnumerable<DO.Assignment> assignment; 
+            lock (AdminManager.BlMutex)   //stage 7
+                assignment = _dal.Assignment.ReadAll();
 
-            IEnumerable<DO.Assignment> assignment = _dal.Assignment.ReadAll();
-            lock (AdminManager.BlMutex) ;  //stage 7
-
-            IEnumerable<DO.Call> calls = _dal.Call.ReadAll();
+            IEnumerable<DO.Call> calls; 
+            lock (AdminManager.BlMutex)  //stage 7
+                calls = _dal.Call.ReadAll();
 
             //var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
             //{
@@ -562,22 +566,24 @@ internal class VolunteerImplementation : IVolunteer
     /// <param name="volId">The ID of the volunteer to update.</param>
     /// <param name="vol">A BO.Volunteer object containing the updated details.</param>
     /// <exception cref="BO.BlInvalidValueException"/>
+    /// 
+
     public void Update(int volId, BO.Volunteer vol)
     {
         Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
-            vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
-            lock (AdminManager.BlMutex) ; //stage 7        
 
-            var volun = _dal.Volunteer.Read(volId);
-            var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-            double latitude = coordinates.Latitude;
-            double longitude = coordinates.Longitude;
-            vol.Latitude = latitude;
-            vol.Longitude = longitude;
-            lock (AdminManager.BlMutex) ;  //stage 7
+            vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
+            DO.Volunteer? volun;
+            lock (AdminManager.BlMutex)  //stage 7
+                volun = _dal.Volunteer.Read(volId);
+
+            vol.Latitude = 0; 
+            vol.Longitude = 0;
+
+            lock (AdminManager.BlMutex)   //stage 7
             {
                 if (volun.RoleType == DO.Role.Manager)
                 {
@@ -589,6 +595,7 @@ internal class VolunteerImplementation : IVolunteer
                     }
                 }
             }
+            
             if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
                 throw new BO.BlInvalidValueException("Password not strong enough.");
 
@@ -598,8 +605,9 @@ internal class VolunteerImplementation : IVolunteer
             {
                 if (!Helpers.VolunteerManager.CheckVolunteer(vol))
                     throw new BO.BlInvalidValueException("Invalid volunteer data.");
-                if (!Helpers.Tools.CheckAddressVolunteer(vol))// בדיקת תקינות כתובת
-                    throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
+
+
 
                 else
                 {
@@ -621,16 +629,126 @@ internal class VolunteerImplementation : IVolunteer
                     VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
                     VolunteerManager.Observers.NotifyListUpdated();
                 }
+
+
             }
 
-        }
+            UpdateCoordinatesAsyncVol(vol);
 
+        }
         catch (DO.DalInvalidValueException ex)
         {
             throw new BO.BlInvalidValueException(ex.Message);
         }
-
+        catch (Exception ex)
+        {
+            // Gérer les erreurs de réseau ou autres exceptions
+            throw new BO.BlInvalidValueException($"An error occurred: {ex.Message}");
+        }
     }
+
+    private async Task UpdateCoordinatesAsyncVol(BO.Volunteer vol)
+    {
+        try
+        {
+            var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(vol.Address);
+            vol.Latitude = coordinates.Latitude;
+            vol.Longitude = coordinates.Longitude;
+
+            if (!!Helpers.VolunteerManager.CheckVolunteer(vol) || !await Helpers.Tools.CheckAddressVolunteer(vol))
+                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
+            lock (AdminManager.BlMutex)
+            {
+                DO.Volunteer vol2 = Helpers.VolunteerManager.DOManeger(vol);
+                _dal.Volunteer.Update(vol2);
+            }
+
+            VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+            VolunteerManager.Observers.NotifyListUpdated();
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Failed to update coordinates: {ex.Message}");
+        }
+    }
+
+
+    //public void Update(int volId, BO.Volunteer vol)
+    //{
+    //    Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
+    //    try
+    //    {
+    //        vol.Password = Helpers.VolunteerManager.DecryptPassword(vol.Password);
+    //        lock (AdminManager.BlMutex) ; //stage 7        
+
+    //        var volun = _dal.Volunteer.Read(volId);
+    //        var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
+    //        double latitude = coordinates.Latitude;
+    //        double longitude = coordinates.Longitude;
+    //        vol.Latitude = latitude;
+    //        vol.Longitude = longitude;
+    //        lock (AdminManager.BlMutex) ;  //stage 7
+    //        {
+    //            if (volun.RoleType == DO.Role.Manager)
+    //            {
+    //                var managers = _dal.Volunteer.ReadAll().Count(v => v.RoleType == DO.Role.Manager);
+
+    //                if (managers <= 1)
+    //                {
+    //                    throw new BO.BlInvalidValueException("Cannot change role: System must have at least one manager.");
+    //                }
+    //            }
+    //        }
+    //        if (!Helpers.VolunteerManager.CheckValidityOfPassword(volun.Password))
+    //            throw new BO.BlInvalidValueException("Password not strong enough.");
+
+    //        if (!(volun.VolunteerId == volId || volun.RoleType == 0))
+    //            throw new BO.BlInvalidValueException("Volunteer not found or incorrect password.");
+    //        else
+    //        {
+    //            if (!Helpers.VolunteerManager.CheckVolunteer(vol))
+    //                throw new BO.BlInvalidValueException("Invalid volunteer data.");
+
+
+
+    //            bool isAddressValid = Task.Run(() => Helpers.Tools.CheckAddressVolunteer(vol)).GetAwaiter().GetResult();
+
+    //            if (!isAddressValid) 
+    //                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+
+
+    //            else
+    //            {
+    //                lock (AdminManager.BlMutex)   //stage 7
+    //                {
+    //                    if (vol.RoleType == 0)
+    //                    {
+    //                        DO.Volunteer DOvolunteer = VolunteerManager.DOManeger(vol);
+    //                        _dal.Volunteer.Update(DOvolunteer);
+    //                    }
+    //                    else
+    //                    {
+    //                        DO.Volunteer DOvolunteer = VolunteerManager.DOVolunteer(volun, vol);
+    //                        _dal.Volunteer.Update(DOvolunteer);
+    //                        //CallManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+    //                        //CallManager.Observers.NotifyListUpdated();
+    //                    }
+    //                }
+    //                VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+    //                VolunteerManager.Observers.NotifyListUpdated();
+    //            }
+    //        }
+
+    //    }
+
+    //    catch (DO.DalInvalidValueException ex)
+    //    {
+    //        throw new BO.BlInvalidValueException(ex.Message);
+    //    }
+
+    //}
 
     public int sumOfCalls(int id)
     {
@@ -664,19 +782,13 @@ internal class VolunteerImplementation : IVolunteer
     {
         Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
-        var coordinates = Helpers.Tools.GetAddressCoordinates(vol.Address);
-        vol.Latitude = coordinates.Latitude;
-        vol.Longitude = coordinates.Longitude;
-        if (!Helpers.VolunteerManager.CheckVolunteer(vol))
-        {
-            throw new BO.BlInvalidValueException("Invalid volunteer data.");
-        }
-        if (!Helpers.Tools.CheckAddressVolunteer(vol))// בדיקת תקינות כתובת
-            throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
+       
 
-        if (!Helpers.VolunteerManager.CheckValidityOfPassword(vol.Password))
+        if (!Helpers.VolunteerManager.CheckValidityOfPassword(vol.Password!))
             throw new BO.BlInvalidValueException("Password not strong enough .");
-        vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password);
+
+        vol.Password = Helpers.VolunteerManager.EncryptPassword(vol.Password!);
+
         try
         {
             lock (AdminManager.BlMutex) //stage 7        
@@ -687,8 +799,8 @@ internal class VolunteerImplementation : IVolunteer
                     RoleType = (DO.Role)vol.RoleType,
                     DistanceType = (DO.Distance)vol.DistanceType,
                     Name = vol.Name,
-                    Latitude = vol.Latitude,
-                    Longitude = vol.Longitude,
+                    Latitude = vol.Latitude ?? 0, // Temporary value
+                    Longitude = vol.Longitude ?? 0, // Temporary value
                     Phone = vol.Phone,
                     Email = vol.Email,
                     Password = vol.Password,
@@ -698,6 +810,8 @@ internal class VolunteerImplementation : IVolunteer
                 });
                 VolunteerManager.Observers.NotifyListUpdated();
             }
+
+            UpdateCoordinatesAsyncVol(vol);
         }
         catch (DO.DalAlreadyExistException ex)
         {
@@ -712,4 +826,5 @@ internal class VolunteerImplementation : IVolunteer
             throw new BO.BlInvalidValueException(ex.Message);
         }
     }
+
 }

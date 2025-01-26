@@ -8,7 +8,7 @@ namespace BlApi;
 /// </summary>
 public interface IVolunteer : IObservable
 {
-    BO.Role EnterSystem(string name, string password);
+    //BO.Role EnterSystem(string name, string password);
     BO.Role EnterSystemWithId(int id, string password);
     string NewPassword();
 

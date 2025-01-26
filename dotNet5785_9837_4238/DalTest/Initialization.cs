@@ -3,6 +3,7 @@
 using DalApi;
 using DO;
 using System;
+using System.Data;
 
 /// <summary>
 /// Initialization of the elements
@@ -141,33 +142,44 @@ public static class Initialization
     "061234567"   // קידומת 06 (השרון)
 };
 
+        double[] lati = new double[]
+        {
+            31.759595, 31.70954, 31.77676, 31.759595, 31.870383, 31.7596386, 31.7317721, 31.784252, 31.759595, 31.759595, 31.759595, 31.759595, 31.759595, 31.759595, 31.780094, 31.900083
+        };
+
+        double[] longi = new double[]
+        {
+            35.215315, 35.205725, 35.230342, 35.215315, 35.448549, 35.2152076, 35.2056864, 35.211645, 35.215315, 35.215315, 35.215315, 35.215315, 35.215315, 35.215315, 35.218297, 35.179287
+        }; 
+
 
 
         for (int i = 0; i < 5; i++)
         {
+          ;
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i], volunteersMails[i],
-                Role.Volunteer, Distance.AirDistance, password[i], volunteersAdress[i], distance));
+                Role.Volunteer, Distance.AirDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
         }
         for (int i = 5; i < 10; i++)
         {
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
-                volunteersMails[i], Role.Volunteer, Distance.CarDistance, password[i], volunteersAdress[i], distance));
+                volunteersMails[i], Role.Volunteer, Distance.CarDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
         }
         for (int i = 10; i < 15; i++)
         {
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
-                volunteersMails[i], Role.Volunteer, Distance.WalkDistance, password[i], volunteersAdress[i], distance));
+                volunteersMails[i], Role.Volunteer, Distance.WalkDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
         }
         distance = random.Next(0, 40000);
 
         s_dal.Volunteer.Create(new Volunteer(id[15], volunteersNames[15], phoneNumbers[15], volunteersMails[15],
-            0, 0, password[15], volunteersAdress[15], distance));
+            0, 0, password[15], volunteersAdress[15], lati[15], longi[15], distance));
 
 
     }

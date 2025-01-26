@@ -142,15 +142,16 @@ public static class Tools
                 throw new ArgumentException("Address cannot be null or empty.", nameof(address));
             }
 
-            const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
+            //braha
+           // const string LocationIqApiKey = "pk.ddce0bbd11edfee17d07cb35922321f7";
             ///guila
-   //   const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
+             const string LocationIqApiKey = "pk.ff579c3ac84dedc53e60bd54521cc03e";
             const string BaseUrl = "https://us1.locationiq.com/v1/search.php";
             string requestUrl = $"{BaseUrl}?key={LocationIqApiKey}&q={Uri.EscapeDataString(address)}&format=json";
 
             using (var client = new HttpClient())
             {
-                await Task.Delay(1000); 
+                //await Task.Delay(1000); 
 
                 HttpResponseMessage response;
                 try
@@ -258,10 +259,20 @@ public static class Tools
     ///  function to calculate the distance between two addresses
     ///  we use Haversine formula
     /// </summary>
-    public static async Task<double> CalculateDistanceBetweenAddresses(string address1, string address2)
+    public static async Task<double> CalculateDistanceBetweenAddresses(DO.Volunteer? vol, DO.Call call)
     {
-        var (latitude1, longitude1) =await GetAddressCoordinatesAsync(address1);
-        var (latitude2, longitude2) =await GetAddressCoordinatesAsync(address2);
+        //var (latitude1, longitude1) =await GetAddressCoordinatesAsync(address1);
+        //var (latitude2, longitude2) =await GetAddressCoordinatesAsync(address2);
+
+        if (vol.Latitude == null || vol.Longitude == null || call.Latitude == null || call.Longitude == null)
+        {
+            throw new ArgumentException("There is a problem with the coordinates.");
+        }
+
+        var latitude1 = vol.Latitude ?? 0.0;
+        var longitude1 = vol.Longitude ?? 0.0;
+        var latitude2 = call.Latitude;
+        var longitude2 = call.Longitude;
 
         const double EarthRadiusKm = 6371.0;
 

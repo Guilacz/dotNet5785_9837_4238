@@ -260,8 +260,10 @@ internal class CallManager
     /// </summary>
     internal static void PeriodicCallUpdates()
     {
-        lock (AdminManager.BlMutex) ; //stage 7
-        var allCalls = _dal.Call.ReadAll();
+        
+        IEnumerable<DO.Call> allCalls;
+        lock (AdminManager.BlMutex)  //stage 7
+            allCalls = _dal.Call.ReadAll();
 
         foreach (var call in allCalls)
         {
@@ -270,22 +272,31 @@ internal class CallManager
             {
                 if (CurrentCall.CallStatus != CallInListStatus.Closed)
                 {
-                    lock (AdminManager.BlMutex) ; //stage 7
-                    var assignments = _dal.Assignment.ReadAll().Where(a => a.CallId == call.CallId).ToList();
 
+                    List<DO.Assignment> assignments;
+                    lock (AdminManager.BlMutex)  //stage 7
+                        assignments = _dal.Assignment.ReadAll().Where(a => a.CallId == call.CallId).ToList();
+
+                    
                     if (assignments.Count == 0)
                     {
                         // No assignment exists, create a new one with "Expired Cancellation"
-                        lock (AdminManager.BlMutex) ; //stage 7
-                        var newAssignment = new DO.Assignment
+
+
+                        DO.Assignment newAssignment;
+                        lock (AdminManager.BlMutex)  //stage 7
+
                         {
-                            CallId = call.CallId,
-                            VolunteerId = null,
-                            StartTime = AdminManager.Now,
-                            FinishTime = AdminManager.Now,
-                            TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
-                        };
-                        assignments.Add(newAssignment);
+                            newAssignment = new DO.Assignment
+                            {
+                                CallId = call.CallId,
+                                VolunteerId = null,
+                                StartTime = AdminManager.Now,
+                                FinishTime = AdminManager.Now,
+                                TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
+                            };
+                            assignments.Add(newAssignment);
+                        }
                         Observers.NotifyListUpdated(); 
                     }
                     else
@@ -294,18 +305,20 @@ internal class CallManager
                         var assignment = assignments.LastOrDefault(a => !a.FinishTime.HasValue);
                         if (assignment != null)
                         {
-                            lock (AdminManager.BlMutex) ; //stage 7
-                            var updatedAssignment = assignment with
+                            lock (AdminManager.BlMutex)  //stage 7
                             {
-                                FinishTime = AdminManager.Now,
-                                TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
-                            };
-                            lock (AdminManager.BlMutex) ; //stage 7
-                            _dal.Assignment.Update(updatedAssignment);
+                                var updatedAssignment = assignment with
+                                {
+                                    FinishTime = AdminManager.Now,
+                                    TypeOfEnd = DO.TypeOfEnd.CancelledAfterTime
+                                };
+                                //stage 7
+                                _dal.Assignment.Update(updatedAssignment);
+                            }
                             Observers.NotifyItemUpdated(call.CallId);
                         }
                     }
-                    lock (AdminManager.BlMutex) ; //stage 7
+                    lock (AdminManager.BlMutex)  //stage 7
                     _dal.Call.Update(call);
                     Observers.NotifyItemUpdated(call.CallId);
                 }

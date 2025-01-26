@@ -27,23 +27,23 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static bool CheckVolunteer(BO.Volunteer vol)
     {
-        if(!CheckMail(vol.Email))
+        if (!CheckMail(vol.Email))
             return false;
-        if(!IsValidID(vol.VolunteerId))
+        if (!IsValidID(vol.VolunteerId))
             return false;
-        if(!CheckPhone(vol.Phone)) 
+        if (!CheckPhone(vol.Phone))
             return false;
         //if (!Tools.CheckAddressVolunteer(vol))
         //    return false;
-    //    if(!CheckValidityOfPassword(vol.Password))
-     //       return false;
-  
+        //    if(!CheckValidityOfPassword(vol.Password))
+        //       return false;
+
         return true;
     }
 
 
 
-    
+
 
     /// <summary>
     /// check validity of the mail
@@ -69,8 +69,8 @@ internal class VolunteerManager
             return false;
 
         int atIndex = email.IndexOf('@');
-        int dotIndex = email.IndexOf('.', atIndex); 
-        if (dotIndex == -1 || dotIndex <= atIndex + 1) 
+        int dotIndex = email.IndexOf('.', atIndex);
+        if (dotIndex == -1 || dotIndex <= atIndex + 1)
             return false;
 
         return true;
@@ -85,14 +85,21 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
-        lock (AdminManager.BlMutex) ; //stage 7
-        IEnumerable<DO.Volunteer> volunteers = s_dal.Volunteer.ReadAll();
-        lock (AdminManager.BlMutex) ; //stage 7
-        IEnumerable<DO.Assignment> assignment = s_dal.Assignment.ReadAll();
-        lock (AdminManager.BlMutex) ; //stage 7
-        IEnumerable<DO.Call> calls = s_dal.Call.ReadAll();
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Assignment assi = assignment.LastOrDefault(a => a.VolunteerId == volunteer.VolunteerId && a.FinishTime == null);
+        IEnumerable<DO.Volunteer> volunteers; 
+        lock (AdminManager.BlMutex)  //stage 7
+            volunteers = s_dal.Volunteer.ReadAll();
+
+        IEnumerable<DO.Assignment> assignment;
+        lock (AdminManager.BlMutex)  //stage 7
+            assignment = s_dal.Assignment.ReadAll();
+
+        IEnumerable<DO.Call> calls; 
+        lock (AdminManager.BlMutex)  //stage 7
+            calls = s_dal.Call.ReadAll();
+
+        DO.Assignment assi;
+        lock (AdminManager.BlMutex)  //stage 7
+            assi = assignment.LastOrDefault(a => a.VolunteerId == volunteer.VolunteerId && a.FinishTime == null);
         return new BO.Volunteer
         {
             VolunteerId = volunteer.VolunteerId,
@@ -128,12 +135,15 @@ internal class VolunteerManager
             return null;
 
         // Try to read the call; return null if it doesn't exist
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Call? call = s_dal.Call.Read(assignment.CallId);
+        DO.Call? call; 
+        lock (AdminManager.BlMutex)  //stage 7
+            call = s_dal.Call.Read(assignment.CallId);
         if (call == null)
             return null;
-        lock (AdminManager.BlMutex) ; //stage 7
-        IEnumerable<DO.Assignment> assignmentss = s_dal.Assignment.ReadAll();
+
+        IEnumerable<DO.Assignment> assignmentss;
+        lock (AdminManager.BlMutex)  //stage 7
+            assignmentss = s_dal.Assignment.ReadAll();
 
         //BO.CallStatus status = Helpers.CallManager.GetCallStatus(call, assignmentss);
         BO.CallInProgressStatus? callInProgressStatus = GetCallInProgressStatus(call, assignmentss);
@@ -167,9 +177,9 @@ internal class VolunteerManager
                 var isInCare = assignments.Any(a => a.CallId == call.CallId && a.FinishTime == null);
                 if (isInCare)
                 {
-                    return CallInProgressStatus.InCareAtRisk; 
+                    return CallInProgressStatus.InCareAtRisk;
                 }
-                return null; 
+                return null;
 
             default:
                 return null;
@@ -191,18 +201,18 @@ internal class VolunteerManager
 
         while (id > 0)
         {
-            int digit = id % 10; 
-            id /= 10; 
+            int digit = id % 10;
+            id /= 10;
 
             if (doubleDigit)
             {
                 digit *= 2;
                 if (digit > 9)
-                    digit -= 9; 
+                    digit -= 9;
             }
 
             sum += digit;
-            doubleDigit = !doubleDigit; 
+            doubleDigit = !doubleDigit;
         }
 
         return sum % 10 == 0;
@@ -215,7 +225,7 @@ internal class VolunteerManager
     internal static bool CheckPhone(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone) || (phone.Length != 9 && phone.Length != 10))
-             return false;
+            return false;
 
         if (!phone.All(char.IsDigit))
             return false;
@@ -223,7 +233,7 @@ internal class VolunteerManager
         if (phone.StartsWith("05") || phone.StartsWith("02") || phone.StartsWith("03") || phone.StartsWith("04") ||
             phone.StartsWith("09") || phone.StartsWith("06") || phone.StartsWith("07"))
             return true;
-        
+
 
         return false;
     }
@@ -239,18 +249,22 @@ internal class VolunteerManager
         string FullName = vol.Name;
         string Phone = vol.Phone;
         string Email = vol.Email;
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Role Role = (DO.Role)vol.RoleType;
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
+
+        DO.Role Role;
+        lock (AdminManager.BlMutex)  //stage 7
+            Role = (DO.Role)vol.RoleType;
+
+        DO.Distance DistanceType;
+        lock (AdminManager.BlMutex)  //stage 7
+        DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol.IsActive;
         string? Password = vol.Password;
         string? Address = vol.Address;
         double? Distance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
-        lock (AdminManager.BlMutex) ; //stage 7
-        return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address,Distance, Latitude, Longitude, Active);
+        
+            return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address, Distance, Latitude, Longitude, Active);
     }
 
 
@@ -266,17 +280,19 @@ internal class VolunteerManager
         string FullName = vol.Name;
         string Phone = vol.Phone;
         string Email = vol.Email;
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Role Role = (DO.Role)vol1.RoleType;
-        lock (AdminManager.BlMutex) ; //stage 7
-        DO.Distance DistanceType = (DO.Distance)vol.DistanceType;
+        DO.Role Role;
+        lock (AdminManager.BlMutex)  //stage 7
+            Role = (DO.Role)vol1.RoleType;
+        DO.Distance DistanceType; 
+        lock (AdminManager.BlMutex)  //stage 7
+            DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol1.IsActive;
         string? Password = EncryptPassword(vol.Password);
         string? Adress = vol.Address;
         double? MaxDistance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
-        lock (AdminManager.BlMutex) ; //stage 7
+        lock (AdminManager.BlMutex)  //stage 7
         return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
 
     }
@@ -289,14 +305,14 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static bool CheckValidityOfPassword(string password)
     {
-        if (password == null) 
+        if (password == null)
             return false;
-        if (password.Length <=8)
+        if (password.Length <= 8)
             return false;
-     //  if (!Regex.IsMatch(password, @"^[a-z@]+$"))
-     //      return false;
-     //   if (!(password.Contains('@') || password.Contains('.')))
-      //      return false;
+        //  if (!Regex.IsMatch(password, @"^[a-z@]+$"))
+        //      return false;
+        //   if (!(password.Contains('@') || password.Contains('.')))
+        //      return false;
         return true;
     }
 
@@ -380,14 +396,14 @@ internal class VolunteerManager
 
         //take all the volunteers if they are active
         lock (AdminManager.BlMutex)  //stage 7
-            doVolunteerList = s_dal.Volunteer.ReadAll(vol=>vol.IsActive==true).ToList();
+            doVolunteerList = s_dal.Volunteer.ReadAll(vol => vol.IsActive == true).ToList();
 
         boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
 
 
         //take all the calls if they have coordinates
         lock (AdminManager.BlMutex)  //stage 7
-            doCallList = s_dal.Call.ReadAll(call => call.Latitude!=null && call.Longitude!=null).ToList();
+            doCallList = s_dal.Call.ReadAll(call => call.Latitude != null && call.Longitude != null).ToList();
 
         boCallList = doCallList.Select(call => Helpers.CallManager.ConvertCallToBO(call, s_dal)).ToList();
 
@@ -403,20 +419,23 @@ internal class VolunteerManager
 
         foreach (var vol in boVolunteerList)
         {
-            lock (AdminManager.BlMutex) 
+            lock (AdminManager.BlMutex)
             {
 
 
                 //if the volunteer doesnt have a current call, then 
-                if (vol.callInCaring != null )
+                if (vol.callInCaring != null)
                 {
-                    foreach (var call in boCallList)
+                    foreach (var call in doCallList)
                     {
+
+                        var DOvol = DOManeger(vol);
                         // check if there is a call in his caring distance
-                        double distance = Tools.CalculateDistanceBetweenAddresses(call.Address, vol.Address);
+                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(DOvol, call)).Result;
+                        var BoCall = Helpers.CallManager.ConvertCallToBO(call, s_dal);
                         if ((distance < vol.Distance))
                         {
-                            callOfVol.Add(call);
+                            callOfVol.Add(BoCall);
                         }
                     }
 
@@ -427,7 +446,7 @@ internal class VolunteerManager
                         Random random = new Random();
                         if (random.Next(0, 100) < 20)
                         {
-                            
+
                             int randomIndex = random.Next(0, callOfVol.Count);
 
                             var selectedCall = callOfVol[randomIndex];
@@ -435,42 +454,43 @@ internal class VolunteerManager
 
                             boCallList.Remove(selectedCall);
                         }
-                           
+
                     }
                 }
 
                 //else if he has a current call check for how long he is taking gare of it
                 else
                 {
-                        //getcalldetails of the (vol.callInCaring.CallId);
-                        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+                    //getcalldetails of the (vol.callInCaring.CallId);
+                    BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+                    var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+                    var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
+                    //find the assignement of the call
+                    DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId);
 
-                        //find the assignement of the call
-                        DO.Assignment callAssignment= assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId);
 
-                   
-                        if (callAssignment != null && callIncaring.MaxTime.HasValue)
+                    if (callAssignment != null && callIncaring.MaxTime.HasValue)
+                    {
+                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
+                        double estimatedTime = distance / 50.0;
+                        estimatedTime += new Random().Next(0, 60);
+
+                        if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
                         {
-                            double distance = Tools.CalculateDistanceBetweenAddresses(callIncaring.Address, vol.Address);
-                            double estimatedTime = distance / 50.0;
-                            estimatedTime += new Random().Next(0, 60);
-
-                            if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
-                            {
-                                callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
-                            }
-
-                            else
-                            {
-                                Random random = new Random();
-                                if (random.Next(0, 100) < 10) // 10% 
-                                {
-                                    callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
-                                }
-
-                            }
-                       
+                            callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
                         }
+
+                        else
+                        {
+                            Random random = new Random();
+                            if (random.Next(0, 100) < 10) // 10% 
+                            {
+                                callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+                            }
+
+                        }
+
+                    }
 
                 }
             }

@@ -44,6 +44,13 @@ public class BlArgumentNullException : Exception
 }
 
 
+[Serializable]
+
+public class BLTemporaryNotAvailableException : Exception
+{
+    public BLTemporaryNotAvailableException(string? message) : base(message) { }
+}
+
 
 
 
