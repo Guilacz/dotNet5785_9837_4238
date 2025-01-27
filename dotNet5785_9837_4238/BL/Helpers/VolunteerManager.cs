@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// Class of all the help function that we will use in the Volunteer Implementation
 /// </summary>
-internal class VolunteerManager
+internal static class VolunteerManager
 {
     private static readonly IDal s_dal = Factory.Get; //stage 4
     internal static ObserverManager Observers = new();
@@ -85,7 +85,7 @@ internal class VolunteerManager
     /// <returns></returns>
     internal static BO.Volunteer ConvertVolToBO(DO.Volunteer volunteer)
     {
-        IEnumerable<DO.Volunteer> volunteers; 
+        IEnumerable<DO.Volunteer> volunteers;
         lock (AdminManager.BlMutex)  //stage 7
             volunteers = s_dal.Volunteer.ReadAll();
 
@@ -93,7 +93,7 @@ internal class VolunteerManager
         lock (AdminManager.BlMutex)  //stage 7
             assignment = s_dal.Assignment.ReadAll();
 
-        IEnumerable<DO.Call> calls; 
+        IEnumerable<DO.Call> calls;
         lock (AdminManager.BlMutex)  //stage 7
             calls = s_dal.Call.ReadAll();
 
@@ -135,7 +135,7 @@ internal class VolunteerManager
             return null;
 
         // Try to read the call; return null if it doesn't exist
-        DO.Call? call; 
+        DO.Call? call;
         lock (AdminManager.BlMutex)  //stage 7
             call = s_dal.Call.Read(assignment.CallId);
         if (call == null)
@@ -256,15 +256,15 @@ internal class VolunteerManager
 
         DO.Distance DistanceType;
         lock (AdminManager.BlMutex)  //stage 7
-        DistanceType = (DO.Distance)vol.DistanceType;
+            DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol.IsActive;
         string? Password = vol.Password;
         string? Address = vol.Address;
         double? Distance = vol.Distance;
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
-        
-            return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address, Distance, Latitude, Longitude, Active);
+
+        return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Address, Distance, Latitude, Longitude, Active);
     }
 
 
@@ -283,7 +283,7 @@ internal class VolunteerManager
         DO.Role Role;
         lock (AdminManager.BlMutex)  //stage 7
             Role = (DO.Role)vol1.RoleType;
-        DO.Distance DistanceType; 
+        DO.Distance DistanceType;
         lock (AdminManager.BlMutex)  //stage 7
             DistanceType = (DO.Distance)vol.DistanceType;
         bool Active = vol1.IsActive;
@@ -293,7 +293,7 @@ internal class VolunteerManager
         double? Latitude = vol.Latitude;
         double? Longitude = vol.Longitude;
         lock (AdminManager.BlMutex)  //stage 7
-        return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
+            return new DO.Volunteer(Id, FullName, Phone, Email, Role, DistanceType, Password, Adress, MaxDistance, Latitude, Longitude, Active);
 
     }
 
@@ -384,145 +384,346 @@ internal class VolunteerManager
     /// simulation function
     /// 
     /// </summary>
+    private static Random s_random = new Random();
+
     internal static void SimulateVolunteerRegistrationToCall()
     {
-
+        List<DO.Assignment> assignmentList;
         List<DO.Volunteer> doVolunteerList;
         List<BO.Volunteer> boVolunteerList;
-        List<DO.Assignment> assignmentList;
         List<DO.Call> doCallList;
         List<BO.Call> boCallList;
 
-
-        //take all the volunteers if they are active
         lock (AdminManager.BlMutex)  //stage 7
             doVolunteerList = s_dal.Volunteer.ReadAll(vol => vol.IsActive == true).ToList();
-
         boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
 
-
-        //take all the calls if they have coordinates
         lock (AdminManager.BlMutex)  //stage 7
-            doCallList = s_dal.Call.ReadAll(call => call.Latitude != null && call.Longitude != null).ToList();
+            doCallList = s_dal.Call.ReadAll().ToList();
 
-        boCallList = doCallList.Select(call => Helpers.CallManager.ConvertCallToBO(call, s_dal)).ToList();
-
-        //take all the assignments
         lock (AdminManager.BlMutex)  //stage 7
             assignmentList = s_dal.Assignment.ReadAll().ToList();
 
 
 
-
-        List<BO.Call> callOfVol = new List<BO.Call>(); 
-        CallImplementation callImplementation = new CallImplementation();
-
-
         foreach (var vol in boVolunteerList)
         {
             lock (AdminManager.BlMutex)
+
             {
-                List<BO.Call> boCallListOpen = boCallList.Where(call => call.CallStatus == CallInListStatus.Open || call.CallStatus == CallInListStatus.OpenAtRisk).ToList();
-
-
-                //if the volunteer doesnt have a current call, then 
+                //if he dosent have a call in caring
                 if (vol.callInCaring == null)
                 {
-                    foreach (var call in boCallListOpen)
+                    IEnumerable<BO.OpenCallInList> openCallInList;
+                    openCallInList = CallManager.GetListOfOpenCall(vol.VolunteerId);
+
+                    if (openCallInList.Count() != 0)
                     {
-                        var DOcall = doCallList.FirstOrDefault(call => call.CallId == call.CallId);
-                        var DOvol = DOManeger(vol);
-                        // check if there is a call in his caring distance
-                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(DOvol, DOcall)).Result;
-                        //var BoCall = Helpers.CallManager.ConvertCallToBO(call, s_dal);
-                        //var status = Helpers.CallManager.GetCallStatus(call, assignmentList);
-
-                        if ((distance < vol.Distance)) //&& status!= CallInListStatus.Closed && status != CallInListStatus.Expired && status != CallInListStatus.InCare && status != CallInListStatus.InCareAtRisk)
-                        {
-                            //if (!callOfVol.Any(c => c.CallId == BoCall.CallId))
-                                callOfVol.Add(call);
-
-                            //break;
-                        }
-                    }
-
-                    //if there is a call, add it to the volunteer
-                    if (callOfVol.Count != 0)
-                    {
-
-                        Random random = new Random();
-                        //if (random.Next(0, 100) < 20)
+                        //if (s_random.Next(0, 100) < 20)
                         //{
-
-                            int randomIndex = random.Next(0, callOfVol.Count);
-
-                            var selectedCall = callOfVol[randomIndex];
-                            callImplementation.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId); 
-                            selectedCall.CallStatus = CallInListStatus.InCare;
-
-                            boCallListOpen.Remove(selectedCall);
-                        //}
-
+                        int randomIndex = s_random.Next(0, openCallInList.Count());
+                        var selectedCall = openCallInList.ElementAt(randomIndex);
+                        CallManager.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId);
+                        
+                        //}   
                     }
+
                 }
 
-                //else if he has a current call check for how long he is taking gare of it
+
+                //if (vol.callInCaring != null)
                 else
                 {
-                    //getcalldetails of the (vol.callInCaring.CallId);
+                    var Docall = doCallList.FirstOrDefault(call => call.CallId == vol.callInCaring.CallId);
+                    var Dovol = doVolunteerList.FirstOrDefault(vol2 => vol2.VolunteerId == vol.VolunteerId);
+                    DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == vol.callInCaring.CallId && assign.VolunteerId == Dovol.VolunteerId);
 
-                    if (vol.callInCaring != null)
+
+
+                    if (callAssignment != null && vol.callInCaring.MaxTime.HasValue)
                     {
-                        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
-                        if (callIncaring != null)
+                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
+                        double estimatedTime = distance / 50.0;
+                        estimatedTime += new Random().Next(0, 60);
+
+                        if ((DateTime.Now - vol.callInCaring.MaxTime.Value).TotalHours > estimatedTime)
                         {
-                            var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
-                            var Dovol = doVolunteerList.FirstOrDefault(vol2 => vol2.VolunteerId == vol.VolunteerId);
-
-                            //        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
-                            //var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
-                            //var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
-                            //find the assignement of the call
-                            DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId && assign.VolunteerId==Dovol.VolunteerId);
-
-
-                            if (callAssignment != null && callIncaring.MaxTime.HasValue)
-                            {
-                                double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
-                                double estimatedTime = distance / 50.0;
-                                estimatedTime += new Random().Next(0, 60);
-
-                                if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
-                                {
-                                    callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
-                                    callIncaring.CallStatus = CallInListStatus.Closed;
-                                }
-
-                                else
-                                {
-                                    Random random = new Random();
-                                    //if (random.Next(0, 100) < 10) // 10% 
-
-                                    callAssignment = callAssignment with
-                                    {
-                                        // FinishTime = DateTime.Now,
-                                        FinishTime = null,
-                                    };
-                                        callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
-                                        callIncaring.CallStatus = CallInListStatus.Open;
-                                    
-
-                                }
-                            }
+                            CallManager.UpdateCallFinished(vol.VolunteerId, vol.callInCaring.CallId, callAssignment.Id);
+                            //vol.callInCaring.CallStatus = CallInListStatus.Closed;
                         }
+
+                        else
+                        {
+
+                            //if (s_random.Next(0, 100) < 10) // 10% 
+
+                            callAssignment = callAssignment with
+                            {
+                                // FinishTime = DateTime.Now,
+                                FinishTime = null,
+                            };
+                            s_dal.Assignment.Update(callAssignment);
+                            CallManager.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+                            //callIncaring.CallStatus = CallInListStatus.Open;
+
+
+                        }
+
+
                     }
                 }
-            }
-            VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+                }
+                
+            
+
+
+
         }
-        VolunteerManager.Observers.NotifyListUpdated();
+
+
+
+        //private static void functa()
+        //{
+
+        //    List<DO.Volunteer> doVolunteerList;
+        //    List<BO.Volunteer> boVolunteerList;
+        //    List<DO.Assignment> assignmentList;
+        //    List<DO.Call> doCallList;
+        //    List<BO.Call> boCallList;
+
+
+        //    //take all the volunteers if they are active
+        //    lock (AdminManager.BlMutex)  //stage 7
+        //        doVolunteerList = s_dal.Volunteer.ReadAll(vol => vol.IsActive == true).ToList();
+
+        //    boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
+
+
+        //    //take all the calls if they have coordinates
+        //    lock (AdminManager.BlMutex)  //stage 7
+        //        doCallList = s_dal.Call.ReadAll(call => call.Latitude != null && call.Longitude != null).ToList();
+
+        //    boCallList = doCallList.Select(call => Helpers.CallManager.ConvertCallToBO(call, s_dal)).ToList();
+
+        //    //take all the assignments
+        //    lock (AdminManager.BlMutex)  //stage 7
+        //        assignmentList = s_dal.Assignment.ReadAll().ToList();
+
+
+
+
+        //    List<BO.Call> callOfVol = new List<BO.Call>();
+        //    //CallImplementation callImplementation = new CallImplementation();
+
+
+        //    foreach (var vol in boVolunteerList)
+        //    {
+        //        //lock (AdminManager.BlMutex)
+        //        //{
+        //        //    //List<BO.Call> boCallListOpen = boCallList.Where(call => call.CallStatus == CallInListStatus.Open || call.CallStatus == CallInListStatus.OpenAtRisk).ToList();
+
+
+
+
+        //        //else if he has a current call check for how long he is taking gare of it
+        //        else
+        //        {
+        //            //getcalldetails of the (vol.callInCaring.CallId);
+
+        //            if (vol.callInCaring != null)
+        //            {
+        //                BO.Call callIncaring = GetCallDetails(vol.callInCaring.CallId);
+        //                if (callIncaring != null)
+        //                {
+        //                    var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+        //                    var Dovol = doVolunteerList.FirstOrDefault(vol2 => vol2.VolunteerId == vol.VolunteerId);
+
+        //                    //        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+        //                    //var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+        //                    //var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
+        //                    //find the assignement of the call
+        //                    DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId && assign.VolunteerId == Dovol.VolunteerId);
+
+
+        //                    if (callAssignment != null && callIncaring.MaxTime.HasValue)
+        //                    {
+        //                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
+        //                        double estimatedTime = distance / 50.0;
+        //                        estimatedTime += new Random().Next(0, 60);
+
+        //                        if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
+        //                        {
+        //                            callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
+        //                            callIncaring.CallStatus = CallInListStatus.Closed;
+        //                        }
+
+        //                        else
+        //                        {
+        //                            Random random = new Random();
+        //                            //if (random.Next(0, 100) < 10) // 10% 
+
+        //                            callAssignment = callAssignment with
+        //                            {
+        //                                // FinishTime = DateTime.Now,
+        //                                FinishTime = null,
+        //                            };
+        //                            callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+        //                            callIncaring.CallStatus = CallInListStatus.Open;
+
+
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            //    }
+        //            //}
+        //            VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+        //        }
+        //        VolunteerManager.Observers.NotifyListUpdated();
+        //    }
+
+        //    //List<DO.Volunteer> doVolunteerList;
+        //    //List<BO.Volunteer> boVolunteerList;
+        //    //List<DO.Assignment> assignmentList;
+        //    //List<DO.Call> doCallList;
+        //    //List<BO.Call> boCallList;
+
+
+        //    ////take all the volunteers if they are active
+        //    //lock (AdminManager.BlMutex)  //stage 7
+        //    //    doVolunteerList = s_dal.Volunteer.ReadAll(vol => vol.IsActive == true).ToList();
+
+        //    //boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
+
+
+        //    ////take all the calls if they have coordinates
+        //    //lock (AdminManager.BlMutex)  //stage 7
+        //    //    doCallList = s_dal.Call.ReadAll(call => call.Latitude != null && call.Longitude != null).ToList();
+
+        //    //boCallList = doCallList.Select(call => Helpers.CallManager.ConvertCallToBO(call, s_dal)).ToList();
+
+        //    ////take all the assignments
+        //    //lock (AdminManager.BlMutex)  //stage 7
+        //    //    assignmentList = s_dal.Assignment.ReadAll().ToList();
+
+
+
+
+        //    //List<BO.Call> callOfVol = new List<BO.Call>();
+        //    ////CallImplementation callImplementation = new CallImplementation();
+
+
+        //    //foreach (var vol in boVolunteerList)
+        //    //{
+        //    //    //lock (AdminManager.BlMutex)
+        //    //    //{
+        //    //    //    //List<BO.Call> boCallListOpen = boCallList.Where(call => call.CallStatus == CallInListStatus.Open || call.CallStatus == CallInListStatus.OpenAtRisk).ToList();
+
+
+        //    //    ////if the volunteer doesnt have a current call, then 
+        //    //    if (vol.callInCaring == null)
+        //    //    {
+        //    //        //    foreach (var call in boCallListOpen)
+        //    //        //    {
+        //    //        //        var DOcall = doCallList.FirstOrDefault(call2 => call2.CallId == call.CallId);
+        //    //        //        var DOvol = DOManeger(vol);
+        //    //        //        // check if there is a call in his caring distance
+        //    //        //        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(DOvol, DOcall)).Result;
+        //    //        //        //var BoCall = Helpers.CallManager.ConvertCallToBO(call, s_dal);
+        //    //        //        //var status = Helpers.CallManager.GetCallStatus(call, assignmentList);
+
+        //    //        //        if ((distance < vol.Distance)) //&& status!= CallInListStatus.Closed && status != CallInListStatus.Expired && status != CallInListStatus.InCare && status != CallInListStatus.InCareAtRisk)
+        //    //        //        {
+        //    //        //            var status = Helpers.CallManager.GetCallStatus(DOcall, assignmentList);
+        //    //        //            if (status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk)
+        //    //        //            {
+        //    //        //                callOfVol.Add(call);
+        //    //        //            }
+        //    //        //        }
+        //    //        //    }
+
+        //    //        //callOfVol = GetListOfOpenCall(vol.VolunteerId);
+        //    //        //if there is a call, add it to the volunteer
+        //    //        if (callOfVol.Count != 0)
+        //    //        {
+
+        //    //            Random random = new Random();
+        //    //            //if (random.Next(0, 100) < 20)
+        //    //            //{
+
+        //    //            int randomIndex = random.Next(0, callOfVol.Count);
+
+        //    //            var selectedCall = callOfVol[randomIndex];
+        //    //            callImplementation.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId);
+        //    //            selectedCall.CallStatus = CallInListStatus.InCare;
+
+        //    //            //boCallListOpen = boCallList.Where(call => call.CallStatus == CallInListStatus.Open || call.CallStatus == CallInListStatus.OpenAtRisk).ToList();
+
+        //    //            //}
+
+        //    //        }
+        //    //    }
+
+        //    //    //else if he has a current call check for how long he is taking gare of it
+        //    //    else
+        //    //    {
+        //    //        //getcalldetails of the (vol.callInCaring.CallId);
+
+        //    //        if (vol.callInCaring != null)
+        //    //        {
+        //    //            BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+        //    //            if (callIncaring != null)
+        //    //            {
+        //    //                var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+        //    //                var Dovol = doVolunteerList.FirstOrDefault(vol2 => vol2.VolunteerId == vol.VolunteerId);
+
+        //    //                //        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+        //    //                //var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+        //    //                //var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
+        //    //                //find the assignement of the call
+        //    //                DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId && assign.VolunteerId == Dovol.VolunteerId);
+
+
+        //    //                if (callAssignment != null && callIncaring.MaxTime.HasValue)
+        //    //                {
+        //    //                    double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
+        //    //                    double estimatedTime = distance / 50.0;
+        //    //                    estimatedTime += new Random().Next(0, 60);
+
+        //    //                    if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
+        //    //                    {
+        //    //                        callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
+        //    //                        callIncaring.CallStatus = CallInListStatus.Closed;
+        //    //                    }
+
+        //    //                    else
+        //    //                    {
+        //    //                        Random random = new Random();
+        //    //                        //if (random.Next(0, 100) < 10) // 10% 
+
+        //    //                        callAssignment = callAssignment with
+        //    //                        {
+        //    //                            // FinishTime = DateTime.Now,
+        //    //                            FinishTime = null,
+        //    //                        };
+        //    //                        callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+        //    //                        callIncaring.CallStatus = CallInListStatus.Open;
+
+
+        //    //                    }
+        //    //                }
+        //    //            }
+        //    //        }
+        //    //        //    }
+        //    //        //}
+        //    //        VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
+        //    //    }
+        //    //    VolunteerManager.Observers.NotifyListUpdated();
+        //    //}
+        //}
+
     }
-
-
-
 }
+
+
+
