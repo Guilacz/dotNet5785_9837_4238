@@ -424,7 +424,7 @@ internal static class VolunteerManager
                         int randomIndex = s_random.Next(0, openCallInList.Count());
                         var selectedCall = openCallInList.ElementAt(randomIndex);
                         CallManager.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId);
-                        
+
                         //}   
                     }
 
@@ -472,13 +472,14 @@ internal static class VolunteerManager
 
                     }
                 }
-                }
-                
-            
+            }
 
+            VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
 
 
         }
+        VolunteerManager.Observers.NotifyListUpdated();
+    }
 
 
 
@@ -722,7 +723,7 @@ internal static class VolunteerManager
         //    //}
         //}
 
-    }
+    
 }
 
 
