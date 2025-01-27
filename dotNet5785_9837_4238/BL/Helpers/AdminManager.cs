@@ -276,7 +276,7 @@ internal static class AdminManager //stage 4
         {
             s_interval = interval;
             s_stop = false;
-            s_thread = new(clockRunner) { Name = "ClockRunner" };
+            s_thread = new(ClockRunner) { Name = "ClockRunner" };
             s_thread.Start();
         }
     }
@@ -295,7 +295,7 @@ internal static class AdminManager //stage 4
 
     private static Task? _simulateTask = null;
 
-    private static void clockRunner()
+    private static void ClockRunner()
     {
         while (!s_stop)
         {

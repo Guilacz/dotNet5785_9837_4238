@@ -247,4 +247,42 @@ namespace PL
 
 
 
+    //converter for the simulator
+   
+public class ConverterSimulator : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool isRunning && parameter is string options)
+            {
+                var texts = options.Split('/');
+                return isRunning ? texts[1] : texts[0];
+            }
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    //converter to block other buttons if the simulator is on
+    public class InverseBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolean)
+                return !boolean;
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+
 }

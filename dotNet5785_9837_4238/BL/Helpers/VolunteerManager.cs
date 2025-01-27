@@ -462,40 +462,52 @@ internal class VolunteerManager
                 else
                 {
                     //getcalldetails of the (vol.callInCaring.CallId);
-                    BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
-                    var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
-                    var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
-                    //find the assignement of the call
-                    DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId);
 
-
-                    if (callAssignment != null && callIncaring.MaxTime.HasValue)
+                    if (vol.callInCaring != null)
                     {
-                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
-                        double estimatedTime = distance / 50.0;
-                        estimatedTime += new Random().Next(0, 60);
-
-                        if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
+                        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+                        if (callIncaring != null)
                         {
-                            callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
-                        }
+                            var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+                            var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
 
-                        else
-                        {
-                            Random random = new Random();
-                            if (random.Next(0, 100) < 10) // 10% 
+                            //        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
+                            //var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
+                            //var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
+                            //find the assignement of the call
+                            DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId);
+
+
+                            if (callAssignment != null && callIncaring.MaxTime.HasValue)
                             {
-                                callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+                                double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(Dovol, Docall)).Result;
+                                double estimatedTime = distance / 50.0;
+                                estimatedTime += new Random().Next(0, 60);
+
+                                if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
+                                {
+                                    callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
+                                }
+
+                                else
+                                {
+                                    Random random = new Random();
+                                    if (random.Next(0, 100) < 10) // 10% 
+                                    {
+                                        callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+                                    }
+
+                                }
                             }
-
                         }
-
                     }
-
                 }
             }
             VolunteerManager.Observers.NotifyItemUpdated(vol.VolunteerId);
         }
         VolunteerManager.Observers.NotifyListUpdated();
     }
+
+
+
 }

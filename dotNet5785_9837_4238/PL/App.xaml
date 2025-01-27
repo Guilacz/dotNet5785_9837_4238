@@ -18,6 +18,8 @@
         <local:CallStatusToStateConverter x:Key="CallStatusToStateConverterKey" />
         <local:ConverterToChangeMaxTime x:Key="ConverterToChangeMaxTimeKey" />
         <local:ConverterDeleteVolunteer x:Key="ConverterDeleteVolunteerKey" />
+        <local:ConverterSimulator x:Key="ConverterSimulator" />
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
 
 

@@ -64,6 +64,7 @@ namespace PL
         public MainWindow()
         {
             InitializeComponent();
+            IsSimulatorRunning = false; 
             this.Loaded += OnMainWindow_Loaded;
             Closed += OnMainWindow_Closed;
         }
@@ -130,6 +131,11 @@ namespace PL
         /// </summary>
         private void OnMainWindow_Closed(object sender, EventArgs e)
         {
+            if (IsSimulatorRunning)
+            {
+                s_bl.Admin.StopSimulator();
+                IsSimulatorRunning = false;
+            }
             s_bl.Admin.RemoveClockObserver(ClockObserver);
             s_bl.Admin.RemoveConfigObserver(ConfigObserver);
 
@@ -255,6 +261,55 @@ namespace PL
 
             }
         }
+
+
+
+        //-------------------------------SIMULATOR SHLAV 7--------------------------------------
+
+
+
+        //--------------------Depedency properties for the simulator------------------------
+        public int Interval
+        {
+            get { return (int)GetValue(IntervalProperty); }
+            set { SetValue(IntervalProperty, value); }
+        }
+
+        public static readonly DependencyProperty IntervalProperty =
+            DependencyProperty.Register("Interval", typeof(int), typeof(MainWindow));
+
+       
+        public bool IsSimulatorRunning
+        {
+            get { return (bool)GetValue(IsSimulatorRunningProperty); }
+            set { SetValue(IsSimulatorRunningProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsSimulatorRunningProperty =
+            DependencyProperty.Register("IsSimulatorRunning", typeof(bool), typeof(MainWindow));
+
+        private void btnSimulator_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (IsSimulatorRunning)
+                {
+                    s_bl.Admin.StopSimulator();
+                    IsSimulatorRunning = false;
+                }
+                else
+                {
+                    s_bl.Admin.StartSimulator(Interval);
+                    IsSimulatorRunning = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error in gestion of the simulator : {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+       
 
     }
 }
