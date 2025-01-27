@@ -265,8 +265,8 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
     public static void ThrowOnSimulatorIsRunning()
     {
-        if (s_thread is not null)
-            throw new BO.BLTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
+        //if (s_thread is not null)
+           // throw new BO.BLTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 

@@ -413,7 +413,8 @@ internal class VolunteerManager
 
 
 
-        List<BO.Call> callOfVol = new List<BO.Call>(); ;
+
+        List<BO.Call> callOfVol = new List<BO.Call>(); 
         CallImplementation callImplementation = new CallImplementation();
 
 
@@ -421,21 +422,27 @@ internal class VolunteerManager
         {
             lock (AdminManager.BlMutex)
             {
+                List<BO.Call> boCallListOpen = boCallList.Where(call => call.CallStatus == CallInListStatus.Open || call.CallStatus == CallInListStatus.OpenAtRisk).ToList();
 
 
                 //if the volunteer doesnt have a current call, then 
-                if (vol.callInCaring != null)
+                if (vol.callInCaring == null)
                 {
-                    foreach (var call in doCallList)
+                    foreach (var call in boCallListOpen)
                     {
-
+                        var DOcall = doCallList.FirstOrDefault(call => call.CallId == call.CallId);
                         var DOvol = DOManeger(vol);
                         // check if there is a call in his caring distance
-                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(DOvol, call)).Result;
-                        var BoCall = Helpers.CallManager.ConvertCallToBO(call, s_dal);
-                        if ((distance < vol.Distance))
+                        double distance = Task.Run(() => Tools.CalculateDistanceBetweenAddresses(DOvol, DOcall)).Result;
+                        //var BoCall = Helpers.CallManager.ConvertCallToBO(call, s_dal);
+                        //var status = Helpers.CallManager.GetCallStatus(call, assignmentList);
+
+                        if ((distance < vol.Distance)) //&& status!= CallInListStatus.Closed && status != CallInListStatus.Expired && status != CallInListStatus.InCare && status != CallInListStatus.InCareAtRisk)
                         {
-                            callOfVol.Add(BoCall);
+                            //if (!callOfVol.Any(c => c.CallId == BoCall.CallId))
+                                callOfVol.Add(call);
+
+                            //break;
                         }
                     }
 
@@ -444,16 +451,17 @@ internal class VolunteerManager
                     {
 
                         Random random = new Random();
-                        if (random.Next(0, 100) < 20)
-                        {
+                        //if (random.Next(0, 100) < 20)
+                        //{
 
                             int randomIndex = random.Next(0, callOfVol.Count);
 
                             var selectedCall = callOfVol[randomIndex];
-                            callImplementation.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId); ;
+                            callImplementation.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId); 
+                            selectedCall.CallStatus = CallInListStatus.InCare;
 
-                            boCallList.Remove(selectedCall);
-                        }
+                            boCallListOpen.Remove(selectedCall);
+                        //}
 
                     }
                 }
@@ -469,13 +477,13 @@ internal class VolunteerManager
                         if (callIncaring != null)
                         {
                             var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
-                            var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
+                            var Dovol = doVolunteerList.FirstOrDefault(vol2 => vol2.VolunteerId == vol.VolunteerId);
 
                             //        BO.Call callIncaring = callImplementation.GetCallDetails(vol.callInCaring.CallId);
                             //var Docall = doCallList.FirstOrDefault(call => call.CallId == callIncaring.CallId);
                             //var Dovol = doVolunteerList.FirstOrDefault(vol => vol.VolunteerId == vol.VolunteerId);
                             //find the assignement of the call
-                            DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId);
+                            DO.Assignment callAssignment = assignmentList.FirstOrDefault(assign => assign.CallId == callIncaring.CallId && assign.VolunteerId==Dovol.VolunteerId);
 
 
                             if (callAssignment != null && callIncaring.MaxTime.HasValue)
@@ -487,15 +495,22 @@ internal class VolunteerManager
                                 if ((DateTime.Now - callIncaring.MaxTime.Value).TotalHours > estimatedTime)
                                 {
                                     callImplementation.UpdateCallFinished(vol.VolunteerId, callIncaring.CallId, callAssignment.Id);
+                                    callIncaring.CallStatus = CallInListStatus.Closed;
                                 }
 
                                 else
                                 {
                                     Random random = new Random();
-                                    if (random.Next(0, 100) < 10) // 10% 
+                                    //if (random.Next(0, 100) < 10) // 10% 
+
+                                    callAssignment = callAssignment with
                                     {
+                                        // FinishTime = DateTime.Now,
+                                        FinishTime = null,
+                                    };
                                         callImplementation.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
-                                    }
+                                        callIncaring.CallStatus = CallInListStatus.Open;
+                                    
 
                                 }
                             }

@@ -160,26 +160,27 @@ public static class Initialization
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i], volunteersMails[i],
-                Role.Volunteer, Distance.AirDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
+                Role.Volunteer, Distance.AirDistance, password[i], volunteersAdress[i], distance, lati[i], longi[i]));
         }
         for (int i = 5; i < 10; i++)
         {
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
-                volunteersMails[i], Role.Volunteer, Distance.CarDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
+                volunteersMails[i], Role.Volunteer, Distance.CarDistance, password[i], volunteersAdress[i], distance, lati[i], longi[i]));
         }
         for (int i = 10; i < 15; i++)
         {
 
             distance = random.Next(0, 40000);
             s_dal.Volunteer.Create(new Volunteer(id[i], volunteersNames[i], phoneNumbers[i],
-                volunteersMails[i], Role.Volunteer, Distance.WalkDistance, password[i], volunteersAdress[i], lati[i], longi[i], distance));
+                volunteersMails[i], Role.Volunteer, Distance.WalkDistance, password[i], volunteersAdress[i], distance, lati[i], longi[i]));
         }
+
         distance = random.Next(0, 40000);
 
         s_dal.Volunteer.Create(new Volunteer(id[15], volunteersNames[15], phoneNumbers[15], volunteersMails[15],
-            0, 0, password[15], volunteersAdress[15], lati[15], longi[15], distance));
+            0, 0, password[15], volunteersAdress[15], distance, lati[15], longi[15]));
 
 
     }
@@ -282,7 +283,7 @@ public static class Initialization
             DateTime openTime = s_dal.Config.Clock.AddMinutes(-random.Next(30, 120)); // זמן פתיחה לפני 30 עד 120 דקות
             DateTime maxTime = openTime.AddMinutes(random.Next(5, 20)); // מקסימום 5 עד 20 דקות לסגירה
 
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock, maxTime);
             s_dal!.Call.Create(c);
         }
 
@@ -306,7 +307,7 @@ public static class Initialization
             DateTime maxTime = openTime.AddMinutes(random.Next(60, 180)); // מקסימום 60 עד 180 דקות לסגירה
 
 
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock);
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config.Clock, maxTime);
             s_dal!.Call.Create(c);
         }
 
@@ -330,7 +331,7 @@ public static class Initialization
             DateTime openTime = s_dal.Config.Clock.AddMinutes(-random.Next(5, 15)); // זמן פתיחה לפני 5 עד 15 דקות
             DateTime maxTime = openTime.AddMinutes(random.Next(15, 30)); // מקסימום 15 עד 30 דקות לסגירה
 
-            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5));
+            Call c = new Call(id, callType, CallAddress[j], lati[j], longi[j], s_dal.Config!.Clock.AddSeconds(-5), maxTime);
             s_dal!.Call.Create(c);
         }
 

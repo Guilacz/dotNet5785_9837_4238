@@ -9,9 +9,9 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>abcd@xyz</Password>
     <Address>Yaffo Street 123, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>36984</Longitude>
+    <Distance>33429</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -23,9 +23,9 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>passw@rd</Password>
     <Address>King David Street 45, Jerusalem</Address>
-    <Distance>31.70954</Distance>
-    <Latitude>35.205725</Latitude>
-    <Longitude>3636</Longitude>
+    <Distance>32058</Distance>
+    <Latitude>31.70954</Latitude>
+    <Longitude>35.205725</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -37,9 +37,23 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>valid@key</Password>
     <Address>Prophets Street 67, Jerusalem</Address>
-    <Distance>31.77676</Distance>
-    <Latitude>35.230342</Latitude>
-    <Longitude>16256</Longitude>
+    <Distance>15881</Distance>
+    <Latitude>31.77676</Latitude>
+    <Longitude>35.230342</Longitude>
+    <IsActive>true</IsActive>
+  </Volunteer>
+  <Volunteer>
+    <VolunteerId>327598595</VolunteerId>
+    <Name>Ivy Kidron</Name>
+    <Phone>0535678901</Phone>
+    <Email>Ivy@blablabla.com</Email>
+    <RoleType>Volunteer</RoleType>
+    <DistanceType>AirDistance</DistanceType>
+    <Password>strong@pw</Password>
+    <Address>Herzl Boulevard 89, Jerusalem</Address>
+    <Distance>36676</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -51,9 +65,9 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>email@tag</Password>
     <Address>Gaza Street 101, Jerusalem</Address>
-    <Distance>31.870383</Distance>
-    <Latitude>35.448549</Latitude>
-    <Longitude>12935</Longitude>
+    <Distance>304</Distance>
+    <Latitude>31.870383</Latitude>
+    <Longitude>35.448549</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -65,9 +79,9 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>name@pass</Password>
     <Address>Emek Refaim Street 12, Jerusalem</Address>
-    <Distance>31.7596386</Distance>
-    <Latitude>35.2152076</Latitude>
-    <Longitude>19530</Longitude>
+    <Distance>29664</Distance>
+    <Latitude>31.7596386</Latitude>
+    <Longitude>35.2152076</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -79,9 +93,9 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>data@save</Password>
     <Address>Hebron Road 34, Jerusalem</Address>
-    <Distance>31.7317721</Distance>
-    <Latitude>35.2056864</Latitude>
-    <Longitude>35423</Longitude>
+    <Distance>15276</Distance>
+    <Latitude>31.7317721</Latitude>
+    <Longitude>35.2056864</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -93,9 +107,9 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>secure@ok</Password>
     <Address>Agripas Street 56, Jerusalem</Address>
-    <Distance>31.784252</Distance>
-    <Latitude>35.211645</Latitude>
-    <Longitude>7899</Longitude>
+    <Distance>30719</Distance>
+    <Latitude>31.784252</Latitude>
+    <Longitude>35.211645</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -107,9 +121,9 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>simple@me</Password>
     <Address>Ben Yehuda Street 78, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>5731</Longitude>
+    <Distance>11188</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -121,9 +135,9 @@
     <DistanceType>CarDistance</DistanceType>
     <Password>user@info</Password>
     <Address>Keren Hayesod Street 23, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>22852</Longitude>
+    <Distance>25225</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -135,9 +149,9 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>login@now</Password>
     <Address>Shmuel Hanagid Street 15, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>10471</Longitude>
+    <Distance>24254</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -149,9 +163,9 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>token@set</Password>
     <Address>Betzalel Street 42, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>11025</Longitude>
+    <Distance>6769</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -163,9 +177,9 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>value@put</Password>
     <Address>Palmach Street 90, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>29412</Longitude>
+    <Distance>3677</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -177,9 +191,9 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>access@key</Password>
     <Address>King George Street 33, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>35.215315</Latitude>
-    <Longitude>16988</Longitude>
+    <Distance>15430</Distance>
+    <Latitude>31.759595</Latitude>
+    <Longitude>35.215315</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -191,9 +205,9 @@
     <DistanceType>WalkDistance</DistanceType>
     <Password>safe@code</Password>
     <Address>Hillel Street 67, Jerusalem</Address>
-    <Distance>31.780094</Distance>
-    <Latitude>35.218297</Latitude>
-    <Longitude>7296</Longitude>
+    <Distance>34513</Distance>
+    <Latitude>31.780094</Latitude>
+    <Longitude>35.218297</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
   <Volunteer>
@@ -205,23 +219,9 @@
     <DistanceType>AirDistance</DistanceType>
     <Password>check@yes</Password>
     <Address>Ein Kerem Street 28, Jerusalem</Address>
-    <Distance>31.900083</Distance>
-    <Latitude>35.179287</Latitude>
-    <Longitude>31997</Longitude>
-    <IsActive>true</IsActive>
-  </Volunteer>
-  <Volunteer>
-    <VolunteerId>327598595</VolunteerId>
-    <Name>Ivy Kidrone</Name>
-    <Phone>0535678901</Phone>
-    <Email>Ivy@blablabla.com</Email>
-    <RoleType>Volunteer</RoleType>
-    <DistanceType>AirDistance</DistanceType>
-    <Password>jiknov@mf</Password>
-    <Address>Herzl Boulevard 89, Jerusalem</Address>
-    <Distance>31.759595</Distance>
-    <Latitude>0</Latitude>
-    <Longitude>0</Longitude>
+    <Distance>32651</Distance>
+    <Latitude>31.900083</Latitude>
+    <Longitude>35.179287</Longitude>
     <IsActive>true</IsActive>
   </Volunteer>
 </ArrayOfVolunteer>
