@@ -111,8 +111,9 @@ internal class CallImplementation : ICall
     //}
     public void ChoiceOfCallToCare(int volId, int callId)
     {
-        lock (AdminManager.BlMutex)
-            CallManager.ChoiceOfCallToCare(volId, callId);
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+
+        CallManager.ChoiceOfCallToCare(volId, callId);
     }
 
     /// <summary>
@@ -312,11 +313,10 @@ internal class CallImplementation : ICall
     /// <param name="callId"></param>
     public Call GetCallDetails(int callId)
     {
-        lock (AdminManager.BlMutex)  //stage 7
-
-            {BO.Call call = Read(callId);
+       
+            BO.Call call = Read(callId);
             return call;
-        }
+        
     }
 
 
@@ -1017,82 +1017,7 @@ internal class CallImplementation : ICall
         }
     }
 
-    //private async Task NotifyVolunteersAsync(BO.Call c)
-    //{
-    //    Task.Run(() =>
-    //    {
-    //         _dal.Volunteer.ReadAll()
-    //            .Where(async vol =>
-    //                !string.IsNullOrEmpty(vol.Email) &&
-    //                !string.IsNullOrEmpty(vol.Address) &&
-    //                Helpers.Tools.CalculateDistanceBetweenAddresses(vol.Address, c.Address) <= vol.Distance)
-    //            .ToList()
-    //            .ForEach(vol => Helpers.Tools.SendEmail(
-    //                toAddress: vol.Email,
-    //                subject: "new call in your area",
-    //                body: $"Hello {vol.Name},\n\nThere is a new call in your area at the address: {c.Address}.\nPlease check and respond if you are available to assist.\n\nThank you!"
-    //            ));
-    //    });
-    //}
-
-    //public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
-    //{
-    //    try
-    //    {
-    //        IEnumerable<DO.Call> calls; 
-    //        lock (AdminManager.BlMutex)  //stage 7
-    //            calls = _dal.Call.ReadAll();
-
-    //        IEnumerable<DO.Assignment> assignments; 
-    //        lock (AdminManager.BlMutex)  //stage 7
-    //            assignments = _dal.Assignment.ReadAll();
-
-    //        DO.Volunteer? volunteer; 
-    //        lock (AdminManager.BlMutex)  //stage 7
-    //            volunteer = _dal.Volunteer.Read(volId);
-
-    //        // Async validation of addresses will happen here
-    //        Task.Run(() => ValidateOpenCallAddressesAsync(calls));
-
-    //        string volunteerAddress = Helpers.VolunteerManager.ConvertVolToBO(volunteer).Address;
-    //        calls = calls.Where(call =>
-    //        {
-    //            var status = Helpers.CallManager.GetCallStatus(call, assignments);
-    //            return status == BO.CallInListStatus.Open || status == BO.CallInListStatus.OpenAtRisk;
-    //        });
-
-    //        if (type.HasValue && type != BO.CallType.None)
-    //        {
-    //            calls = calls.Where(c => c.CallType == (DO.CallType)type);
-    //        }
-
-    //        var openCalls = calls.Select(async c => new BO.OpenCallInList
-    //        {
-    //            CallId = c.CallId,
-    //            CallType = (BO.CallType)c.CallType,
-    //            Address = c.Address,
-    //            OpenTime = c.OpenTime,
-    //            MaxTime = c.MaxTime,
-    //            Details = c.Details,
-    //            Distance = await Helpers.Tools.CalculateDistanceBetweenAddresses(volunteerAddress, c.Address)
-    //        }).ToList();
-
-    //        return openCall switch
-    //        {
-    //            OpenCallInListSort.CallId => openCalls.OrderBy(c => c.CallId).ToList(),
-    //            OpenCallInListSort.CallType => openCalls.OrderBy(c => c.CallType).ToList(),
-    //            OpenCallInListSort.Address => openCalls.OrderBy(c => c.Address).ToList(),
-    //            OpenCallInListSort.OpenTime => openCalls.OrderBy(c => c.OpenTime).ToList(),
-    //            OpenCallInListSort.MaxTime => openCalls.OrderBy(c => c.MaxTime).ToList(),
-    //            OpenCallInListSort.Details => openCalls.OrderBy(c => c.Details).ToList(),
-    //            _ => openCalls
-    //        };
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        throw new BO.BlDoesNotExistException($"Error in GetListOfOpenCall: {ex.Message}");
-    //    }
-    //}
+   
 
     public IEnumerable<BO.OpenCallInList> GetListOfOpenCall(int volId, BO.CallType? type = null, OpenCallInListSort? openCall = null)
     {
@@ -1337,9 +1262,10 @@ internal class CallImplementation : ICall
     //}
     public void Update(Call c)
     {
-        lock (AdminManager.BlMutex)  //stage 7
+        //stage 7
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
-            CallManager.Update(c);
+        CallManager.Update(c);
     }
     private async Task UpdateCoordinatesAsyncCall(Call c)
     {
@@ -1396,9 +1322,8 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be cancelled.</param>
     public void UpdateCallCancelled(int id, int assiId)
     {
-        lock (AdminManager.BlMutex)  //stage 7
-
-            CallManager.UpdateCallCancelled(id, assiId);
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+        CallManager.UpdateCallCancelled(id, assiId);
     }
 
 
@@ -1418,9 +1343,8 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be marked as finished.</param>
     public void UpdateCallFinished(int id, int assiId, int callId)
     {
-        lock (AdminManager.BlMutex)  //stage 7
-
-            CallManager.UpdateCallFinished(id, assiId, callId);
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+        CallManager.UpdateCallFinished(id, assiId, callId);
     }
 
 }

@@ -251,7 +251,7 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// The thread of the simulator
     /// </summary>
-    private static volatile Thread? s_thread = null;
+    private static volatile Thread? s_thread ;
     /// <summary>
     /// The Interval for clock updating
     /// in minutes by second (default value is 1, will be set on Start())    

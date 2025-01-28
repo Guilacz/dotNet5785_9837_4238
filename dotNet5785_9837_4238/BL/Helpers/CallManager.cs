@@ -14,7 +14,7 @@ internal static class CallManager
 
     public static void Update(Call c)
     {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
+        //Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
@@ -384,7 +384,6 @@ internal static class CallManager
 
     public static void UpdateCallCancelled(int id, int assiId)
     {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
@@ -450,7 +449,6 @@ internal static class CallManager
 
     public static void UpdateCallFinished(int id, int assiId, int callId)
     {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
@@ -524,7 +522,6 @@ internal static class CallManager
 
     public static void ChoiceOfCallToCare(int volId, int callId)
     {
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
         try
         {
             lock (AdminManager.BlMutex) //stage 7

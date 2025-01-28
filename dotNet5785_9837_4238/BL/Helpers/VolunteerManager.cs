@@ -389,7 +389,6 @@ internal static class VolunteerManager
     internal static void SimulateVolunteerRegistrationToCall()
     {
 
-        Helpers.AdminManager.ThrowOnSimulatorIsRunning();
 
         List<DO.Assignment> assignmentList;
         List<DO.Volunteer> doVolunteerList;
@@ -398,14 +397,13 @@ internal static class VolunteerManager
         List<BO.Call> boCallList;
 
         lock (AdminManager.BlMutex)  //stage 7
+        {
             doVolunteerList = s_dal.Volunteer.ReadAll(vol => vol.IsActive == true).ToList();
-        boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
-
-        lock (AdminManager.BlMutex)  //stage 7
+            boVolunteerList = doVolunteerList.Select(vol => ConvertVolToBO(vol)).ToList();
             doCallList = s_dal.Call.ReadAll().ToList();
-
-        lock (AdminManager.BlMutex)  //stage 7
             assignmentList = s_dal.Assignment.ReadAll().ToList();
+        }
+            
 
 
 
