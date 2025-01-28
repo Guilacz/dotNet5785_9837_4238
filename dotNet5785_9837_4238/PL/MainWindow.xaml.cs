@@ -117,6 +117,7 @@ namespace PL
         /// </summary>
         private void OnMainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+                
                 CurrentTime = s_bl.Admin.GetClock();
 
                 RiskRangeProperty = s_bl.Admin.GetMaxRange();
@@ -131,11 +132,9 @@ namespace PL
         /// </summary>
         private void OnMainWindow_Closed(object sender, EventArgs e)
         {
-            if (IsSimulatorRunning)
-            {
-                s_bl.Admin.StopSimulator();
-                IsSimulatorRunning = false;
-            }
+            s_bl.Admin.StopSimulator();
+
+           
             s_bl.Admin.RemoveClockObserver(ClockObserver);
             s_bl.Admin.RemoveConfigObserver(ConfigObserver);
 
@@ -294,13 +293,15 @@ namespace PL
             {
                 if (IsSimulatorRunning)
                 {
-                    s_bl.Admin.StopSimulator();
                     IsSimulatorRunning = false;
+
+                    s_bl.Admin.StopSimulator();
                 }
                 else
                 {
-                    s_bl.Admin.StartSimulator(Interval);
                     IsSimulatorRunning = true;
+
+                    s_bl.Admin.StartSimulator(Interval);
                 }
             }
             catch (Exception ex)

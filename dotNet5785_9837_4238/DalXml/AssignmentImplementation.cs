@@ -23,6 +23,8 @@ internal class AssignmentImplementation : IAssignment
             new XElement("FinishTime", assignment.FinishTime?.ToString("o"))
         );
     }
+
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     static Assignment getAssignment(XElement a)
     {
@@ -36,6 +38,7 @@ internal class AssignmentImplementation : IAssignment
             FinishTime = a.ToDateTimeNullable("FinishTime")
         };
     }
+
     /*  public void Create(Assignment item)
       {
           XElement assignmentRootElem = XMLTools.LoadListFromXMLElement(AssignmentsXmlFile);
@@ -70,6 +73,7 @@ internal class AssignmentImplementation : IAssignment
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
 
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
@@ -84,12 +88,16 @@ internal class AssignmentImplementation : IAssignment
         assignmentToDelete.Remove();
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
+
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XElement assignmentRootElem = new XElement("Assignments"); 
         XMLTools.SaveListToXMLElement(assignmentRootElem, AssignmentsXmlFile);
     }
+
+
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(int id)
@@ -98,12 +106,16 @@ internal class AssignmentImplementation : IAssignment
         return assignmentElem is null ? null : getAssignment(assignmentElem);
     }
 
+
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public Assignment? Read(Func<Assignment, bool>? filter)
     {
         return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign =>
         getAssignment(assign)).FirstOrDefault(filter);
     }
+
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Assignment> ReadAll(Func<Assignment, bool>? filter = null)
     {
@@ -117,8 +129,9 @@ internal class AssignmentImplementation : IAssignment
                 return XMLTools.LoadListFromXMLElement(Config.s_assignments_xml).Elements().Select(assign => getAssignment(assign)).Where(filter);
             }
     }
-    [MethodImpl(MethodImplOptions.Synchronized)]
 
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public string ToString(Assignment a)
     {
         return $"Assignment Details:\n" +

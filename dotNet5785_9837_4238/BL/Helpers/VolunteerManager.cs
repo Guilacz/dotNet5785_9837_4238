@@ -388,6 +388,9 @@ internal static class VolunteerManager
 
     internal static void SimulateVolunteerRegistrationToCall()
     {
+
+        Helpers.AdminManager.ThrowOnSimulatorIsRunning();
+
         List<DO.Assignment> assignmentList;
         List<DO.Volunteer> doVolunteerList;
         List<BO.Volunteer> boVolunteerList;

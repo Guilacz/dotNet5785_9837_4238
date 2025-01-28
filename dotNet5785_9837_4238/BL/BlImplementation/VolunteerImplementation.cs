@@ -113,7 +113,9 @@ internal class VolunteerImplementation : IVolunteer
     {
         Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
-        BO.Volunteer? vol = Read(volId);
+        BO.Volunteer? vol;
+        lock (AdminManager.BlMutex)  //stage 7
+            vol = Read(volId);
 
         //if ( vol.callInCaring != null)
         //    throw new BO.BlDeletionImpossible("cant delete this volunteer.");
@@ -130,7 +132,7 @@ internal class VolunteerImplementation : IVolunteer
         try
         {
             lock (AdminManager.BlMutex)  //stage 7
-            _dal.Volunteer.Delete(volId);
+                _dal.Volunteer.Delete(volId);
             VolunteerManager.Observers.NotifyListUpdated();
             VolunteerManager.Observers.NotifyItemUpdated(volId);
         }
@@ -300,7 +302,10 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            var vol = Read(volId);
+            BO.Volunteer? vol;
+            lock (AdminManager.BlMutex)  //stage 7
+                vol = Read(volId);
+
             if (vol == null)
             {
                 throw new BO.BlDoesNotExistException($"Volunteer with ID {volId} not found.");
@@ -331,11 +336,7 @@ internal class VolunteerImplementation : IVolunteer
                 throw new BO.BlInvalidValueException("Invalid volunteer data.");
             }
 
-            bool isAddressValid = Task.Run(() => Helpers.Tools.CheckAddressVolunteer(vol)).GetAwaiter().GetResult();
-
-            if (!isAddressValid)
-                throw new BO.BlInvalidValueException("The volunteer data provided is invalid. Please check the input and try again.");
-
+           
             return boVolunteer;
         }
 
@@ -366,7 +367,7 @@ internal class VolunteerImplementation : IVolunteer
     {
         try
         {
-            IEnumerable<DO.Volunteer> volunteers; 
+            IEnumerable<DO.Volunteer> volunteers;
             lock (AdminManager.BlMutex)   //stage 7
                 volunteers = _dal.Volunteer.ReadAll();
 
@@ -378,20 +379,9 @@ internal class VolunteerImplementation : IVolunteer
             lock (AdminManager.BlMutex)  //stage 7
                 calls = _dal.Call.ReadAll();
 
-            //var volunteerInLists = volunteers.Select(v => new BO.VolunteerInList
-            //{
-            //    VolunteerId = v.VolunteerId,
-            //    Name = v.Name,
-            //    IsActive = v.IsActive,
-            //    SumOfCaredCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.Fulfilled),
-            //    SumOfCancelledCall = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledByVolunteer),
-            //    SumOfCallExpired = assignment.Count(call => call.VolunteerId == v.VolunteerId && call.TypeOfEnd == DO.TypeOfEnd.CancelledAfterTime),
-            //    CallId = assignment.Where(call => call.VolunteerId == v.VolunteerId).Select(call => call.CallId).FirstOrDefault(),
-            //    CallType = _dal.Call.Read(assignment.Where(call => call.VolunteerId == v.VolunteerId)
-            //    .Select(call => call.CallId).FirstOrDefault()) is DO.Call callId && callId != null ? (BO.CallType) callId.CallType : BO.CallType.None
-            //});
+           
 
-            var volunteerInLists = volunteers.Select(v =>
+                var volunteerInLists = volunteers.Select(v =>
             {
                 var currentAssignment = assignment.FirstOrDefault(a => a.VolunteerId == v.VolunteerId &&
                                                                        a.FinishTime == null &&
@@ -531,9 +521,6 @@ internal class VolunteerImplementation : IVolunteer
                 Address = volunteer.Address,
                 Distance = volunteer.Distance,
                 Latitude = volunteer.Latitude,
-
-               //Latitude = coordinates.Latitude,
-               // Longitude = coordinates.Longitude,
                 Longitude = volunteer.Longitude,
                 IsActive = volunteer.IsActive,
                 SumOfCaredCall = volunteer.SumOfCaredCall,

@@ -93,18 +93,7 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDB()
     {
-        //try
-        //{
-        //    ResetDB();
-        //    DalTest.Initialization.Do();
-        //    AdminManager.UpdateClock(AdminManager.Now);
-        //    AdminManager.RiskRange = AdminManager.RiskRange;
-        //}
-        //// Thrown in case of unexpected errors during processing
-        //catch (Exception ex)
-        //{
-        //    throw new BO.BlArgumentNullException(ex.Message);
-        //}
+       
         AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.InitializeDB(); //stage 7
 
@@ -116,15 +105,6 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void ResetDB()
     {
-        //_dal.Config.Reset();
-        //var allAssignments = _dal.Assignment.ReadAll().ToList();
-        //_dal.Assignment.DeleteAll(); 
-        //var allCalls = _dal.Call.ReadAll().ToList();
-        //_dal.Call.DeleteAll(); 
-        //var allVolunteers = _dal.Volunteer.ReadAll().ToList();
-        //_dal.Volunteer.DeleteAll();
-        //AdminManager.UpdateClock(AdminManager.Now);
-        //AdminManager.RiskRange = AdminManager.RiskRange;
 
             AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
             AdminManager.ResetDB(); //stage 7

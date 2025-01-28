@@ -42,9 +42,11 @@ internal static class CallManager
                 _dal.Call.Update(updatedCall);
 
                 // נעדכן את התצפיתנים
-                CallManager.Observers.NotifyItemUpdated(c.CallId);
-                CallManager.Observers.NotifyListUpdated();
+               
             }
+
+            CallManager.Observers.NotifyItemUpdated(c.CallId);
+            CallManager.Observers.NotifyListUpdated();
 
             // הפעלה של המתודה C (אסינכרונית)
             UpdateCoordinatesAsyncCall(c);
@@ -111,7 +113,9 @@ internal static class CallManager
                 throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
             }
 
-            return Helpers.CallManager.ConvertCallToBO(call, _dal);
+            lock (AdminManager.BlMutex)  //stage 7
+
+                return Helpers.CallManager.ConvertCallToBO(call, _dal);
 
         }
         // in case of unexpected errors during processing
@@ -218,47 +222,54 @@ internal static class CallManager
             return BO.CallInListStatus.Closed;
         }
 
-        // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
-        var callAssignments = assignments
+
+        lock (AdminManager.BlMutex)  //stage 7
+        {
+            // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
+            var callAssignments = assignments
             .Where(a => a.CallId == call.CallId)
             .OrderByDescending(a => a.StartTime);
 
-        var lastAssignment = callAssignments.FirstOrDefault();
+            var lastAssignment = callAssignments.FirstOrDefault();
 
-        // אם אין הקצאות בכלל
-        if (lastAssignment == null)
-        {
-            // אם עבר יותר משעה מפתיחת הקריאה
-            if (now > call.OpenTime.AddHours(1))
-                return BO.CallInListStatus.OpenAtRisk;
+            // אם אין הקצאות בכלל
+            if (lastAssignment == null)
+            {
+                // אם עבר יותר משעה מפתיחת הקריאה
+                if (now > call.OpenTime.AddHours(1))
+                    return BO.CallInListStatus.OpenAtRisk;
+                return BO.CallInListStatus.Open;
+            }
+
+            // אם ההקצאה האחרונה פתוחה (בטיפול)
+            if (lastAssignment.FinishTime == null && !lastAssignment.TypeOfEnd.HasValue)
+            {
+                // אם עבר יותר משעה מתחילת הטיפול
+                if (now > lastAssignment.StartTime.AddHours(1))
+                    return BO.CallInListStatus.InCareAtRisk;
+                return BO.CallInListStatus.InCare;
+            }
+
+            // אם הקריאה הסתיימה
+            if (lastAssignment.TypeOfEnd.HasValue && lastAssignment.TypeOfEnd.Value.Equals(TypeOfEnd.Fulfilled))
+                return BO.CallInListStatus.Closed;
+
+
+            //// אם הקריאה בוטלה או פג תוקפה
+            //if (lastAssignment.TypeOfEnd.HasValue)
+            //    return BO.CallInListStatus.Expired;
+            if (lastAssignment.TypeOfEnd.HasValue)
+            {
+                // אם הזמן המקסימלי עבר
+                if (DateTime.Now > call.MaxTime)
+                    return BO.CallInListStatus.Expired;
+            }
+
+
+            // מקרה ברירת מחדל - פתוח
             return BO.CallInListStatus.Open;
+
         }
-
-        // אם ההקצאה האחרונה פתוחה (בטיפול)
-        if (lastAssignment.FinishTime == null && !lastAssignment.TypeOfEnd.HasValue)
-        {
-            // אם עבר יותר משעה מתחילת הטיפול
-            if (now > lastAssignment.StartTime.AddHours(1))
-                return BO.CallInListStatus.InCareAtRisk;
-            return BO.CallInListStatus.InCare;
-        }
-
-        // אם הקריאה הסתיימה
-        if (lastAssignment.TypeOfEnd.HasValue && lastAssignment.TypeOfEnd.Value.Equals(TypeOfEnd.Fulfilled))
-            return BO.CallInListStatus.Closed;
-
-
-        //// אם הקריאה בוטלה או פג תוקפה
-        //if (lastAssignment.TypeOfEnd.HasValue)
-        //    return BO.CallInListStatus.Expired;
-        if (lastAssignment.TypeOfEnd.HasValue)
-        {
-            // אם הזמן המקסימלי עבר
-            if (DateTime.Now > call.MaxTime)
-                return BO.CallInListStatus.Expired;
-        }
-        // מקרה ברירת מחדל - פתוח
-        return BO.CallInListStatus.Open;
     }
     /// <summary>
     /// function to get the status of a call : in care, expired, closed, open, OpenAtRisk
@@ -385,6 +396,7 @@ internal static class CallManager
             IEnumerable<DO.Volunteer> volunteers;
             lock (AdminManager.BlMutex)  //stage 7
                 volunteers = _dal.Volunteer.ReadAll();
+
 
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
             if (assignment == null)
@@ -547,10 +559,10 @@ internal static class CallManager
                 );
 
                 _dal.Assignment.Create(newAssignment);
-                CallManager.Observers.NotifyItemUpdated(callId);
-                CallManager.Observers.NotifyListUpdated();
+                
             }
-
+            CallManager.Observers.NotifyItemUpdated(callId);
+            CallManager.Observers.NotifyListUpdated();
             // Async coordinate and address validation
             //UpdateCallDetailsAsync(callId);
         }

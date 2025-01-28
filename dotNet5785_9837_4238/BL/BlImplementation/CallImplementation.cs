@@ -111,7 +111,8 @@ internal class CallImplementation : ICall
     //}
     public void ChoiceOfCallToCare(int volId, int callId)
     {
-       CallManager.ChoiceOfCallToCare(volId, callId);
+        lock (AdminManager.BlMutex)
+            CallManager.ChoiceOfCallToCare(volId, callId);
     }
 
     /// <summary>
@@ -311,8 +312,11 @@ internal class CallImplementation : ICall
     /// <param name="callId"></param>
     public Call GetCallDetails(int callId)
     {
-        BO.Call call = Read(callId);
-        return call;
+        lock (AdminManager.BlMutex)  //stage 7
+
+            {BO.Call call = Read(callId);
+            return call;
+        }
     }
 
 
@@ -746,7 +750,11 @@ internal class CallImplementation : ICall
         if (assignments == null || !assignments.Any())
             return Enumerable.Empty<BO.ClosedCallInList>();
 
-        var closedCallsOfVolunteer =
+
+
+        lock (AdminManager.BlMutex)  //stage 7
+        {
+            var closedCallsOfVolunteer =
             from assignment in assignments
             let call = _dal.Call.Read(assignment.CallId)
             where call != null && (type == null || (BO.CallType)call.CallType == type.Value)
@@ -761,13 +769,17 @@ internal class CallImplementation : ICall
                 FinishTime = assignment.FinishTime ?? null
             };
 
-        return sort switch
-        {
-            BO.CloseCallInListSort.CallId => closedCallsOfVolunteer.OrderBy(c => c.CallId),
-            BO.CloseCallInListSort.CallType => closedCallsOfVolunteer.OrderBy(c => c.CallType),
-            BO.CloseCallInListSort.TypeOfEnd => closedCallsOfVolunteer.OrderBy(c => c.TypeOfEnd),
-            _ => closedCallsOfVolunteer
-        };
+
+
+            return sort switch
+            {
+                BO.CloseCallInListSort.CallId => closedCallsOfVolunteer.OrderBy(c => c.CallId),
+                BO.CloseCallInListSort.CallType => closedCallsOfVolunteer.OrderBy(c => c.CallType),
+                BO.CloseCallInListSort.TypeOfEnd => closedCallsOfVolunteer.OrderBy(c => c.TypeOfEnd),
+                _ => closedCallsOfVolunteer
+            };
+
+        }
     }
 
 
@@ -1203,7 +1215,9 @@ internal class CallImplementation : ICall
     /// <exception cref="BO.BlDoesNotExistException">Thrown if the call with the given ID is not found.</exception>
     public  Call? Read(int callId)
     {
-       return CallManager.Read(callId);
+        lock (AdminManager.BlMutex)  //stage 7
+
+            return CallManager.Read(callId);
     }
 
 
@@ -1323,7 +1337,9 @@ internal class CallImplementation : ICall
     //}
     public void Update(Call c)
     {
-       CallManager.Update(c);
+        lock (AdminManager.BlMutex)  //stage 7
+
+            CallManager.Update(c);
     }
     private async Task UpdateCoordinatesAsyncCall(Call c)
     {
@@ -1380,7 +1396,9 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be cancelled.</param>
     public void UpdateCallCancelled(int id, int assiId)
     {
-        CallManager.UpdateCallCancelled(id, assiId);
+        lock (AdminManager.BlMutex)  //stage 7
+
+            CallManager.UpdateCallCancelled(id, assiId);
     }
 
 
@@ -1400,7 +1418,9 @@ internal class CallImplementation : ICall
     /// <param name="assiId">The assignment ID to be marked as finished.</param>
     public void UpdateCallFinished(int id, int assiId, int callId)
     {
-        CallManager.UpdateCallFinished(id, assiId, callId);
+        lock (AdminManager.BlMutex)  //stage 7
+
+            CallManager.UpdateCallFinished(id, assiId, callId);
     }
 
 }

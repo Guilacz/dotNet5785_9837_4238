@@ -251,7 +251,7 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// The thread of the simulator
     /// </summary>
-    private static volatile Thread? s_thread;
+    private static volatile Thread? s_thread = null;
     /// <summary>
     /// The Interval for clock updating
     /// in minutes by second (default value is 1, will be set on Start())    
@@ -266,8 +266,10 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
     public static void ThrowOnSimulatorIsRunning()
     {
-        //if (s_thread is not null)
-           // throw new BO.BLTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
+       
+       if (s_thread is not null)
+            
+           throw new BO.BLTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
@@ -277,7 +279,7 @@ internal static class AdminManager //stage 4
         {
             s_interval = interval;
             s_stop = false;
-            s_thread = new(ClockRunner) { Name = "ClockRunner" };
+            s_thread = new(clockRunner) { Name = "ClockRunner" };
             s_thread.Start();
         }
     }
@@ -296,7 +298,9 @@ internal static class AdminManager //stage 4
 
     private static Task? _simulateTask = null;
 
-    private static void ClockRunner()
+
+   // [MethodImpl(MethodImplOptions.Synchronized)] 
+    private static void clockRunner()
     {
         while (!s_stop)
         {
@@ -305,7 +309,7 @@ internal static class AdminManager //stage 4
             // סימולציה של מתנדבים
             if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
                 _simulateTask = Task.Run(() => VolunteerManager.SimulateVolunteerRegistrationToCall());
-
+            //להןסיף משקיפים
             try
             {
                 Thread.Sleep(1000); // 1 second

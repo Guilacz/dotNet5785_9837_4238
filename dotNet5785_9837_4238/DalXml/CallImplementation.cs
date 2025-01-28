@@ -12,7 +12,7 @@ internal class CallImplementation : ICall
     /// Function to create a new call in the XML file.
     /// </summary>
     /// <param name="item">Call object to create.</param>
-    /// [MethodImpl(MethodImplOptions.Synchronized)]
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Call item)
     {
         
@@ -89,7 +89,6 @@ internal class CallImplementation : ICall
     /// to string function 
     /// </summary>
     [MethodImpl(MethodImplOptions.Synchronized)]
-
     string ICall.ToString(Call item)
     {
         var details = new System.Text.StringBuilder();
