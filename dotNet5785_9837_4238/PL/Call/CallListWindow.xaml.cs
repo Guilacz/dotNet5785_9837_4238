@@ -240,10 +240,21 @@ namespace PL.Call
         /// <summary>
         /// constructor of the window
         /// </summary>
-        public CallListWindow()
+        public CallListWindow(BO.CallInListStatus? status)
         {
             InitializeComponent();
+            
+
             UpdateFilterValueOptions();
+
+            
+
+            if (status != null)
+            {
+                // Définir automatiquement le filtre par statut
+                SelectedFilterBy = "CallInListStatus";
+                SelectedFilterValue = status.ToString();
+            }
             QueryCallList();
             Loaded += Window_Loaded;
             Closed += Window_Closed;

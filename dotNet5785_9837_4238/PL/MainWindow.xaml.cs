@@ -64,9 +64,57 @@ namespace PL
         public MainWindow()
         {
             InitializeComponent();
-            IsSimulatorRunning = false; 
+            IsSimulatorRunning = false;
+            CallCounts = s_bl.Call.SumOfCalls();
+
             this.Loaded += OnMainWindow_Loaded;
             Closed += OnMainWindow_Closed;
+        }
+
+
+
+        //---------------CallPart--------------------------
+
+
+
+
+        public int[] CallCounts 
+        {
+            get { return (int[])GetValue(Property); }
+            set { SetValue(Property, value); }
+        }
+
+        public static readonly DependencyProperty Property =
+            DependencyProperty.Register("CallCounts", typeof(int[]), typeof(MainWindow));
+
+        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.Open).Show();
+        }
+
+        private void ButtonInCare_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.InCare).Show();
+        }
+
+        private void ButtonClosed_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.Closed).Show();
+        }
+
+        private void ButtonExpired_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.Expired).Show();
+        }
+
+        private void ButtonOPenAtRisk_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.OpenAtRisk).Show();
+        }
+
+        private void ButtonInCareAtRisk_Click(object sender, RoutedEventArgs e)
+        {
+            new CallListWindow(BO.CallInListStatus.InCareAtRisk).Show();
         }
 
 
@@ -186,7 +234,7 @@ namespace PL
         /// </summary>
         private void btnCallsList_Click(object sender, RoutedEventArgs e)
         {
-            new CallListWindow().Show();
+            new CallListWindow(null).Show();
         }
 
 
@@ -262,6 +310,17 @@ namespace PL
         }
 
 
+        //----------------BONUS ENTER -> INITIALIZATION OF THE DATABASE----------------
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btnInit_Click(sender, e);
+            }
+        }
+
+
+
 
         //-------------------------------SIMULATOR SHLAV 7--------------------------------------
 
@@ -310,7 +369,6 @@ namespace PL
             }
         }
 
-       
 
     }
 }

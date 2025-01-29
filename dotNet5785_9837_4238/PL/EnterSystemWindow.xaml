@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="EnterSystemWindow" Height="450" Width="800"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        >
 
     <Grid>
 
@@ -24,6 +25,29 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <!-- Decorative Circles -->
+        <Canvas>
+            <!-- Large Circle Top-Left -->
+            <Ellipse Width="100" Height="100" Fill="LightBlue" Opacity="0.5" Canvas.Left="628" Canvas.Top="340" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+            <!-- Medium Circle Bottom-Right -->
+            <Ellipse Width="68" Height="62" Fill="CornflowerBlue" Opacity="0.6" Canvas.Left="683" Canvas.Top="318" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+            <Ellipse Width="83" Height="80" Fill="LightBlue" Opacity="0.5" Canvas.Left="731" Canvas.Top="357" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+            <!-- Medium Circle Bottom-Right -->
+            <Ellipse Width="47" Height="46" Fill="CornflowerBlue" Opacity="0.6" Canvas.Left="713" Canvas.Top="368" RenderTransformOrigin="0.96,1.18" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Ellipse Width="80" Height="80" Fill="CornflowerBlue" Opacity="0.6" Canvas.Left="723" Canvas.Top="300" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Ellipse Width="47" Height="44" Fill="LightBlue" Opacity="0.5" Canvas.Left="703" Canvas.Top="396" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Ellipse Width="66" Height="64" Fill="CornflowerBlue" Opacity="0.6" Canvas.Left="597" Canvas.Top="377" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Ellipse Width="57" Height="50" Fill="LightBlue" Opacity="0.5" Canvas.Left="757" Canvas.Top="282" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Ellipse Width="47" Height="44" Fill="LightBlue" Opacity="0.5" Canvas.Left="581" Canvas.Top="409" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            <!-- Small Circle Center -->
+        </Canvas>
+
+        
 
         <!-- Title Label -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,64,0,0" Grid.RowSpan="3">

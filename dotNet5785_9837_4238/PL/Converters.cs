@@ -162,6 +162,18 @@ namespace PL
         }
     }
 
+    public class ConverterToChangeTypeOfCall : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is string matsav && matsav == "Add";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 
     public class CallInProgressVisibilityConverter : IValueConverter

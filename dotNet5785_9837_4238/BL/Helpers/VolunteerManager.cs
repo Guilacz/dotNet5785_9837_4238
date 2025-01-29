@@ -241,8 +241,6 @@ internal static class VolunteerManager
     /// <summary>
     /// function to make a bo volunteer to DO manager
     /// </summary>
-    /// <param name="vol"></param>
-    /// <returns></returns>
     internal static DO.Volunteer DOManeger(BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
@@ -271,9 +269,6 @@ internal static class VolunteerManager
     /// <summary>
     /// function to make a 
     /// </summary>
-    /// <param name="vol1"></param>
-    /// <param name="vol"></param>
-    /// <returns></returns>
     internal static DO.Volunteer DOVolunteer(DO.Volunteer vol1, BO.Volunteer vol)
     {
         int Id = vol.VolunteerId;
@@ -301,8 +296,6 @@ internal static class VolunteerManager
     /// <summary>
     /// function to check the validity and the security level of a password
     /// </summary>
-    /// <param name="password"></param>
-    /// <returns></returns>
     internal static bool CheckValidityOfPassword(string password)
     {
         if (password == null)
@@ -420,13 +413,13 @@ internal static class VolunteerManager
 
                     if (openCallInList.Count() != 0)
                     {
-                        //if (s_random.Next(0, 100) < 20)
-                        //{
+                        if (s_random.Next(0, 100) < 20)
+                        {
                         int randomIndex = s_random.Next(0, openCallInList.Count());
                         var selectedCall = openCallInList.ElementAt(randomIndex);
                         CallManager.ChoiceOfCallToCare(vol.VolunteerId, selectedCall.CallId);
 
-                        //}   
+                        }   
                     }
 
                 }
@@ -456,16 +449,19 @@ internal static class VolunteerManager
                         else
                         {
 
-                            //if (s_random.Next(0, 100) < 10) // 10% 
-
-                            callAssignment = callAssignment with
+                            if (s_random.Next(0, 100) < 10) // 10% 
                             {
-                                // FinishTime = DateTime.Now,
-                                FinishTime = null,
-                            };
-                            s_dal.Assignment.Update(callAssignment);
-                            CallManager.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
-                            //callIncaring.CallStatus = CallInListStatus.Open;
+                                callAssignment = callAssignment with
+                                {
+                                    // FinishTime = DateTime.Now,
+                                    FinishTime = null,
+                                };
+                                s_dal.Assignment.Update(callAssignment);
+                                CallManager.UpdateCallCancelled(vol.VolunteerId, callAssignment.Id);
+                                //callIncaring.CallStatus = CallInListStatus.Open;
+                            }
+
+
 
 
                         }

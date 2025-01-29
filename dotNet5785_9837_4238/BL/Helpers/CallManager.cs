@@ -12,9 +12,127 @@ internal static class CallManager
     private static readonly DalApi.IDal _dal = DalApi.Factory.Get;
     internal static ObserverManager Observers = new();
 
+
+    public static void Delete(int callId)
+    {
+
+        try
+        {
+            BO.Call? c = Read(callId);
+
+            if (c == null)
+            {
+                throw new BO.BlDoesNotExistException($"Call with ID {callId} was not found.");
+            }
+
+            IEnumerable<DO.Assignment> assignments;
+            lock (AdminManager.BlMutex)  //stage 7
+                assignments = _dal.Assignment.ReadAll();
+
+            if (c.CallStatus != 0 ||
+                (c.callAssignInLists != null && c.callAssignInLists.Any(x => assignments.Any(a => a.VolunteerId == x.VolunteerId))))
+            {
+                throw new BO.BlDeletionImpossible("Can't delete this call.");
+            }
+
+
+            lock (AdminManager.BlMutex)
+            { //stage 7
+                //var volunteer = _dal.Volunteer.ReadAll()
+                //    .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol))
+                //    .FirstOrDefault(vol => vol.callInCaring.CallId == callId);
+
+                // אם המתנדב נמצא, שלח לו מייל
+                _ = SendEmailNotificationAsync(c);
+                //stage 7
+                _dal.Call.Delete(callId);
+
+            }
+            CallManager.Observers.NotifyListUpdated();
+        }
+
+        catch (DO.DalDeletionImpossible ex)
+        {
+            throw new BO.BlDeletionImpossible(ex.Message);
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+    }
+
+    public static void Create(BO.Call c)
+    {
+
+        try
+        {
+            lock (AdminManager.BlMutex)  //stage 7
+            {
+                var newCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude ?? 0, // Temporary value
+                    Longitude = c.Longitude ?? 0, // Temporary value
+                    MaxTime = c.MaxTime,
+                    OpenTime = DateTime.Now,
+                    Details = c.Details,
+                };
+
+                _dal.Call.Create(newCall);
+                //NotifyVolunteersAsync(c);
+            }
+
+            CallManager.Observers.NotifyListUpdated();
+
+            _ = SendEmailNotificationAsync(c);
+            UpdateCallDetailsAsync(c);
+
+        }
+        catch (DO.DalInvalidValueException ex)
+        {
+            throw new BO.BlInvalidValueException(ex.Message);
+        }
+    }
+
+    private static async Task UpdateCallDetailsAsync(BO.Call c)
+    {
+        try
+        {
+            var coordinates = await Helpers.Tools.GetAddressCoordinatesAsync(c.Address);
+            c.Latitude = coordinates.Latitude;
+            c.Longitude = coordinates.Longitude;
+
+            if (!Helpers.CallManager.CheckCall(c) || !await Helpers.Tools.CheckAddressCall(c))
+                throw new BO.BlInvalidValueException("The call data provided is invalid. Please check the input and try again.");
+
+            lock (AdminManager.BlMutex)  //stage 7
+            {
+                var updatedCall = new DO.Call
+                {
+                    CallId = c.CallId,
+                    CallType = (DO.CallType)c.CallType,
+                    Address = c.Address,
+                    Latitude = c.Latitude.Value,
+                    Longitude = c.Longitude.Value,
+                    MaxTime = c.MaxTime,
+                    OpenTime = c.OpenTime,
+                    Details = c.Details,
+                };
+
+                _dal.Call.Update(updatedCall);
+            }
+
+            CallManager.Observers.NotifyItemUpdated(c.CallId);
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Failed to update call details: {ex.Message}");
+        }
+    }
     public static void Update(Call c)
     {
-        //Helpers.AdminManager.ThrowOnSimulatorIsRunning(); //stage 7
 
         try
         {
@@ -47,6 +165,8 @@ internal static class CallManager
 
             CallManager.Observers.NotifyItemUpdated(c.CallId);
             CallManager.Observers.NotifyListUpdated();
+
+            _ = SendEmailNotificationAsync(c);
 
             // הפעלה של המתודה C (אסינכרונית)
             UpdateCoordinatesAsyncCall(c);
@@ -99,7 +219,33 @@ internal static class CallManager
 
         }
     }
+    private static  async Task SendEmailNotificationAsync(BO.Call c)
+    {
+        try
+        {
+            BO.Volunteer? volunteer;
+            lock (AdminManager.BlMutex)
+            {  //stage 7
+                volunteer = _dal.Volunteer.ReadAll()
+                .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol))
+                .FirstOrDefault(vol => vol.callInCaring?.CallId == c.CallId);
+            }
 
+            if (volunteer != null && !string.IsNullOrEmpty(volunteer.Email))
+            {
+                await Helpers.Tools.SendEmail(
+                    toAddress: volunteer.Email,
+                    subject: "New Call Assigned to You",
+                    body: $"Hello {volunteer.Name},\n\nA new call with ID #{c.CallId} has been assigned to you.\n\nDetails:\nAddress: {c.Address}\nType: {c.CallType}\nMax Response Time: {c.MaxTime}\n\nPlease take action as soon as possible.\n\nThank you!"
+                );
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlInvalidValueException($"Error sending email for call {c.CallId}: {ex.Message}");
+        }
+    }
     public static Call? Read(int callId)
     {
         try
