@@ -304,7 +304,7 @@ public static class Tools
 
 
     /// <summary>
-    ///class to calculate any type of distance between to entries
+    ///class to calculate any type of distance between to entries// we dont use it but keep it in case we will want to change in the future
     /// </summary>
     public static class DistanceCalculator
     {

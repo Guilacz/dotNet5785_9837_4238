@@ -99,15 +99,6 @@ namespace PL
 
 
 
-
-
-
-
-
-
-
-
-
     /// <summary>
     /// Converter class to convert a single value to a Visibility or bool value based on the input value.
     /// </summary>

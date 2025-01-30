@@ -6,8 +6,20 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="EnterSystemWindow" Height="450" Width="800"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        >
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
+    <Window.Resources>
+        <!-- Animation for the title-->
+        <Storyboard x:Key="TitleAnimation">
+            <DoubleAnimation 
+                Storyboard.TargetName="TitleText" 
+                Storyboard.TargetProperty="Opacity" 
+                From="0" To="1" 
+                Duration="0:0:0.5" 
+                AutoReverse="True" 
+                RepeatBehavior="Forever"/>
+        </Storyboard>
+    </Window.Resources>
 
     <Grid>
 
@@ -52,6 +64,7 @@
         <!-- Title Label -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,64,0,0" Grid.RowSpan="3">
             <TextBlock Text="Welcome to Bright Futures" 
+                       x:Name="TitleText"
                        FontSize="45" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center" 

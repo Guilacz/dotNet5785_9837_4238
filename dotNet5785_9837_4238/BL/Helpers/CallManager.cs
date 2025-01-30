@@ -35,18 +35,11 @@ internal static class CallManager
                 throw new BO.BlDeletionImpossible("Can't delete this call.");
             }
 
-
+          
             lock (AdminManager.BlMutex)
-            { //stage 7
-                //var volunteer = _dal.Volunteer.ReadAll()
-                //    .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol))
-                //    .FirstOrDefault(vol => vol.callInCaring.CallId == callId);
-
-                // אם המתנדב נמצא, שלח לו מייל
-                _ = SendEmailNotificationAsync(c);
+            { 
                 //stage 7
                 _dal.Call.Delete(callId);
-
             }
             CallManager.Observers.NotifyListUpdated();
         }
@@ -86,8 +79,9 @@ internal static class CallManager
 
             CallManager.Observers.NotifyListUpdated();
 
-            _ = SendEmailNotificationAsync(c);
             UpdateCallDetailsAsync(c);
+
+            
 
         }
         catch (DO.DalInvalidValueException ex)
@@ -123,6 +117,7 @@ internal static class CallManager
 
                 _dal.Call.Update(updatedCall);
             }
+            _ = SendEmailNotificationAsync(c);
 
             CallManager.Observers.NotifyItemUpdated(c.CallId);
         }
@@ -166,10 +161,12 @@ internal static class CallManager
             CallManager.Observers.NotifyItemUpdated(c.CallId);
             CallManager.Observers.NotifyListUpdated();
 
-            _ = SendEmailNotificationAsync(c);
+           
 
             // הפעלה של המתודה C (אסינכרונית)
             UpdateCoordinatesAsyncCall(c);
+
+            
         }
         catch (DO.DalInvalidValueException ex)
         {
@@ -221,26 +218,45 @@ internal static class CallManager
     }
     private static  async Task SendEmailNotificationAsync(BO.Call c)
     {
+
         try
         {
-            BO.Volunteer? volunteer;
+
+            DO.Call? DOcall = _dal.Call.Read(c.CallId);
+            List<DO.Volunteer> volunteers;
+
             lock (AdminManager.BlMutex)
-            {  //stage 7
-                volunteer = _dal.Volunteer.ReadAll()
-                .Select(vol => Helpers.VolunteerManager.ConvertVolToBO(vol))
-                .FirstOrDefault(vol => vol.callInCaring?.CallId == c.CallId);
+            {
+                volunteers = _dal.Volunteer.ReadAll().ToList();
             }
 
-            if (volunteer != null && !string.IsNullOrEmpty(volunteer.Email))
+            List<Task> emailTasks = new List<Task>();
+
+            foreach (var volunteer in volunteers)
             {
-                await Helpers.Tools.SendEmail(
-                    toAddress: volunteer.Email,
-                    subject: "New Call Assigned to You",
-                    body: $"Hello {volunteer.Name},\n\nA new call with ID #{c.CallId} has been assigned to you.\n\nDetails:\nAddress: {c.Address}\nType: {c.CallType}\nMax Response Time: {c.MaxTime}\n\nPlease take action as soon as possible.\n\nThank you!"
-                );
+                if (volunteer.Distance != null && !string.IsNullOrEmpty(volunteer.Email))
+                {
+                    double distance = await Helpers.Tools.CalculateDistanceBetweenAddresses(volunteer, DOcall);
+
+                    if (distance <= volunteer.Distance)
+                    {
+
+
+                        emailTasks.Add(Helpers.Tools.SendEmail(
+                            toAddress: volunteer.Email,
+                            subject: "New Call Assigned to You",
+                            body: $"Hello {volunteer.Name},\n\nA new call with ID #{c.CallId} has been assigned to you.\n\nDetails:\nAddress: {c.Address}\nType: {c.CallType}\nMax Response Time: {c.MaxTime}\n\nPlease take action as soon as possible.\n\nThank you!"
+                        ));
+                    }
+
+                }
             }
+
+            await Task.WhenAll(emailTasks);
 
         }
+
+
         catch (Exception ex)
         {
             throw new BO.BlInvalidValueException($"Error sending email for call {c.CallId}: {ex.Message}");
@@ -273,15 +289,6 @@ internal static class CallManager
 
 
 
-
-
-
-
-
-
-
-
-
     /// <summary>
     /// function to check the validity of a call: checks the maxtime and the address
     /// </summary>
@@ -309,52 +316,7 @@ internal static class CallManager
         return true;
     }
 
-    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
-    //{
-    //    var now = DateTime.Now;
-
-    //    // מקבל את כל ההקצאות של הקריאה הנוכחית, ממוין לפי זמן התחלה מהחדש לישן
-    //    var callAssignments = assignments
-    //        .Where(a => a.CallId == call.CallId)
-    //        .OrderByDescending(a => a.StartTime);
-
-    //    var lastAssignment = callAssignments.FirstOrDefault();
-
-    //    // אם אין הקצאות בכלל
-    //    if (lastAssignment == null)
-    //    {
-    //        // אם עבר יותר משעה מפתיחת הקריאה
-    //        if (now > call.OpenTime.AddHours(1))
-    //            return BO.CallInListStatus.OpenAtRisk;
-    //        return BO.CallInListStatus.Open;
-    //    }
-
-    //    // אם ההקצאה האחרונה פתוחה (בטיפול)
-    //    if (lastAssignment.FinishTime == null && !lastAssignment.TypeOfEnd.HasValue)
-    //    {
-    //        // אם עבר יותר משעה מתחילת הטיפול
-    //        if (now > lastAssignment.StartTime.AddHours(1))
-    //            return BO.CallInListStatus.InCareAtRisk;
-    //        return BO.CallInListStatus.InCare;
-    //    }
-
-    //    // אם הקריאה הסתיימה
-    //    if (lastAssignment.TypeOfEnd.HasValue && lastAssignment.TypeOfEnd.Value.Equals(TypeOfEnd.Fulfilled))
-    //        return BO.CallInListStatus.Closed;
-
-
-    //    //// אם הקריאה בוטלה או פג תוקפה
-    //    //if (lastAssignment.TypeOfEnd.HasValue)
-    //    //    return BO.CallInListStatus.Expired;
-    //    if (lastAssignment.TypeOfEnd.HasValue)
-    //    {
-    //        // אם הזמן המקסימלי עבר
-    //        if (DateTime.Now> call.MaxTime)
-    //            return BO.CallInListStatus.Expired;
-    //    }
-    //    // מקרה ברירת מחדל - פתוח
-    //    return BO.CallInListStatus.Open;
-    //}
+  
     internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
     {
         var now = DateTime.Now;
@@ -402,8 +364,7 @@ internal static class CallManager
 
 
             //// אם הקריאה בוטלה או פג תוקפה
-            //if (lastAssignment.TypeOfEnd.HasValue)
-            //    return BO.CallInListStatus.Expired;
+          
             if (lastAssignment.TypeOfEnd.HasValue)
             {
                 // אם הזמן המקסימלי עבר
@@ -423,70 +384,7 @@ internal static class CallManager
     /// <param name="call"></param>
     /// <param name="assignments"></param>
     /// <returns></returns>
-    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
-    //{
-    //    var now = DateTime.Now;
-
-    //    var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
-    //    if (activeAssignment != null)
-    //    {
-    //        return BO.CallInListStatus.InCare;
-    //    }
-
-    //    if (call.MaxTime.HasValue && now > call.MaxTime.Value)
-    //    {
-    //        return BO.CallInListStatus.Expired;
-    //    }
-
-    //    var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
-    //    if (finishedAssignment != null)
-    //    {
-    //        return BO.CallInListStatus.Closed;
-    //    }
-
-    //    if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
-    //    {
-    //        return BO.CallInListStatus.OpenAtRisk;
-    //    }
-
-    //    return BO.CallInListStatus.Open;
-    //}
-
-    //internal static BO.CallInListStatus GetCallStatus(DO.Call call, IEnumerable<DO.Assignment> assignments)
-    //{
-    //    var now = DateTime.Now;
-
-    //    var activeAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime == null);
-
-    //    // תנאי לקריאה שהיא גם בטיפול וגם בסיכון
-    //    if (activeAssignment != null && call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
-    //    {
-    //        return BO.CallInListStatus.InCareAtRisk;
-    //    }
-
-    //    if (activeAssignment != null)
-    //    {
-    //        return BO.CallInListStatus.InCare;
-    //    }
-
-    //    if (call.MaxTime.HasValue && now > call.MaxTime.Value)
-    //    {
-    //        return BO.CallInListStatus.Expired;
-    //    }
-
-    //    var finishedAssignment = assignments.FirstOrDefault(a => a.CallId == call.CallId && a.FinishTime.HasValue);
-    //    if (finishedAssignment != null)
-    //    {
-    //        return BO.CallInListStatus.Closed;
-    //    }
-
-    //    if (call.MaxTime.HasValue && now > call.OpenTime.AddHours(1))
-    //    {
-    //        return BO.CallInListStatus.OpenAtRisk;
-    //    }
-
-    //    return BO.CallInListStatus.Open;
-    //}
+ 
 
     /// <summary>
     /// function to convert a DO call to a BO call
@@ -534,13 +432,13 @@ internal static class CallManager
         try
         {
 
-            IEnumerable<DO.Assignment> assignments;
-            lock (AdminManager.BlMutex)  //stage 7
-                assignments = _dal.Assignment.ReadAll();
-
             IEnumerable<DO.Volunteer> volunteers;
-            lock (AdminManager.BlMutex)  //stage 7
+            IEnumerable<DO.Assignment> assignments;
+            lock (AdminManager.BlMutex) {
+                assignments = _dal.Assignment.ReadAll();
                 volunteers = _dal.Volunteer.ReadAll();
+            }
+                
 
 
             var assignment = assignments.FirstOrDefault(a => a.Id == assiId);
